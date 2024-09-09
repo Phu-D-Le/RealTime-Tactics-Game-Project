@@ -1,43 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     public PlayerType.Size pawnType;
+    public PlayerTurn.Players pawnTurn;
     private PlayerType pawnAttributes;
+    private PlayerTurn pawnTime;
 
     private int turnsSinceLastLearn = 0; // Tracks turns since the last attack was learned
     private const int turnsRequiredToLearn = 3; // Number of turns required before learning a new attack
 
-    void Start()
+    public void Start()
     {
         pawnAttributes = GetComponent<PlayerType>();
+        pawnTime = GetComponent<PlayerTurn>();
 
-        if (pawnAttributes != null)
-        {
-            pawnAttributes.PawnStats(pawnType);
-            Debug.Log($"Pawn Type: {pawnType}, Health: {pawnAttributes.Health}, Speed: {pawnAttributes.Speed}");
-            DisplayAttacks();
-        }
-        else
-        {
-            Debug.LogError("PlayerType component not found on this GameObject.");
-        }
+        pawnAttributes.PawnStats(pawnType);
+        pawnTime.Flow(pawnTurn);
+        Debug.Log($"Pawn Type: {pawnType}, Health: {pawnAttributes.Health}, Speed: {pawnAttributes.Speed}");
+        DisplayAttacks();
     }
 
-    void Update()
+    public void Update()
     {
         // Example turn progression
-        if (Input.GetKeyDown(KeyCode.Space)) // Assume space bar advances the turn
+        if (Input.GetKeyDown(KeyCode.Space) && pawnTime.curr == true) // Assume space bar advances the turn
         {
             EndTurn();
         }
     }
 
-    void EndTurn()
+    public void EndTurn()
     {
         turnsSinceLastLearn++;
+        pawnTime.ChangeFlow();
+
         Debug.Log($"Turn {turnsSinceLastLearn} ended.");
 
         if (turnsSinceLastLearn >= turnsRequiredToLearn)
@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void ChooseAttack()
+    public void ChooseAttack()
     {
         // For simplicity, this example auto-chooses the first available attack.
         // Replace this with actual player selection logic.
