@@ -1,96 +1,60 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     public PlayerType.Size pawnType;
-    public PlayerTurn.Players pawnTurn;
     private PlayerType pawnAttributes;
-    private PlayerTurn pawnTime;
-
-    private int turnsSinceLastLearn = 0; // Tracks turns since the last attack was learned
-    private const int turnsRequiredToLearn = 3; // Number of turns required before learning a new attack
+    public bool HasEndedTurn { get; private set; }
+    public GameManager turn;
 
     public void Start()
     {
         pawnAttributes = GetComponent<PlayerType>();
-        pawnTime = GetComponent<PlayerTurn>();
-
         pawnAttributes.PawnStats(pawnType);
-        pawnTime.Flow(pawnTurn);
-        Debug.Log($"Pawn Type: {pawnType}, Health: {pawnAttributes.Health}, Speed: {pawnAttributes.Speed}");
+
+        // Assign available attacks to this pawn based on its type
+        Attack.AssignAvailableAttacks(pawnType, this.gameObject);
+
         DisplayAttacks();
     }
-
-    public void Update()
+    // Add the StartTurn method here
+    public void StartTurn()
     {
-        // Example turn progression
-        if (Input.GetKeyDown(KeyCode.Space) && pawnTime.curr == true) // Assume space bar advances the turn
-        {
-            EndTurn();
-        }
+        HasEndedTurn = false; // Reset the turn state
+        Debug.Log("Player's turn started.");
     }
-
     public void EndTurn()
     {
-        turnsSinceLastLearn++;
-        pawnTime.ChangeFlow();
-
-        Debug.Log($"Turn {turnsSinceLastLearn} ended.");
-
-        if (turnsSinceLastLearn >= turnsRequiredToLearn)
-        {
-            Debug.Log("This pawn can now learn a new attack!");
-            turnsSinceLastLearn = 0; // Reset the turn counter after learning
-            // Allow the player to choose a new attack here
-            ChooseAttack();
-        }
+        HasEndedTurn = true;
+        ChooseAttack();
     }
 
     public void ChooseAttack()
     {
-        // For simplicity, this example auto-chooses the first available attack.
-        // Replace this with actual player selection logic.
+        List<Attack> availableAttacks = Attack.GetPawnAttacks(this.gameObject);
 
-        if (pawnAttributes.availableAttacks.Count > 0)
+        if (availableAttacks.Count > 0)
         {
-            Debug.Log("Available attacks:");
-            for (int i = 0; i < pawnAttributes.availableAttacks.Count; i++)
-            {
-                Attack attack = pawnAttributes.availableAttacks[i];
-                Debug.Log($"{i + 1}. {attack.attackName} ({attack.damage} damage)");
-            }
+            int selectedIndex = 0; // Placeholder for player input
 
-            // Example: Assume player chooses the first attack (index 0)
-            int selectedIndex = 0; // This should be replaced with actual player input
-
-            if (selectedIndex >= 0 && selectedIndex < pawnAttributes.availableAttacks.Count)
+            if (selectedIndex >= 0 && selectedIndex < availableAttacks.Count)
             {
-                Attack chosenAttack = pawnAttributes.availableAttacks[selectedIndex];
-                pawnAttributes.LearnAttack(chosenAttack);
-                pawnAttributes.availableAttacks.RemoveAt(selectedIndex); // Remove the chosen attack from available list
-                Debug.Log($"{chosenAttack.attackName} was learned!");
+                Attack chosenAttack = availableAttacks[selectedIndex];
+                Attack.LearnAttack(this.gameObject, chosenAttack);
+                availableAttacks.RemoveAt(selectedIndex); // Remove from available attacks
                 DisplayAttacks();
             }
-            else
-            {
-                Debug.Log("Invalid attack selection.");
-            }
-        }
-        else
-        {
-            Debug.Log("No attacks available to learn.");
         }
     }
 
     void DisplayAttacks()
     {
-        Debug.Log("Learned Attacks:");
-        foreach (var attack in pawnAttributes.learnedAttacks)
+        List<Attack> learnedAttacks = Attack.GetPawnAttacks(this.gameObject);
+        foreach (var attack in learnedAttacks)
         {
-            Debug.Log($"- {attack.attackName} ({attack.damage} damage)");
+            Debug.Log($"{attack.attackName} ({attack.damage} damage)");
         }
     }
 }
