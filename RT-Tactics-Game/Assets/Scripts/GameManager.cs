@@ -16,7 +16,8 @@ public class GameManager : MonoBehaviour
     public Player firstPlayer; 
     public Player enemyPlayer; 
     private int playerTurns = 0; // Tracks total turns
-    private int turnsRequiredToLearn = 3; // Set when a pawn can learn a new attack
+    private int enemyTurns = 0;
+    public AttackMenu attackMenu; // Reference to the AttackMenu script
 
     private void Start()
     {
@@ -40,13 +41,20 @@ public class GameManager : MonoBehaviour
 
     public void NotifyTurnEnd(Player player)
     {
-        if (player == firstPlayer && playerTurns >= turnsRequiredToLearn)
+        if (player == firstPlayer)
         {
-            firstPlayer.ChooseAttack();
+            if (playerTurns == 3 || playerTurns == 6)
+            {
+                attackMenu.UpdateMenu(firstPlayer, playerTurns); // Update menu based on turn
+            }
         }
-        if (player == enemyPlayer && playerTurns >= turnsRequiredToLearn)
+
+        if (player == enemyPlayer)
         {
-            firstPlayer.ChooseAttack();
+            if (enemyTurns == 3 || enemyTurns == 6)
+            {
+                attackMenu.UpdateMenu(enemyPlayer, enemyTurns);
+            }
         }
     }
 
@@ -54,16 +62,19 @@ public class GameManager : MonoBehaviour
     {
         currentState = GameState.PlayerTurn;
         playerTurns++;
-        firstPlayer.StartTurn();
+        firstPlayer.StartTurn(playerTurns); // Pass the current turn count to the player
         enemyPlayer.EndTurn();
+        attackMenu.UpdateMenu(firstPlayer, playerTurns);
         Debug.Log("Player's turn started.");
     }
 
     private void StartEnemyTurn()
     {
         currentState = GameState.EnemyTurn;
-        enemyPlayer.StartTurn();
+        enemyTurns++;
+        enemyPlayer.StartTurn(enemyTurns); // Pass the current turn count to the enemy
         firstPlayer.EndTurn();
+        attackMenu.UpdateMenu(enemyPlayer, enemyTurns);
         Debug.Log("Enemy's turn started.");
     }
 }
