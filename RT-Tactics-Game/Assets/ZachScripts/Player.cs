@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     {
         pawnAttributes = GetComponent<PlayerType>();
         pawnAttributes.PawnStats(pawnType);
+        Debug.Log("Health: " + pawnAttributes.Health);
 
         AttackManager.InitializeDefaultAttack(gameObject, pawnType); // Initialize default attacks
         DisplayAttacks();
