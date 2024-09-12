@@ -9,10 +9,13 @@ public class Player : MonoBehaviour
     public bool HasEndedTurn { get; private set; }
     public GameManager turn;
 
+    public int health;
     public void Start()
     {
         pawnAttributes = GetComponent<PlayerType>();
         pawnAttributes.PawnStats(pawnType);
+
+        health = pawnAttributes.Health; //added public health variable to Player, may need to be private
 
         AttackManager.InitializeDefaultAttack(gameObject, pawnType); // Initialize default attacks
         DisplayAttacks();
@@ -35,6 +38,12 @@ public class Player : MonoBehaviour
     {
         HasEndedTurn = true;
         //turn.NotifyTurnEnd(this);
+
+        //If pawn is dead, destroy pawn
+        if(CheckIsDead())
+        {
+            Destroy(gameObject);
+        }
     }
 
     void DisplayAttacks()
@@ -44,5 +53,17 @@ public class Player : MonoBehaviour
         {
             Debug.Log($"{attack.attackName} ({attack.damage} damage)");
         }
+    }
+
+    //When called, display pawn's current health
+    void DisplayCurrentHealth()
+    {
+        Debug.Log("Current HP: " + health);
+    }
+
+    //Checks if pawn is eligable to continue
+    bool CheckIsDead()
+    {
+        return health <= 0;
     }
 }
