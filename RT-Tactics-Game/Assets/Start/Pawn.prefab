@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 925727221764048495}
   - component: {fileID: 2529883001042873270}
   - component: {fileID: -9222783416728059607}
-  - component: {fileID: 5774847875103258549}
   m_Layer: 0
   m_Name: Pawn
   m_TagString: Untagged
@@ -121,18 +120,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69f715a526823d842ab303db24b6b460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pawnType: 2
---- !u!114 &5774847875103258549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5113476527157492796}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f4b36d92c39dd74f9a233b27779974d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  pawnData: {fileID: 0}
   learnedAttacks: []
-  availableAttacks: []
+  turn: {fileID: 0}

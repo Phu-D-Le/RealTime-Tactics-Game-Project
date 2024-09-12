@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab2626027a1328143aa542a51e7d5db3, type: 3}
-  m_Name: WideSwing
+  m_Name: Ranged Attack
   m_EditorClassIdentifier: 
-  prefab: {fileID: 2229873149965466431, guid: b9d54cb138f280b4db0046774a8f51ee, type: 3}
+  prefab: {fileID: 6287766118843142084, guid: fe312cf3ec678354aab3583c1929558a, type: 3}
   type: 0
-  description: Larger attack radius. Grand swing.
-  Damage: 3
+  description: Shoot from a distance.
+  Damage: 2

@@ -4,46 +4,60 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public PlayerType.Size pawnType;
-    private PlayerType pawnAttributes;
-    public bool HasEndedTurn { get; private set; }
-    public GameManager turn;
+    public InventoryObject playerInventory; // Reference to the player's inventory
+    public DisplayInventory attackMenuDisplay; // Reference to the DisplayInventory panel for attacks
 
-    public void Start()
+    public void DisplayPawnsAndAttacks()
+{
+    if (playerInventory == null)
     {
-        pawnAttributes = GetComponent<PlayerType>();
-        pawnAttributes.PawnStats(pawnType);
-        Debug.Log("Health: " + pawnAttributes.Health);
-
-        AttackManager.InitializeDefaultAttack(gameObject, pawnType); // Initialize default attacks
-        DisplayAttacks();
+        Debug.LogWarning("Player Inventory is not assigned!");
+        return;
     }
-    
-    void Update()
+
+    Debug.Log($"Displaying inventory for {name}");
+    foreach (InventorySlot slot in playerInventory.Container)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        PawnObject pawn = slot.item as PawnObject;
+        if (pawn != null)
         {
-            EndTurn();
+            Debug.Log($"Pawn Type: {pawn.pawnType}, Health: {pawn.Health}, Speed: {pawn.Speed}");
+
+            // Display learned attacks
+            foreach (var attack in pawn.learnedAttacks)
+            {
+                Debug.Log($"Attack: {attack.name}, Damage: {attack.Damage}");
+            }
         }
     }
+}
 
-    public void StartTurn(int currentTurn)
+
+    public void UpdateAttackMenu(PawnObject selectedPawn)
+{
+    if (attackMenuDisplay == null) 
     {
-        HasEndedTurn = false; // Reset the turn state
+        Debug.LogWarning("AttackMenuDisplay is not assigned!");
+        return;
     }
 
-    public void EndTurn()
+    if (selectedPawn == null) 
     {
-        HasEndedTurn = true;
-        //turn.NotifyTurnEnd(this);
+        Debug.LogWarning("SelectedPawn is null!");
+        return;
     }
 
-    void DisplayAttacks()
+    // Create a new inventory to hold the pawn's attacks
+    InventoryObject attackInventory = ScriptableObject.CreateInstance<InventoryObject>();
+
+    // Add the pawn's attacks to the new inventory
+    foreach (var attack in selectedPawn.learnedAttacks)
     {
-        List<Attack> learnedAttacks = AttackManager.GetLearnedAttacks(gameObject);
-        foreach (var attack in learnedAttacks)
-        {
-            Debug.Log($"{attack.attackName} ({attack.damage} damage)");
-        }
+        attackInventory.AddItem(attack, 1);
     }
+
+    // Update the DisplayInventory with the new inventory
+    attackMenuDisplay.UpdateMenu(attackInventory);
+}
+
 }

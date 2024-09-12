@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab2626027a1328143aa542a51e7d5db3, type: 3}
-  m_Name: WideSwing
+  m_Script: {fileID: 11500000, guid: 6703f7b760aa3d244b4443810756dfdc, type: 3}
+  m_Name: Small Pawn Inventory
   m_EditorClassIdentifier: 
-  prefab: {fileID: 2229873149965466431, guid: b9d54cb138f280b4db0046774a8f51ee, type: 3}
-  type: 0
-  description: Larger attack radius. Grand swing.
-  Damage: 3
+  Container:
+  - item: {fileID: 11400000, guid: e9c787ccce33b4a4bac764f52aa8c473, type: 2}
+    amount: 0
