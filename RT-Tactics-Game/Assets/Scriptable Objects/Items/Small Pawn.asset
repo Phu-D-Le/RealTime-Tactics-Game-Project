@@ -18,5 +18,5 @@ MonoBehaviour:
   Health: 2
   Speed: 3
   pawnType: 0
-  learnedAttacks:
-  - {fileID: 11400000, guid: e9c787ccce33b4a4bac764f52aa8c473, type: 2}
+  gamePrefab: {fileID: 6126597755635421003, guid: a71aedaccde94794988f093db8fb8b12, type: 3}
+  pawnInventory: {fileID: 11400000, guid: 6e550294c4b7b034f8e2757fbe8b455a, type: 2}

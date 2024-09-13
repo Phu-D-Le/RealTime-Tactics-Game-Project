@@ -11,13 +11,7 @@ public class DisplayInventory : MonoBehaviour
     public int NUMBER_OF_COLUMN;
     public int Y_SPACE_BETWEEN_ITEM;
 
-    Dictionary<InventorySlot, GameObject> itemsDisplayed = new Dictionary<InventorySlot, GameObject>();
-
-    void Start()
-    {
-        // Ensure the display starts empty
-        ClearDisplay();
-    }
+    private Dictionary<InventorySlot, GameObject> itemsDisplayed = new Dictionary<InventorySlot, GameObject>();
 
     public void UpdateMenu(InventoryObject newInventory)
     {
@@ -31,7 +25,7 @@ public class DisplayInventory : MonoBehaviour
 
     public void CreateDisplay()
     {
-        if (inventory == null) return; // Check for null inventory
+        if (inventory == null) return;
 
         for (int i = 0; i < inventory.Container.Count; i++)
         {
@@ -64,7 +58,7 @@ public class DisplayInventory : MonoBehaviour
         itemsDisplayed.Clear();
     }
 
-    public Vector3 GetPosition(int i)
+    private Vector3 GetPosition(int i)
     {
         return new Vector3(X_START + (X_SPACE_BETWEEN_ITEM * (i % NUMBER_OF_COLUMN)), Y_START + (Y_SPACE_BETWEEN_ITEM * (i / NUMBER_OF_COLUMN)), 0f);
     }

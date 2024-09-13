@@ -8,7 +8,10 @@ public class PawnObject : ItemObject
     public int Health;
     public int Speed;
     public PawnType pawnType;
-    public List<AttackObject> learnedAttacks; // List of attacks this pawn knows
+    //public GameObject uiPrefab; // For menu/UI display
+    public GameObject gamePrefab; // For in-game representation
+
+    public InventoryObject pawnInventory; // To store attacks or other items
 
     public enum PawnType
     {

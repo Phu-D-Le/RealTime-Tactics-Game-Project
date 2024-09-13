@@ -1,63 +1,83 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public InventoryObject playerInventory; // Reference to the player's inventory
-    public DisplayInventory attackMenuDisplay; // Reference to the DisplayInventory panel for attacks
+    public InventoryObject playerInventory; // Player's overall inventory, including pawns
+    public DisplayInventory playerInventoryDisplay; // UI component to display pawns
+    public DisplayInventory attackMenuDisplay; // UI component to display attacks
 
-    public void DisplayPawnsAndAttacks()
-{
-    if (playerInventory == null)
+    private Dictionary<PawnObject, GameObject> pawnInstances = new Dictionary<PawnObject, GameObject>();
+
+    private void Start()
     {
-        Debug.LogWarning("Player Inventory is not assigned!");
-        return;
+        InitializePawnsFromScene();
+        DisplayPawnsAndAttacks();
     }
 
-    Debug.Log($"Displaying inventory for {name}");
-    foreach (InventorySlot slot in playerInventory.Container)
+    private void InitializePawnsFromScene()
     {
-        PawnObject pawn = slot.item as PawnObject;
-        if (pawn != null)
-        {
-            Debug.Log($"Pawn Type: {pawn.pawnType}, Health: {pawn.Health}, Speed: {pawn.Speed}");
+        // Clear the player's inventory first
+        playerInventory.Container.Clear();
 
-            // Display learned attacks
-            foreach (var attack in pawn.learnedAttacks)
+        foreach (Transform child in transform)
+        {
+            Pawn pawnComponent = child.GetComponent<Pawn>();
+            if (pawnComponent != null)
             {
-                Debug.Log($"Attack: {attack.name}, Damage: {attack.Damage}");
+                PawnObject pawnObject = pawnComponent.pawnData;
+                if (pawnObject != null)
+                {
+                    // Add the pawn to the player's inventory
+                    playerInventory.AddItem(pawnObject, 1);
+                    pawnInstances[pawnObject] = child.gameObject;
+                }
             }
         }
-    }
-}
 
+        // Update the inventory UI
+        if (playerInventoryDisplay != null)
+        {
+            playerInventoryDisplay.UpdateMenu(playerInventory);
+        }
+    }
+
+    public void DisplayPawnsAndAttacks()
+    {
+        if (playerInventoryDisplay != null)
+        {
+            playerInventoryDisplay.UpdateMenu(playerInventory);
+        }
+    }
+
+    public void OnPawnSelected(PawnObject selectedPawn)
+    {
+        if (selectedPawn == null)
+        {
+            Debug.LogWarning("Selected pawn is null.");
+            return;
+        }
+
+        // Update the attack menu with the selected pawn's attacks
+        UpdateAttackMenu(selectedPawn);
+    }
 
     public void UpdateAttackMenu(PawnObject selectedPawn)
-{
-    if (attackMenuDisplay == null) 
     {
-        Debug.LogWarning("AttackMenuDisplay is not assigned!");
-        return;
-    }
+        if (attackMenuDisplay == null || selectedPawn == null) return;
 
-    if (selectedPawn == null) 
+        // Display the selected pawn's attacks
+        attackMenuDisplay.UpdateMenu(selectedPawn.pawnInventory);
+    }
+    public void DisplayPawnDetails(PawnObject selectedPawn)
     {
-        Debug.LogWarning("SelectedPawn is null!");
-        return;
+        if (selectedPawn == null)
+        {
+            Debug.LogWarning("Selected pawn is null.");
+            return;
+        }
+
+        // Display detailed information about the pawn
+        Debug.Log($"Pawn Details: Health: {selectedPawn.Health} Speed: {selectedPawn.Speed} Type: {selectedPawn.pawnType}");
     }
-
-    // Create a new inventory to hold the pawn's attacks
-    InventoryObject attackInventory = ScriptableObject.CreateInstance<InventoryObject>();
-
-    // Add the pawn's attacks to the new inventory
-    foreach (var attack in selectedPawn.learnedAttacks)
-    {
-        attackInventory.AddItem(attack, 1);
-    }
-
-    // Update the DisplayInventory with the new inventory
-    attackMenuDisplay.UpdateMenu(attackInventory);
-}
-
 }

@@ -22,6 +22,7 @@ public class PawnButton : MonoBehaviour
         {
             // Update the attack menu with the selected pawn
             currentPlayer.UpdateAttackMenu(pawn);
+            currentPlayer.DisplayPawnDetails(pawn);
         }
     }
 }
