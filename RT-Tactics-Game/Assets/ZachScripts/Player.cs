@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
 
         AttackManager.InitializeDefaultAttack(gameObject, pawnType); // Initialize default attacks
         DisplayAttacks();
+        GetComponent<Health>().init();
     }
     
     void Update()
