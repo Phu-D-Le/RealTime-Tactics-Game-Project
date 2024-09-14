@@ -14,7 +14,7 @@ public class Health : MonoBehaviour
         pawn = GetComponent<Player>();
         health = pawn.health;
 
-        //currently, health bar is a slider, would probably need changing later
+        //currently, health bar is a slider, NEEDS CHANGING
         //set healthbar max to max hp
         healthBar = GetComponentInChildren<Slider>();
         healthBar.maxValue = health;
@@ -22,6 +22,7 @@ public class Health : MonoBehaviour
 
     }
     //place holder for testing healthbar updating
+    //needs to be integrated into GameManager to properly work
     void updateHealth(int damage)
     {
         health -= damage;
