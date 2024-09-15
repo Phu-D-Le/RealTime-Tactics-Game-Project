@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6276678177939883774
+--- !u!1 &4998848849686327653
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9167682871042886978}
-  - component: {fileID: 2560421927410973396}
+  - component: {fileID: 8197537694344010565}
+  - component: {fileID: 9082189156880079638}
   m_Layer: 0
   m_Name: TileMapManager
   m_TagString: Untagged
@@ -17,41 +17,41 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &9167682871042886978
+--- !u!4 &8197537694344010565
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6276678177939883774}
+  m_GameObject: {fileID: 4998848849686327653}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.07703951, y: 2.532851, z: -1.8500338}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2560421927410973396
+--- !u!114 &9082189156880079638
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6276678177939883774}
+  m_GameObject: {fileID: 4998848849686327653}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca3af45db65625e478003d3192e8a3eb, type: 3}
+  m_Script: {fileID: 11500000, guid: b36f6f13064519c4db751e283aca4f0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  freeTile: {fileID: 1847173696926250, guid: 9f72ec78b69754d4e837c0e91c22412b, type: 3}
-  TileTypes:
-  - {fileID: 1125799551299764, guid: 4dfdc0faa2101104796fb91f4c9b60ce, type: 3}
-  - {fileID: 1207470162036134, guid: a41f077c11efded408e9a886cd98d8be, type: 3}
-  - {fileID: 2870349062761081760, guid: 7351b640de2ea0643b0e576c38f98e1e, type: 3}
-  TileCounts: 0a0000000f0000000a000000
-  gridX: 15
-  gridY: 15
-  tileRadius: 1
-  hSpacing: 1
-  vSpacing: 1
+  TileMaps:
+  - {fileID: 3346713679616059367, guid: 7afad3540eb9a324f84757959ada4d97, type: 3}
+  - {fileID: 8856353985429124725, guid: c1785c7981efcba468ed205446b9743b, type: 3}
+  - {fileID: 5030914023892290437, guid: 52a138a3cdfc2904fbefe3839a0d6c91, type: 3}
+  - {fileID: 5842216067044194911, guid: 074965e4307f68849a4f6af4e695f41e, type: 3}
+  - {fileID: 2657847287715096399, guid: 1288c44deefd3b041b95c24c7ecd2db3, type: 3}
+  - {fileID: 856194131244642171, guid: 53d46ce546d814845927fe3be7ce57df, type: 3}
+  - {fileID: 3559635876015394102, guid: 2e7770f1d78be0f43bc122fecdbda6be, type: 3}
+  - {fileID: 7025910328609071292, guid: c60db331e0ef2ef40a05764b80ccf874, type: 3}
+  - {fileID: 3559416109178669008, guid: 486c0bfcbe639aa46b4757ee51f6a22f, type: 3}
+  - {fileID: 6375657862910312739, guid: 2b62f827a5a6a8d40bd98da7d522cf86, type: 3}
