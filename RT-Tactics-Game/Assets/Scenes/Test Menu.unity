@@ -8808,7 +8808,7 @@ MonoBehaviour:
   invertYToggle: {fileID: 1622636467}
   qualityDropdown: {fileID: 1418774028}
   fullScreenToggle: {fileID: 571352359}
-  _newGameLevel: GameScene
+  _newGameLevel: InGameMenu
   noSavedGameDialog: {fileID: 544560032}
   resolutionDropdown: {fileID: 811210927}
 --- !u!4 &1733466919

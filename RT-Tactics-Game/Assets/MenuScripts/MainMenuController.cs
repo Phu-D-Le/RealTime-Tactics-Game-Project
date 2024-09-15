@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEditor;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -79,8 +80,9 @@ public class MainMenuController : MonoBehaviour
 
     public void NewGameDialogYes()
     {
-        SceneManager.LoadScene(_newGameLevel);
+        SceneManager.LoadScene("InGameMenu");
     }
+
 
     public void LoadGameDialogYes()
     {
@@ -94,7 +96,10 @@ public class MainMenuController : MonoBehaviour
             noSavedGameDialog.SetActive(true);
         }
     }
-
+    public void LevelOne()
+    {
+        SceneManager.LoadScene("LevelOne");
+    }
     public void ExitButton()
     {
         Application.Quit();
