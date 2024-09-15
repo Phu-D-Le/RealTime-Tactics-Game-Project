@@ -72,6 +72,10 @@ public class MainMenuController : MonoBehaviour
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
 
+    public void BackToMainMenu()
+    {
+        SceneManager.LoadScene("Test menu");
+    }
 
     public void NewGameDialogYes()
     {
