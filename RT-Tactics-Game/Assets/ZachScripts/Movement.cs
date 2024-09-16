@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    //List<Pawn> = FindObjectsOfType<Pawn>;
+    //GameObject.
+    GameObject[] pawns = GameObject.FindGameObjectsWithTag("Pawn");
+
     /*
      * 
      * would need to reference map tiles
@@ -14,6 +16,7 @@ public class Movement : MonoBehaviour
      */
     void Start()
     {
+        
         /*
          * get all pawns, perhaps get pawns by tag?
          * 
