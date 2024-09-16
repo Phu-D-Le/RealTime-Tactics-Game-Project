@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class PawnButton : MonoBehaviour
 {
-    public PawnObject pawn; // Reference to the pawn
-    private GameManager gameManager; // Reference to the GameManager
+    public PawnObject pawn; // Reference to the pawn ScriptableObject
+    private GameManager gameManager;
 
     private void Start()
     {
@@ -16,9 +16,7 @@ public class PawnButton : MonoBehaviour
 
     void OnButtonClick()
     {
-        GameObject pawnGameObject = gameObject; // Reference to the clicked pawn's GameObject
-        gameManager.SetSelectedPawn(pawnGameObject); // Set the selected pawn in the GameManager
-
+        gameManager.SetSelectedPawn(pawn); // Now passing the PawnObject directly
         Player currentPlayer = gameManager.GetCurrentPlayer();
         if (currentPlayer != null)
         {

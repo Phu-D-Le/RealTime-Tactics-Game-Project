@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6703f7b760aa3d244b4443810756dfdc, type: 3}
-  m_Name: Medium Pawn Inventory
+  m_Name: Medium Pawn Inventory P
   m_EditorClassIdentifier: 
   Container:
   - item: {fileID: 11400000, guid: 532d7d245296a1f4680681b9752b804f, type: 2}

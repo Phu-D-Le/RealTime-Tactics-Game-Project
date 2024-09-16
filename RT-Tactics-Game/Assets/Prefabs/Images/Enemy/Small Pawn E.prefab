@@ -42,7 +42,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2705475561937562914, guid: ea2f302b83e5911489079bbf8674f928, type: 3}
       propertyPath: m_Name
-      value: Small Pawn
+      value: Small Pawn E
       objectReference: {fileID: 0}
     - target: {fileID: 3843240606614468219, guid: ea2f302b83e5911489079bbf8674f928, type: 3}
       propertyPath: m_Color.b

@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
                     if (pawnHealth != null)
                     {
                         Debug.Log($"Initializing health for {child.name} with base health: {pawnObject.Health}");
-                        pawnHealth.Initialize(pawnObject.Health);
+                        pawnHealth.Initialize(pawnObject); // Pass the whole PawnObject
                     }
                     else
                     {
@@ -79,15 +79,13 @@ public class Player : MonoBehaviour
             return;
         }
 
-        // Update the attack menu with the selected pawn's attacks
-        UpdateAttackMenu(selectedPawn);
+        UpdateAttackMenu(selectedPawn); // Correct data type: PawnObject
     }
 
-    // Update the attack menu UI based on the selected pawn's attacks
     public void UpdateAttackMenu(PawnObject selectedPawn)
     {
         if (attackMenuDisplay == null || selectedPawn == null) return;
 
-        attackMenuDisplay.UpdateMenu(selectedPawn.pawnInventory);
+        attackMenuDisplay.UpdateMenu(selectedPawn.pawnInventory); // Updates based on the pawn's inventory
     }
 }
