@@ -122,6 +122,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pawnType: 2
+  turn: {fileID: 0}
+  health: 0
 --- !u!114 &5774847875103258549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,5 +136,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f4b36d92c39dd74f9a233b27779974d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  learnedAttacks: []
-  availableAttacks: []
