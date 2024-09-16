@@ -3,21 +3,24 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // Player inventory for pawns and UI display components
     public InventoryObject playerInventory; // Player's overall inventory, including pawns
     public DisplayInventory playerInventoryDisplay; // UI component to display pawns
     public DisplayInventory attackMenuDisplay; // UI component to display attacks
 
+    // Dictionary to track pawn instances
     private Dictionary<PawnObject, GameObject> pawnInstances = new Dictionary<PawnObject, GameObject>();
 
     private void Start()
     {
+        // Initialize the pawns and display their attacks
         InitializePawnsFromScene();
         DisplayPawnsAndAttacks();
     }
 
+    // Initialize pawns from the scene and assign data
     private void InitializePawnsFromScene()
     {
-        // Clear the player's inventory first
         playerInventory.Container.Clear();
 
         foreach (Transform child in transform)
@@ -30,18 +33,35 @@ public class Player : MonoBehaviour
                 {
                     // Add the pawn to the player's inventory
                     playerInventory.AddItem(pawnObject, 1);
+
+                    // Keep track of the pawn prefab instance
                     pawnInstances[pawnObject] = child.gameObject;
+
+                    // Initialize health for the pawn using PawnObject data
+                    Health pawnHealth = child.GetComponent<Health>();
+                    if (pawnHealth != null)
+                    {
+                        Debug.Log($"Initializing health for {child.name} with base health: {pawnObject.Health}");
+                        pawnHealth.Initialize(pawnObject.Health);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"No Health component found on {child.name}.");
+                    }
+
+                    // Log pawn details for debugging
+                    Debug.Log($"Pawn {child.name} initialized with Health: {pawnObject.Health} and Speed: {pawnObject.Speed}");
                 }
             }
         }
 
-        // Update the inventory UI
         if (playerInventoryDisplay != null)
         {
             playerInventoryDisplay.UpdateMenu(playerInventory);
         }
     }
 
+    // Display pawns and their corresponding attacks in the UI
     public void DisplayPawnsAndAttacks()
     {
         if (playerInventoryDisplay != null)
@@ -50,6 +70,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    // Called when a pawn is selected to display its attacks
     public void OnPawnSelected(PawnObject selectedPawn)
     {
         if (selectedPawn == null)
@@ -62,22 +83,11 @@ public class Player : MonoBehaviour
         UpdateAttackMenu(selectedPawn);
     }
 
+    // Update the attack menu UI based on the selected pawn's attacks
     public void UpdateAttackMenu(PawnObject selectedPawn)
     {
         if (attackMenuDisplay == null || selectedPawn == null) return;
 
-        // Display the selected pawn's attacks
         attackMenuDisplay.UpdateMenu(selectedPawn.pawnInventory);
-    }
-    public void DisplayPawnDetails(PawnObject selectedPawn)
-    {
-        if (selectedPawn == null)
-        {
-            Debug.LogWarning("Selected pawn is null.");
-            return;
-        }
-
-        // Display detailed information about the pawn
-        Debug.Log($"Pawn Details: Health: {selectedPawn.Health} Speed: {selectedPawn.Speed} Type: {selectedPawn.pawnType}");
     }
 }
