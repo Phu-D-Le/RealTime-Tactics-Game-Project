@@ -11,18 +11,18 @@ public class PawnButton : MonoBehaviour
         Button button = GetComponent<Button>();
         button.onClick.AddListener(OnButtonClick);
 
-        // Find the GameManager in the scene
-        gameManager = FindObjectOfType<GameManager>();
+        gameManager = FindObjectOfType<GameManager>(); // Find the GameManager in the scene
     }
 
     void OnButtonClick()
     {
+        GameObject pawnGameObject = gameObject; // Reference to the clicked pawn's GameObject
+        gameManager.SetSelectedPawn(pawnGameObject); // Set the selected pawn in the GameManager
+
         Player currentPlayer = gameManager.GetCurrentPlayer();
         if (currentPlayer != null)
         {
-            // Update the attack menu with the selected pawn
-            currentPlayer.UpdateAttackMenu(pawn);
-            currentPlayer.DisplayPawnDetails(pawn);
+            currentPlayer.UpdateAttackMenu(pawn); // Update the attack menu with the selected pawn
         }
     }
 }

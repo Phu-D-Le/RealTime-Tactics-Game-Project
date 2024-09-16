@@ -17,10 +17,11 @@ public class GameManager : MonoBehaviour
     public DisplayInventory attackMenuDisplay; // Reference to the attack menu display
     private int playerTurns = 0;
     private int enemyTurns = 0;
+    private GameObject selectedPawn; // Store the currently selected pawn
 
     private void Start()
     {
-        StartEnemyTurn();
+        StartPlayerTurn();
         ClearAttackMenu(); // Ensure attack menu is empty at the start
     }
 
@@ -97,5 +98,14 @@ public class GameManager : MonoBehaviour
         {
             attackMenuDisplay.ClearDisplay();
         }
+    }
+    public GameObject GetSelectedPawn()
+    {
+        return selectedPawn;
+    }
+    public void SetSelectedPawn(GameObject pawn)
+    {
+        selectedPawn = pawn;
+        Debug.Log($"{pawn.name} is now the selected pawn.");
     }
 }
