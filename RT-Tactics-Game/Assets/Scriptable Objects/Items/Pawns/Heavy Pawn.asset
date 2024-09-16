@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb7a82229d3d24a4480e93e9cddd7ac2, type: 3}
+  m_Name: Heavy Pawn
+  m_EditorClassIdentifier: 
+  imagePrefab: {fileID: 5937577892326799399, guid: bc3d74d6712de734db9e8fd8713c93c1, type: 3}
+  type: 1
+  description: 
+  Health: 5
+  Speed: 1
+  pawnType: 2
+  gamePrefab: {fileID: 1369551231925603549, guid: 1d20e7da7115c8a4cb6c9ecf9b9758a6, type: 3}
+  pawnInventory: {fileID: 11400000, guid: a7464c0223d0c8d4890191d85f242d55, type: 2}
