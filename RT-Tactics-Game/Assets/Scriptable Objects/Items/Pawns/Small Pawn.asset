@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb7a82229d3d24a4480e93e9cddd7ac2, type: 3}
   m_Name: Small Pawn
   m_EditorClassIdentifier: 
-  prefab: {fileID: 1802078860481613907, guid: a373ce9b172685246a8445699abf075b, type: 3}
+  imagePrefab: {fileID: 1802078860481613907, guid: a373ce9b172685246a8445699abf075b, type: 3}
   type: 1
   description: 
   Health: 2

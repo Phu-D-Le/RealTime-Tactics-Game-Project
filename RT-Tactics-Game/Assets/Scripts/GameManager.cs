@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        StartPlayerTurn();
+        StartEnemyTurn();
         ClearAttackMenu(); // Ensure attack menu is empty at the start
     }
 
@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)) 
         {
             EndCurrentTurn();
+            ClearAttackMenu();
         }
     }
 
@@ -52,6 +53,7 @@ public class GameManager : MonoBehaviour
         currentPlayer = firstPlayer; // Switch to the actual current player
         playerTurns++;
         Debug.Log($"Player's Turn {playerTurns} Started");
+
 
         // Update the UI for the current player's inventory
         if (currentPlayer != null)

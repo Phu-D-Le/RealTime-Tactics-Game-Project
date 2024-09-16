@@ -30,7 +30,7 @@ public class DisplayInventory : MonoBehaviour
         for (int i = 0; i < inventory.Container.Count; i++)
         {
             var slot = inventory.Container[i];
-            var itemObject = slot.item.prefab;
+            var itemObject = slot.item.imagePrefab;
 
             if (itemsDisplayed.ContainsKey(slot))
             {

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb7a82229d3d24a4480e93e9cddd7ac2, type: 3}
   m_Name: Medium Pawn
   m_EditorClassIdentifier: 
-  prefab: {fileID: 5081434163075799251, guid: e6e7d2f6081fb3b498df1d8617cda106, type: 3}
+  imagePrefab: {fileID: 5081434163075799251, guid: e6e7d2f6081fb3b498df1d8617cda106, type: 3}
   type: 1
   description: 
   Health: 3

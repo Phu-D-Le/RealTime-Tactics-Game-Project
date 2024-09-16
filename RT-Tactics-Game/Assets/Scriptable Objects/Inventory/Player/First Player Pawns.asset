@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6703f7b760aa3d244b4443810756dfdc, type: 3}
-  m_Name: Second Player Inventory
+  m_Name: First Player Pawns
   m_EditorClassIdentifier: 
   Container:
-  - item: {fileID: 11400000, guid: 6074846b12422064ba82e109b6f24f4c, type: 2}
-    amount: 0
-  - item: {fileID: 11400000, guid: df7dccf96a7781a4294d1bda5d217297, type: 2}
-    amount: 0
   - item: {fileID: 11400000, guid: 28b2f3b47ba69b24e9abd0d6411ebba0, type: 2}
-    amount: 0
+    amount: 1
+  - item: {fileID: 11400000, guid: df7dccf96a7781a4294d1bda5d217297, type: 2}
+    amount: 1
+  - item: {fileID: 11400000, guid: 6074846b12422064ba82e109b6f24f4c, type: 2}
+    amount: 1

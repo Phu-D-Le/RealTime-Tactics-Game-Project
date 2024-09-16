@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab2626027a1328143aa542a51e7d5db3, type: 3}
-  m_Name: ShortSwing
+  m_Name: WideSwing
   m_EditorClassIdentifier: 
-  prefab: {fileID: 2705475561937562914, guid: ea2f302b83e5911489079bbf8674f928, type: 3}
+  imagePrefab: {fileID: 2229873149965466431, guid: b9d54cb138f280b4db0046774a8f51ee, type: 3}
   type: 0
-  description: Attack within a 1 tile area.
-  Damage: 1
+  description: Larger attack radius. Grand swing.
+  Damage: 3

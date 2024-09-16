@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab2626027a1328143aa542a51e7d5db3, type: 3}
   m_Name: Ranged Attack
   m_EditorClassIdentifier: 
-  prefab: {fileID: 6287766118843142084, guid: fe312cf3ec678354aab3583c1929558a, type: 3}
+  imagePrefab: {fileID: 6287766118843142084, guid: fe312cf3ec678354aab3583c1929558a, type: 3}
   type: 0
   description: Shoot from a distance.
   Damage: 2
