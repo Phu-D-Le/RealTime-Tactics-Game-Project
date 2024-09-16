@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 925727221764048495}
   - component: {fileID: 2529883001042873270}
   - component: {fileID: -9222783416728059607}
-  - component: {fileID: -3154842535864817193}
+  - component: {fileID: 5774847875103258549}
   m_Layer: 0
   m_Name: Pawn
   m_TagString: Untagged
@@ -121,10 +121,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69f715a526823d842ab303db24b6b460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerInventory: {fileID: 0}
-  playerInventoryDisplay: {fileID: 0}
-  attackMenuDisplay: {fileID: 0}
---- !u!114 &-3154842535864817193
+  pawnType: 2
+  turn: {fileID: 0}
+  health: 0
+--- !u!114 &5774847875103258549
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
