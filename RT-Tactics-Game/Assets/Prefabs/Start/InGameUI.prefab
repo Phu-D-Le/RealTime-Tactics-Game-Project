@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1851990719251799931}
   - component: {fileID: 4629841000634625330}
   m_Layer: 5
-  m_Name: PawnSelectScreen
+  m_Name: PawnInventoryDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -210,7 +210,7 @@ GameObject:
   - component: {fileID: 6980818955326136869}
   - component: {fileID: 1071809592507252907}
   m_Layer: 5
-  m_Name: PawnAttackScreen
+  m_Name: AttackMenuDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -5,18 +5,14 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
+    public PawnObject pawnData; // Reference to the ScriptableObject
     private int currentHealth;
     private Slider healthBar;
-    private GameManager gameManager;
 
-    private void Start()
+    public void Initialize(PawnObject pawn)
     {
-        gameManager = FindObjectOfType<GameManager>();
-    }
-
-    public void Initialize(int baseHealth)
-    {
-        currentHealth = baseHealth;
+        pawnData = pawn; // Assign the pawn data
+        currentHealth = pawnData.Health; // Initialize health from the ScriptableObject
 
         healthBar = GetComponentInChildren<Slider>();
         if (healthBar != null)
@@ -31,18 +27,16 @@ public class Health : MonoBehaviour
         // Check if 'F' key is pressed
         if (Input.GetKeyDown(KeyCode.F))
         {
-            GameObject selectedPawn = gameManager.GetSelectedPawn();
-            if (selectedPawn == gameObject) // Check if this is the selected pawn
-            {
-                Debug.Log($"'F' key pressed. Decreasing health of {gameObject.name}.");
-                UpdateHealth(1);
-            }
+            Debug.Log($"'F' key pressed. Decreasing health of {pawnData.name}.");
+            UpdateHealth(1); // Damage pawn by 1
         }
     }
 
     public void UpdateHealth(int damage)
     {
         currentHealth -= damage;
+        pawnData.Health = currentHealth; // Update the ScriptableObject's health directly
+
         if (healthBar != null)
         {
             healthBar.value = currentHealth;
@@ -56,8 +50,7 @@ public class Health : MonoBehaviour
 
     private void HandleDeath()
     {
-        Debug.Log($"{gameObject.name} is dead!");
-        Destroy(gameObject); // Destroy the pawn
+        Debug.Log($"{pawnData.name} is dead!");
+        Destroy(gameObject); // Destroy the pawn's GameObject
     }
 }
-

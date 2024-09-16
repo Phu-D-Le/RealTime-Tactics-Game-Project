@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb7a82229d3d24a4480e93e9cddd7ac2, type: 3}
-  m_Name: Medium Pawn
+  m_Name: Heavy Pawn P
   m_EditorClassIdentifier: 
-  imagePrefab: {fileID: 5081434163075799251, guid: e6e7d2f6081fb3b498df1d8617cda106, type: 3}
+  imagePrefab: {fileID: 5937577892326799399, guid: 0f54793957a3a7e4fb122c64e9dad0a2, type: 3}
   type: 1
   description: 
-  Health: 3
-  Speed: 2
-  pawnType: 1
-  gamePrefab: {fileID: 8013763136724188060, guid: 096d9bd5be3c4eb4381da84132a390bc, type: 3}
-  pawnInventory: {fileID: 11400000, guid: f4107568ce7ebfe47bcf69d089afbb84, type: 2}
+  Health: 5
+  Speed: 1
+  pawnType: 2
+  gamePrefab: {fileID: 1369551231925603549, guid: 7f9c2d90c3f51054b9b88f5b1fc38ce6, type: 3}
+  pawnInventory: {fileID: 11400000, guid: a7464c0223d0c8d4890191d85f242d55, type: 2}
