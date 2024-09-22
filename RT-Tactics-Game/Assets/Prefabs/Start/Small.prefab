@@ -76,6 +76,14 @@ PrefabInstance:
       propertyPath: defaultAttack
       value: 
       objectReference: {fileID: 2468197296739265627}
+    - target: {fileID: 3473921381515557473, guid: 27a2e3008f91e2e4385e0a96a122dc4f, type: 3}
+      propertyPath: attacks.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473921381515557473, guid: 27a2e3008f91e2e4385e0a96a122dc4f, type: 3}
+      propertyPath: attacks.Array.data[0]
+      value: 
+      objectReference: {fileID: 2468197296739265627}
     - target: {fileID: 5757964600339287260, guid: 27a2e3008f91e2e4385e0a96a122dc4f, type: 3}
       propertyPath: m_Name
       value: Small
@@ -107,3 +115,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: Short Swing
   damage: 1
+  attackSprite: {fileID: 21300000, guid: 4bfc8a9c83687ba44b598ed3af6049ce, type: 3}

@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
         {
             pawns.Add(transform.GetChild(i).gameObject);
         }
+
     }
 
     public void TakeTurn()

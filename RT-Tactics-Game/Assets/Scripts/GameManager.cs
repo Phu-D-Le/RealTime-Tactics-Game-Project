@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST}
 public class BattleSystem : MonoBehaviour
@@ -17,26 +18,37 @@ public class BattleSystem : MonoBehaviour
     //public Transform secondBattleStation;
     public BattleState state;
     public TextMeshProUGUI turnDialogueText;
+    public PawnHUD playerHUD;
+    public PawnHUD enemyHUD;
+    public GameObject attackHUD;
+
     //public TextMeshProUGUI enemyDialogueText;
 
     // Start is called before the first frame update
     void Start()
     {
         state = BattleState.START;
+
+        firstPlayer = Player.GetComponent<Player>();
+        enemyPlayer = Enemy.GetComponent<Player>();
+
+        attackHUD.SetActive(false);
+
         SetUpBattle();
     }
     void SetUpBattle()
     {
-        firstPlayer = Player.GetComponent<Player>();
-        enemyPlayer = Enemy.GetComponent<Player>();
-
         state = BattleState.PLAYERTURN;
+        playerHUD.SetPlayerCanvas(firstPlayer);
+        enemyHUD.SetPlayerCanvas(enemyPlayer);
         PlayerTurn();
     }
 
     void PlayerTurn()
     {
         turnDialogueText.text = "Player's Turn!";
+        playerHUD.gameObject.SetActive(true);
+        enemyHUD.gameObject.SetActive(false);
     }
     void PlayerAttack()
     {
@@ -47,6 +59,8 @@ public class BattleSystem : MonoBehaviour
     void EnemyTurn()
     {
         turnDialogueText.text = "Enemy's Turn!";
+        playerHUD.gameObject.SetActive(false);
+        enemyHUD.gameObject.SetActive(true);
     }
     void EnemyAttack()
     {
@@ -58,6 +72,8 @@ public class BattleSystem : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            attackHUD.SetActive(false);
+
             if (state == BattleState.PLAYERTURN)
             {
                 PlayerAttack();

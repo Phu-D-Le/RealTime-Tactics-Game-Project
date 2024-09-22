@@ -6,6 +6,7 @@ public class Attack : MonoBehaviour
 {
     public string attackName;
     public int damage;
+    public Sprite attackSprite;
 
     //public int DealDamage(int damage)
     //{
