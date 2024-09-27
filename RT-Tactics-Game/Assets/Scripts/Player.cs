@@ -1,32 +1,45 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-// Add BattleState for each pawn within the Player children so foreach pawn can index each pawn available and then we run through valid game states? Handle death later.
-// Also need to figure out a way to populate a PawnPanel with the respective sprites. Maybe GameManager should handle logic and call list from Player
+// Player finds all of its children and assigns them to the pawns list so long as
+// they are active. TakeTurn is called in GameManager and is a filler method for turn recognition. ZO
 
 public class Player : MonoBehaviour
 {
-    public List<GameObject> pawns = new List<GameObject>();
+    public List<GameObject> pawns;
 
     void Start()
     {
-        // Assuming pawns are child objects of this player object
         for (int i = 0; i < transform.childCount; i++)
         {
-            pawns.Add(transform.GetChild(i).gameObject);
+            GameObject child = transform.GetChild(i).gameObject;
+
+            if (child.activeSelf)
+            {
+                pawns.Add(child);  // Add only active pawns to player pawns list. ZO
+            }
         }
 
     }
+    public void RemovePawn(Pawn pawn) // Handle Death. ZO
+    {
+        GameObject pawnObject = pawn.gameObject;
+        if (pawns.Contains(pawnObject))
+        {
+            pawns.Remove(pawnObject);
+            Destroy(pawnObject);  // Optional destroy. Maybe revive feature later? ZO
+            Debug.Log($"{pawn.pawnName} has been removed from the player's list.");
+        }
+    }
 
-    public void TakeTurn()
+    public void TakeTurn() // Used to use this in BattleSystem. Null now that buttons serve almost all functions. ZO
     {
         foreach (var pawn in pawns)
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
             if (currentPawn != null)
             {
-                currentPawn.Attack(); // Or other action logic
+                currentPawn.ResetAttack();
             }
         }
     }

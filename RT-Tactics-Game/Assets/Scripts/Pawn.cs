@@ -1,26 +1,69 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Timeline;
 
+// This is essentially the hub for setting and getting all the values from the PawnType
+// scriptable object as well as some rudimentary Attack functions.
+// There is also no controlling the situation for more than 3 pawns aside from only 3 buttons being available.
+// Remember the private set, so values cannot be changed outside of here. ZO
 public class Pawn : MonoBehaviour
 {
-    public string pawnName;
-    public Sprite pawnSprite;
-    public List<Attack> attacks;
-    public int pawnSpeed;
-    public AttackHUD attackHUD;
+    public string pawnName { get; private set; }
+    public Sprite pawnSprite { get; private set; }
+    public List<Attack> attacks { get; private set; }
+    public int pawnSpeed { get; private set; }
+    public int maxHP { get; private set; }
+    public int currentHP { get; private set; }
+    public bool hasAttacked { get; private set; }
 
-    public int maxHP;
-    public int currentHP;
-
-    public void Attack()
+    public PawnType pawnType;
+    public HealthHUD healthHUD;
+    private Player player;
+    void Start()
     {
-        // Loop through the list of attacks and log each one
-        for (int i = 0; i < attacks.Count; i++)
+        player = GetComponentInParent<Player>();
+        healthHUD = GetComponent<HealthHUD>();
+        InitializeFromPawnType(pawnType);
+        healthHUD.SetHealthHUD(this);
+    }
+    public void Attack(Attack attack, Pawn target) // Target is not being selected. AttackHUD only targets self for now. ZO
+    {
+        if (!hasAttacked)
         {
-            Attack currentAttack = attacks[i];
-            Debug.Log($"{pawnName} will now use {currentAttack.attackName}, dealing {currentAttack.damage} damage.");
+            target.TakeDamage(attack.damage);
+            hasAttacked = true;
+            Debug.Log($"{pawnName} has attacked {target.pawnName} with {attack.attackName}, dealing {attack.damage} damage.");
         }
+        else
+        {
+            Debug.Log($"{pawnName} has already attacked this turn."); // Kinda useless as per PawnHUD. ZO
+        }
+    }
+    public void TakeDamage(int amount) // Current pawn will take certain damage and value of slider will renew
+                                        // We could push in negative values to heal as well. ZO
+    {
+        currentHP -= amount;
+        healthHUD.SetHP(currentHP);
+        if (currentHP <= 0)
+        {
+            Debug.Log($"{pawnName} has died.");
+            player.RemovePawn(this);  // Notify the Player to remove this pawn.
+        } // Only reason PlayerHUD is not being notified immediately about death is because pawns should not
+        // be attacking themselves. Need to add selection logic to further death logic...maybe. ZO
+        Debug.Log($"{pawnName} takes {amount} damage. Current HP: {currentHP}");
+    }
+    public void InitializeFromPawnType(PawnType type)
+    {
+        pawnName = type.pawnTypeName;
+        pawnSprite = type.pawnTypeSprite;
+        attacks = new List<Attack>(type.pawnTypeAttacks);  // Create the list of attacks from everything in PawnType.
+                                                            // Not great when we want to add attacks as they are scriptable objects. ZO
+        pawnSpeed = type.pawnTypeSpeed;
+        maxHP = type.pawnTypeMaxHP;
+        currentHP = type.pawnTypeCurrentHP;
+        hasAttacked = false;
+    }
+    public void ResetAttack()
+    {
+        hasAttacked = false;
     }
 }

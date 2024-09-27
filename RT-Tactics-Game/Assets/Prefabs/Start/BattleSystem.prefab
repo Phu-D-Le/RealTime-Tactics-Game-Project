@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4842812522993830868}
   - component: {fileID: 8540826369957723827}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: BattleSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,5 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
   Enemy: {fileID: 0}
-  state: 0
+  pawnHUD: {fileID: 0}
+  attackHUD: {fileID: 0}
   turnDialogueText: {fileID: 0}
+  state: 0

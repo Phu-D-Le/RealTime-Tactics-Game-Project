@@ -1,49 +1,59 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+    // This method is beefy but the general idea is a pawn is clicked in the PawnHUD
+    // and is sent here to iterate through each AttackHUD button and assign each one
+    // with the pawn's (from the list of pawns) attacks. 
+    // Only one AttackHUD is necessary as this HUD is recreated 
+    // every time a pawn is clicked (with the RemoveAllListeners).
+    // Assigned to BattleSystem. ZO
 public class AttackHUD : MonoBehaviour
 {
-    public List<Button> attackButtons;  // Buttons for each attack option
+    private List<Button> attackButtons;
 
+    void Awake()
+    {
+        // Dynamically get all buttons from the AttackHUD in scene. ZO
+        attackButtons = new List<Button>(GetComponentsInChildren<Button>());
+    }
     public void SetUpAttacks(Pawn pawn)
     {
-        // Assuming the Pawn has multiple attacks stored in a list (e.g., List<Attack> attacks)
         for (int i = 0; i < attackButtons.Count; i++)
         {
-            if (i < pawn.attacks.Count)  // Check if the pawn has an attack for this button
+            if (i < pawn.attacks.Count)
             {
-                Attack currentAttack = pawn.attacks[i];  // Get the corresponding attack
+                Attack currentAttack = pawn.attacks[i]; // Attack holder for each attack within this pawn's attack list. ZO
                 
-                // Update button sprite
                 attackButtons[i].GetComponent<Image>().sprite = currentAttack.attackSprite;
-
-                // Update button text with the attack's name
                 TextMeshProUGUI buttonText = attackButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+
                 if (buttonText != null)
                 {
                     buttonText.text = currentAttack.attackName;
                 }
 
-                // Set the onClick event for the button to trigger the attack
                 attackButtons[i].onClick.RemoveAllListeners();
-                attackButtons[i].onClick.AddListener(() => ExecuteAttack(currentAttack));
+                attackButtons[i].onClick.AddListener(() => 
+                {
+                    pawn.Attack(currentAttack, pawn);
+                    CloseAttackHUD();
 
-                attackButtons[i].gameObject.SetActive(true);  // Ensure the button is visible
+                }); // Adds two methods on each button dynamically. currently it just takes the clicked attack and attacks self.
+                    // There should be some selection logic here. ZO
+
+                attackButtons[i].gameObject.SetActive(true);
             }
             else
             {
-                attackButtons[i].gameObject.SetActive(false);  // Hide buttons if no matching attack
+                attackButtons[i].gameObject.SetActive(false);  // Failsafe. There is nothing stopping a pawn from having > 3 attacks. ZO
             }
         }
     }
-
-    private void ExecuteAttack(Attack attack)
+    private void CloseAttackHUD()
     {
-        Debug.Log($"Executing {attack.attackName} which deals {attack.damage} damage.");
-        // Logic for executing the attack
+        gameObject.SetActive(false);
     }
 }
 

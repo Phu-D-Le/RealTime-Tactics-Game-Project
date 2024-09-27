@@ -134,10 +134,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1747653484748149441}
-  - component: {fileID: -5671553560505916013}
-  - component: {fileID: -7927838301932887535}
+  - component: {fileID: 7230162585259348963}
+  - component: {fileID: 7903390796929747990}
   m_Layer: 0
-  m_Name: NewPawn
+  m_Name: Medium
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -160,7 +160,7 @@ Transform:
   - {fileID: 2079373924499621258}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-5671553560505916013
+--- !u!114 &7230162585259348963
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -173,8 +173,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackHUD: {fileID: 0}
-  pawnType: {fileID: 0}
---- !u!114 &-7927838301932887535
+  pawnType: {fileID: 11400000, guid: aa3326b0b00823647bd8d4d45756421c, type: 2}
+  PlayerUI: {fileID: 1826902465372485730, guid: 069bfa0489342c444a53ce8ed1b2c32c, type: 3}
+--- !u!114 &7903390796929747990
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
