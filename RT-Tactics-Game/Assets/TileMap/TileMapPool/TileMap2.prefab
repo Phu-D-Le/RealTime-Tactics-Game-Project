@@ -3831,7 +3831,7 @@ GameObject:
   - component: {fileID: 8031446782464695329}
   m_Layer: 0
   m_Name: TileFree(Clone) (68)
-  m_TagString: Free
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6985,7 +6985,7 @@ GameObject:
   - component: {fileID: 7294247357288215274}
   m_Layer: 0
   m_Name: TileFree(Clone) (69)
-  m_TagString: Free
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7977,6 +7977,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4496773922048853682}
+  - component: {fileID: 2178024453974371477}
   m_Layer: 0
   m_Name: TileMap2
   m_TagString: Untagged
@@ -7992,8 +7993,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8856353985429124725}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.31, y: -2.6022835, z: 6.463696}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8098,7 +8099,22 @@ Transform:
   - {fileID: 1263749573524463145}
   - {fileID: 5886042420813265955}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+--- !u!114 &2178024453974371477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8856353985429124725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36921da0feca7a64093eef34f540384e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pawnPrefab: {fileID: 4926769763404013060, guid: ff363b1c8cf0de74b982bfd21166ef57, type: 3}
+  heightOffset: 2
+  spawnTag: Spawner
 --- !u!1 &8939796103375601402
 GameObject:
   m_ObjectHideFlags: 0
@@ -8278,7 +8294,7 @@ GameObject:
   - component: {fileID: 9041642190556343471}
   m_Layer: 0
   m_Name: TileFree(Clone) (70)
-  m_TagString: Free
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

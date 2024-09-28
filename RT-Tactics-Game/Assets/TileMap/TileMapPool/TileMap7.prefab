@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 7456676446541348271}
   m_Layer: 0
   m_Name: TileFree(Clone) (63)
-  m_TagString: Free
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2997,6 +2997,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 459185607595719921}
+  - component: {fileID: -3306051483734179520}
   m_Layer: 0
   m_Name: TileMap7
   m_TagString: Untagged
@@ -3012,8 +3013,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3559635876015394102}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.4772215, y: -4.6219597, z: 5.7593236}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3108,7 +3109,22 @@ Transform:
   - {fileID: 476647723435303095}
   - {fileID: 3434583923999750806}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+--- !u!114 &-3306051483734179520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3559635876015394102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36921da0feca7a64093eef34f540384e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pawnPrefab: {fileID: 4926769763404013060, guid: ff363b1c8cf0de74b982bfd21166ef57, type: 3}
+  heightOffset: 2
+  spawnTag: Spawner
 --- !u!1 &3708678394431184320
 GameObject:
   m_ObjectHideFlags: 0
@@ -4201,7 +4217,7 @@ GameObject:
   - component: {fileID: 2691818815580560811}
   m_Layer: 0
   m_Name: TileFree(Clone) (65)
-  m_TagString: Free
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4214,7 +4230,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5678289687830847991}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.5253716, y: 4.6219597, z: 8.415674}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5778,7 +5794,7 @@ GameObject:
   - component: {fileID: 3746652670684633188}
   m_Layer: 0
   m_Name: TileFree(Clone) (64)
-  m_TagString: Free
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
