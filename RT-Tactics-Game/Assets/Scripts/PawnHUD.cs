@@ -11,6 +11,7 @@ public class PawnHUD : MonoBehaviour
 {
     private List<Button> pawnButtons;
     private AttackHUD attackHUD;  // Reference AttackHUD once instead of on each pawn
+    public Pawn selectedPawn;
 
     void Awake()
     {
@@ -54,6 +55,7 @@ public class PawnHUD : MonoBehaviour
         }
         else if (attackHUD != null && pawn.hasAttacked == false)
         {
+            selectedPawn = pawn; // Store the selected pawn
             attackHUD.gameObject.SetActive(true);
             attackHUD.SetUpAttacks(pawn);  // Pass the pawn to the AttackHUD to display attacks. ZO
         }

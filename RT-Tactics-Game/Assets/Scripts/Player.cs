@@ -19,7 +19,13 @@ public class Player : MonoBehaviour
                 pawns.Add(child);  // Add only active pawns to player pawns list. ZO
             }
         }
-
+    }
+    public void SpawnPawnsOnMap(TileMapSpawner spawner)
+    {
+        foreach (GameObject pawn in pawns)
+        {
+            spawner.SpawnPawn(pawn);
+        }
     }
     public void RemovePawn(Pawn pawn) // Handle Death. ZO
     {
@@ -39,7 +45,7 @@ public class Player : MonoBehaviour
             Pawn currentPawn = pawn.GetComponent<Pawn>();
             if (currentPawn != null)
             {
-                currentPawn.ResetAttack();
+                currentPawn.ResetStatus();
             }
         }
     }

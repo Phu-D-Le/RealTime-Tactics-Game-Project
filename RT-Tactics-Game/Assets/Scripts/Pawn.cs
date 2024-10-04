@@ -14,6 +14,8 @@ public class Pawn : MonoBehaviour
     public int maxHP { get; private set; }
     public int currentHP { get; private set; }
     public bool hasAttacked { get; private set; }
+    public bool hasMoved { get; private set; }
+    public GameObject CurrentTile { get; set; }
 
     public PawnType pawnType;
     public HealthHUD healthHUD;
@@ -62,8 +64,13 @@ public class Pawn : MonoBehaviour
         currentHP = type.pawnTypeCurrentHP;
         hasAttacked = false;
     }
-    public void ResetAttack()
+    public void ResetStatus()
     {
         hasAttacked = false;
+        hasMoved = false;
+    }
+    public void Move()
+    {
+        hasMoved = true;
     }
 }

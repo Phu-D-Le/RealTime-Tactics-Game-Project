@@ -18,6 +18,7 @@ public class BattleSystem : MonoBehaviour
     public AttackHUD attackHUD;
     public TextMeshProUGUI turnDialogueText; // Set as Turn Display in PlayerUI. ZO
     public BattleState state;
+    public TileMapManager tileMapManager;
 
     //public Transform firstBattleStation; possible start of instantiation logic (junk). ZO
     //public Transform secondBattleStation;
@@ -25,8 +26,16 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.START;
 
+        tileMapManager.GenerateTileMap();
+
+        TileMapSpawner spawner = FindObjectOfType<TileMapSpawner>();
+        spawner.InitializeSpawner();
+
         firstPlayer = Player.GetComponent<Player>();
         enemyPlayer = Enemy.GetComponent<Player>();
+
+        firstPlayer.SpawnPawnsOnMap(spawner);
+        // enemyPlayer.SpawnPawnsOnMap(spawner);
 
         attackHUD.gameObject.SetActive(false);
 
@@ -44,7 +53,7 @@ public class BattleSystem : MonoBehaviour
         foreach (var pawn in firstPlayer.pawns)
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
-            currentPawn.ResetAttack();  // Reset flag for all pawns so they can attack again. ZO
+            currentPawn.ResetStatus();  // Reset flag for all pawns so they can attack again. ZO
         }
     }
     void PlayerAttack()
@@ -59,7 +68,7 @@ public class BattleSystem : MonoBehaviour
         foreach (var pawn in enemyPlayer.pawns)
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
-            currentPawn.ResetAttack();
+            currentPawn.ResetStatus();
         }
     }
     void EnemyAttack()
