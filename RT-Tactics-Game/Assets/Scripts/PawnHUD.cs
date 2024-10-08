@@ -12,11 +12,13 @@ public class PawnHUD : MonoBehaviour
     private List<Button> pawnButtons;
     private AttackHUD attackHUD;  // Reference AttackHUD once instead of on each pawn
     public Pawn selectedPawn;
+    private SelectManager selectManager;
 
     void Awake()
     {
         pawnButtons = new List<Button>(GetComponentsInChildren<Button>());
         attackHUD = GameObject.FindObjectOfType<AttackHUD>();  // Find AttackHUD globally
+        selectManager = FindObjectOfType<SelectManager>();
     }
 
     public void SetPlayerCanvas(Player player)
@@ -35,7 +37,12 @@ public class PawnHUD : MonoBehaviour
                         buttonText.text = pawn.pawnName;
                     }
                     pawnButtons[i].onClick.RemoveAllListeners();
-                    pawnButtons[i].onClick.AddListener(() => OpenAttackHUD(pawn));
+                    pawnButtons[i].onClick.AddListener(() => 
+                    {
+                        OpenAttackHUD(pawn);
+                        OnPawnSelected(pawn);
+                        OnMoveButtonClicked();
+                    });
                     pawnButtons[i].gameObject.SetActive(true);
                 }
             }
@@ -59,5 +66,22 @@ public class PawnHUD : MonoBehaviour
             attackHUD.gameObject.SetActive(true);
             attackHUD.SetUpAttacks(pawn);  // Pass the pawn to the AttackHUD to display attacks. ZO
         }
+    }
+    public void OnPawnSelected(Pawn pawn)
+    {
+        selectedPawn = pawn;
+        if (selectManager != null && selectedPawn != null && !selectedPawn.hasMoved)
+        {
+            selectManager.HighlightTilesForPawn(selectedPawn);
+        }
+        else
+        {
+            Debug.LogError("SelectManager not found or selectedPawn is null.");
+        }
+    }
+    public void OnMoveButtonClicked()
+    {
+        selectManager.IsMoving = true;
+        selectManager.IsAttacking = false;
     }
 }

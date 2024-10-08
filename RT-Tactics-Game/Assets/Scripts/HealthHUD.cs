@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class HealthHUD : MonoBehaviour
 {
     public Slider healthBar;
-    void Start()
+    void Awake()
     {
         healthBar = this.GetComponentInChildren<Slider>();
     }

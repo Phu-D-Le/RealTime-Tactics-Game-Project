@@ -4487,7 +4487,7 @@ GameObject:
   - component: {fileID: 6957648403469934189}
   m_Layer: 0
   m_Name: TileFree(Clone) (7)
-  m_TagString: Free
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6424,7 +6424,7 @@ GameObject:
   - component: {fileID: 7165218036137348245}
   m_Layer: 0
   m_Name: TileFree(Clone) (5)
-  m_TagString: Free
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14318,7 +14318,7 @@ GameObject:
   - component: {fileID: 946897718662394544}
   m_Layer: 0
   m_Name: TileFree(Clone) (6)
-  m_TagString: Free
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

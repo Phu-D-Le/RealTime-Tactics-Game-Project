@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 {
     public List<GameObject> pawns;
 
-    void Start()
+    void Awake()
     {
         for (int i = 0; i < transform.childCount; i++)
         {

@@ -35,7 +35,7 @@ public class BattleSystem : MonoBehaviour
         enemyPlayer = Enemy.GetComponent<Player>();
 
         firstPlayer.SpawnPawnsOnMap(spawner);
-        // enemyPlayer.SpawnPawnsOnMap(spawner);
+        enemyPlayer.SpawnPawnsOnMap(spawner);
 
         attackHUD.gameObject.SetActive(false);
 
