@@ -20,7 +20,7 @@ public class Pawn : MonoBehaviour
     public PawnType pawnType;
     public HealthHUD healthHUD;
     private Player player;
-    void Start()
+    void Awake()
     {
         player = GetComponentInParent<Player>();
         healthHUD = GetComponent<HealthHUD>();

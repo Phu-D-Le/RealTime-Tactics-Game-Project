@@ -15,3 +15,4 @@ MonoBehaviour:
   attackName: Slam
   damage: 5
   attackSprite: {fileID: 21300000, guid: 3f3a5ea5ace79004eba15d892dcc01a3, type: 3}
+  range: 1

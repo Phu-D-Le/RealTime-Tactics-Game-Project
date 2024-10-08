@@ -9,4 +9,5 @@ public class Attack : ScriptableObject
     public string attackName;
     public int damage;
     public Sprite attackSprite;
+    public int range;
 }

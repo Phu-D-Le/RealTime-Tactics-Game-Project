@@ -179,6 +179,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 466846153}
     - target: {fileID: 9082189156880079638, guid: b897262fbc2d96246a683f0407c0a4a5, type: 3}
+      propertyPath: selectManager
+      value: 
+      objectReference: {fileID: 1713016690}
+    - target: {fileID: 9082189156880079638, guid: b897262fbc2d96246a683f0407c0a4a5, type: 3}
       propertyPath: TileMaps.Array.size
       value: 10
       objectReference: {fileID: 0}
@@ -225,6 +229,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4998848849686327653, guid: b897262fbc2d96246a683f0407c0a4a5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1713016688}
+    - targetCorrespondingSourceObject: {fileID: 4998848849686327653, guid: b897262fbc2d96246a683f0407c0a4a5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1713016690}
   m_SourcePrefab: {fileID: 100100000, guid: b897262fbc2d96246a683f0407c0a4a5, type: 3}
 --- !u!114 &214405824 stripped
 MonoBehaviour:
@@ -779,6 +786,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6516a4c49ef323e4497c8e5d986b6f6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1713016690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265301854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5da8da647be20469090e06a0bf3844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1719050255 stripped

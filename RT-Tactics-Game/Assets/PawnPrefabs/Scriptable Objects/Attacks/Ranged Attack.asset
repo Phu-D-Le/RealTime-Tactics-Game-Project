@@ -15,3 +15,4 @@ MonoBehaviour:
   attackName: Ranged Attack
   damage: 2
   attackSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  range: 3

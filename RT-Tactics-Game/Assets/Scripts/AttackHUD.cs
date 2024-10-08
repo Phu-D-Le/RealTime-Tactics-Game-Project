@@ -12,11 +12,13 @@ using TMPro;
 public class AttackHUD : MonoBehaviour
 {
     private List<Button> attackButtons;
+    private SelectManager selectManager;
 
     void Awake()
     {
         // Dynamically get all buttons from the AttackHUD in scene. ZO
         attackButtons = new List<Button>(GetComponentsInChildren<Button>());
+        selectManager = FindObjectOfType<SelectManager>();
     }
     public void SetUpAttacks(Pawn pawn)
     {
@@ -37,8 +39,9 @@ public class AttackHUD : MonoBehaviour
                 attackButtons[i].onClick.RemoveAllListeners();
                 attackButtons[i].onClick.AddListener(() => 
                 {
-                    pawn.Attack(currentAttack, pawn);
+                    HandleAttackSelection(pawn, currentAttack);
                     CloseAttackHUD();
+                    OnAttackButtonClicked();
 
                 }); // Adds two methods on each button dynamically. currently it just takes the clicked attack and attacks self.
                     // There should be some selection logic here. ZO
@@ -55,5 +58,13 @@ public class AttackHUD : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+    private void HandleAttackSelection(Pawn pawn, Attack attack)
+    {
+        selectManager.HighlightTilesForAttack(pawn, attack);
+    }
+    public void OnAttackButtonClicked()
+{
+    selectManager.IsAttacking = true;
+    selectManager.IsMoving = false;
 }
-
+}
