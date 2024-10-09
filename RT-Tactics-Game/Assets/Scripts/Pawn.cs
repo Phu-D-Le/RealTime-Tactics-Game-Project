@@ -27,7 +27,7 @@ public class Pawn : MonoBehaviour
         InitializeFromPawnType(pawnType);
         healthHUD.SetHealthHUD(this);
     }
-    public void Attack(Attack attack, Pawn target) // Target is not being selected. AttackHUD only targets self for now. ZO
+    public void DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
     {
         if (!hasAttacked)
         {
@@ -58,7 +58,7 @@ public class Pawn : MonoBehaviour
         pawnName = type.pawnTypeName;
         pawnSprite = type.pawnTypeSprite;
         attacks = new List<Attack>(type.pawnTypeAttacks);  // Create the list of attacks from everything in PawnType.
-                                                            // Not great when we want to add attacks as they are scriptable objects. ZO
+                                                            // Edit list when adding attacks between scenes. ZO
         pawnSpeed = type.pawnTypeSpeed;
         maxHP = type.pawnTypeMaxHP;
         currentHP = type.pawnTypeCurrentHP;
@@ -72,5 +72,9 @@ public class Pawn : MonoBehaviour
     public void Move()
     {
         hasMoved = true;
+    }
+    public void Attack()
+    {
+        hasAttacked = true;
     }
 }

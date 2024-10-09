@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Player finds all of its children and assigns them to the pawns list so long as
-// they are active. TakeTurn is called in GameManager and is a filler method for turn recognition. ZO
+// they are active. Call Spawner to initialize all player's pawns location. GameObject pawns
+// as their components are not gotten/manipulated yet. ZO
 
 public class Player : MonoBehaviour
 {
@@ -35,18 +36,6 @@ public class Player : MonoBehaviour
             pawns.Remove(pawnObject);
             Destroy(pawnObject);  // Optional destroy. Maybe revive feature later? ZO
             Debug.Log($"{pawn.pawnName} has been removed from the player's list.");
-        }
-    }
-
-    public void TakeTurn() // Used to use this in BattleSystem. Null now that buttons serve almost all functions. ZO
-    {
-        foreach (var pawn in pawns)
-        {
-            Pawn currentPawn = pawn.GetComponent<Pawn>();
-            if (currentPawn != null)
-            {
-                currentPawn.ResetStatus();
-            }
         }
     }
 }

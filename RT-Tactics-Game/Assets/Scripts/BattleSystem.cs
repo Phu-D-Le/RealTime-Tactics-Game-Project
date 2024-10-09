@@ -1,9 +1,8 @@
 using TMPro;
 using UnityEngine;
 
-// Once we have references to the tiles, instantiate Pawn GameObjects either
-// here or within Pawn. Just has to be a Start method where we can assign location. This
-// code serves as the game manager and switches from Player to Enemy (with space) during the game
+// Start must be here as this controls game logic. Other objects should be on Awake(). This
+// code serves as the game manager and switches from Player to Enemy (with space bar input) during the game
 // and will also need more methods to handle future changes such as win/lose criteria.
 // Logic here follows the states and is updated by the space bar. Further updates is within Pawn and HUD buttons. ZO
 
@@ -20,8 +19,6 @@ public class BattleSystem : MonoBehaviour
     public BattleState state;
     public TileMapManager tileMapManager;
 
-    //public Transform firstBattleStation; possible start of instantiation logic (junk). ZO
-    //public Transform secondBattleStation;
     void Start()
     {
         state = BattleState.START;
@@ -34,7 +31,7 @@ public class BattleSystem : MonoBehaviour
         firstPlayer = Player.GetComponent<Player>();
         enemyPlayer = Enemy.GetComponent<Player>();
 
-        firstPlayer.SpawnPawnsOnMap(spawner);
+        firstPlayer.SpawnPawnsOnMap(spawner); // Spawner tag tiles must be in order within map. ZO
         enemyPlayer.SpawnPawnsOnMap(spawner);
 
         attackHUD.gameObject.SetActive(false);
@@ -76,9 +73,7 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.PLAYERTURN;
         PlayerTurn();
     }
-    // Space bar is turn ultimatum. Otherwise turns are fairly binary. Need to implement
-    // selection logic from the attack menu to select enemies and perhaps move automatically
-    // when all pawns are done. ZO
+    // Space bar is turn ultimatum. Selection logic in SelectManager. ZO
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))

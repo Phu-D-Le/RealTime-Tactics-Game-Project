@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Spawn pawns and declare location. I left original code that I saw when I began coding here except I made 
+// all the Spawner tiles to be found and added to a list. It is crucial the Spawner tiles are found in an 
+// order since player will immediately assign first 3 spawners it finds in list. Set pawn's current tile for 
+// SelectManager reference later. ZO
 public class TileMapSpawner : MonoBehaviour
 {
     //public GameObject pawnPrefab;
@@ -45,7 +49,7 @@ public class TileMapSpawner : MonoBehaviour
         Pawn pawnComponent = pawn.GetComponent<Pawn>();
         if (pawnComponent != null)
         {
-            pawnComponent.CurrentTile = tile;  // Assuming the Pawn class has a CurrentTile property
+            pawnComponent.CurrentTile = tile;
         }
     }
 }

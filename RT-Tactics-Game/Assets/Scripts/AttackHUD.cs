@@ -43,8 +43,8 @@ public class AttackHUD : MonoBehaviour
                     CloseAttackHUD();
                     OnAttackButtonClicked();
 
-                }); // Adds two methods on each button dynamically. currently it just takes the clicked attack and attacks self.
-                    // There should be some selection logic here. ZO
+                }); // Adds three methods on each button dynamically. currently it handles attack tile selection in SelectManager,
+                // closes the attackHUD so pawn can only attack once, and updates SelectManager to go into attacking mode. ZO
 
                 attackButtons[i].gameObject.SetActive(true);
             }
@@ -61,10 +61,11 @@ public class AttackHUD : MonoBehaviour
     private void HandleAttackSelection(Pawn pawn, Attack attack)
     {
         selectManager.HighlightTilesForAttack(pawn, attack);
+        selectManager.selectedAttack = attack;
     }
     public void OnAttackButtonClicked()
-{
-    selectManager.IsAttacking = true;
-    selectManager.IsMoving = false;
-}
+    {
+        selectManager.IsAttacking = true;
+        selectManager.IsMoving = false;
+    }
 }

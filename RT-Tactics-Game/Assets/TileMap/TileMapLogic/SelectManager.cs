@@ -5,11 +5,12 @@ public class SelectManager : MonoBehaviour
 {
     private Camera mainCamera;
     private HexGrid hexGrid;
-    private List<Vector3Int> neighbours = new List<Vector3Int>();  // Store valid movement tiles
-
-    private Pawn selectedPawn;  // Store the currently selected pawn
-    private Vector3Int selectedTile; // Store the selected tile for movement
-    private Pawn selectedTargetPawn; // Store the selected target pawn for attack
+    private List<Vector3Int> neighbours = new List<Vector3Int>();
+    
+    private Pawn selectedPawn;  
+    private Vector3Int selectedTile; 
+    private Pawn selectedTargetPawn; 
+    public Attack selectedAttack;
 
     public bool IsMoving { get; set; }
     public bool IsAttacking { get; set; }
@@ -19,27 +20,38 @@ public class SelectManager : MonoBehaviour
         mainCamera = camera;
         hexGrid = grid;
     }
+    void Update()
+    {
+        HandleInput();
+    }
 
     public void HandleInput()
     {
-        if (Input.GetMouseButtonDown(0)) // Check for left mouse button click
+        if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            HandleMouseClick();
+        }
+        else if (Input.GetKeyDown(KeyCode.Space))
+        {
+            DisableAllHighlights();  
+        }
+    }
 
-            if (Physics.Raycast(ray, out hit)) // Check if ray hits any object
+    private void HandleMouseClick()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            GameObject clickedTile = hit.collider.gameObject;
+            Debug.Log($"Hit object: {clickedTile.name} with tag: {clickedTile.tag}");
+
+            if (IsTile(clickedTile))
             {
-                GameObject clickedTile = hit.collider.gameObject;
-                Debug.Log($"Hit object: {clickedTile.name} with tag: {clickedTile.tag}");
-
-                if (IsTile(clickedTile)) // Check if the clicked object is a tile
-                {
-                    HandleTileClick(clickedTile);
-                }
-                else
-                {
-                    Debug.Log("Clicked on a non-tile object.");
-                }
+                HandleTileClick(clickedTile);
+            }
+            else
+            {
+                Debug.Log("Clicked on a non-tile object.");
             }
         }
     }
@@ -53,101 +65,124 @@ public class SelectManager : MonoBehaviour
     }
 
     private void HandleTileClick(GameObject clickedTile)
-{
-    Hex hexComponent = clickedTile.GetComponent<Hex>();
-    if (hexComponent != null)
     {
-        // If the selected action is to move
-        if (IsMoving)
+        Hex hexComponent = clickedTile.GetComponent<Hex>();
+        if (hexComponent != null)
         {
-            // Check if the clicked tile is within the highlighted (valid) movement range
-            if (IsTileInRange(hexComponent.HexCoords))
+            if (IsMoving)
             {
-                // Store the selected tile for movement
-                selectedTile = hexComponent.HexCoords; 
-                Debug.Log($"Selected tile for moving: {selectedTile}");
-
-                // Retrieve the currently selected pawn from the PawnHUD
-                PawnHUD pawnHUD = FindObjectOfType<PawnHUD>();
-                Pawn currentPawn = pawnHUD.selectedPawn;
-
-                // Check if the selected pawn exists and has not moved
-                if (currentPawn != null && !currentPawn.hasMoved)
-                {
-                    // Move the pawn to the selected tile
-                    MovePawnToTile(currentPawn, clickedTile);
-                    currentPawn.Move(); // Call the Move method on the pawn (if needed)
-                }
-                else
-                {
-                    Debug.Log("No pawn selected to move or pawn has already moved.");
-                }
+                TryMovePawn(hexComponent, clickedTile);
             }
-            else
+            else if (IsAttacking)
             {
-                Debug.Log("Clicked tile is not within movement range.");
-            }
-        }
-        // If the selected action is to attack
-        else if (IsAttacking)
-        {
-            // Check if the clicked tile contains an enemy pawn
-            if (IsTileInRange(hexComponent.HexCoords))
-            {
-                // Check if there's an enemy pawn on this tile
-                Pawn targetPawn = FindPawnOnTile(clickedTile); // Pass the clicked tile (GameObject)
-                if (targetPawn != null)
-                {
-                    // Store the selected target pawn for the attack
-                    selectedTargetPawn = targetPawn; 
-                    Debug.Log($"Selected target pawn for attack: {selectedTargetPawn.pawnName}");
-                }
-                else
-                {
-                    Debug.Log("No enemy pawn on this tile.");
-                }
-            }
-            else
-            {
-                Debug.Log("Clicked tile is not within attack range.");
+                TryAttackPawn(hexComponent, clickedTile);
             }
         }
     }
-}
 
+    private void TryMovePawn(Hex hexComponent, GameObject clickedTile)
+    {
+        if (IsTileInRange(hexComponent.HexCoords) && FindPawnOnTile(clickedTile) == null)
+        {
+            Pawn currentPawn = GetCurrentPawn();
+
+            if (currentPawn != null && !currentPawn.hasMoved)
+            {
+                MovePawnToTile(currentPawn, clickedTile);
+                currentPawn.Move();
+                DisableAllHighlights();
+            }
+            else
+            {
+                Debug.Log("No pawn selected to move or pawn has already moved.");
+            }
+        }
+        else
+        {
+            Debug.Log(FindPawnOnTile(clickedTile) != null ? "Cannot move to a tile that is occupied by another pawn." : "Clicked tile is not within movement range.");
+        }
+    }
+
+    private void TryAttackPawn(Hex hexComponent, GameObject clickedTile)
+    {
+        if (IsTileInRange(hexComponent.HexCoords))
+        {
+            Pawn targetPawn = FindPawnOnTile(clickedTile);
+            if (targetPawn != null)
+            {
+                Pawn currentPawn = GetCurrentPawn();
+                if (currentPawn != null && !currentPawn.hasAttacked)
+                {
+                    currentPawn.DealAttack(selectedAttack, targetPawn);
+                    currentPawn.Attack();
+                    Debug.Log($"{currentPawn.pawnName} has attacked {targetPawn.pawnName}.");
+                    DisableAllHighlights();
+                }
+                else
+                {
+                    Debug.Log("No pawn selected to attack or pawn has already attacked.");
+                }
+            }
+            else
+            {
+                Debug.Log("No enemy pawn on this tile.");
+            }
+        }
+        else
+        {
+            Debug.Log("Clicked tile is not within attack range.");
+        }
+    }
+
+    private Pawn GetCurrentPawn()
+    {
+        PawnHUD pawnHUD = FindObjectOfType<PawnHUD>();
+        return pawnHUD?.selectedPawn;
+    }
 
     private bool IsTileInRange(Vector3Int tileCoords)
     {
-        // Check if the clicked tile's coordinates are in the list of valid (highlighted) tiles
         return neighbours.Contains(tileCoords);
     }
 
     private void MovePawnToTile(Pawn pawn, GameObject targetTile)
     {
-        // Adjust height if needed, moving pawn to the new tile
         Vector3 newPosition = targetTile.transform.position + new Vector3(0, 2.0f, 0); 
         pawn.transform.position = newPosition;
         pawn.CurrentTile = targetTile;
-        pawn.Move(); // Call pawn's Move function to finalize movement
+        pawn.Move();
     }
 
     public void HighlightTilesForPawn(Pawn pawn)
-{
-    // Clear any previous highlights
-    DisableAllHighlights();
-
-    selectedPawn = pawn;  // Set the selected pawn
-
-    if (selectedPawn != null && !selectedPawn.hasMoved)
     {
-        // Assume the pawn's current position is on a tile
-        Hex currentHex = selectedPawn.CurrentTile.GetComponent<Hex>();
+        DisableAllHighlights();
+        selectedPawn = pawn;  
+
+        if (selectedPawn != null && !selectedPawn.hasMoved)
+        {
+            Hex currentHex = selectedPawn.CurrentTile.GetComponent<Hex>();
+
+            if (currentHex != null)
+            {
+                BFSResult bfsResult = GraphSearch.BFSGetRange(hexGrid, currentHex.HexCoords, selectedPawn.pawnSpeed);
+                neighbours = new List<Vector3Int>(bfsResult.GetRangePositions());
+                neighbours.Remove(currentHex.HexCoords); // Exclude the current tile
+
+                HighlightValidTiles();
+            }
+        }
+    }
+
+    public void HighlightTilesForAttack(Pawn pawn, Attack attack)
+    {
+        DisableAllHighlights(); 
+        Hex currentHex = pawn.CurrentTile.GetComponent<Hex>();
 
         if (currentHex != null)
         {
-            // Highlight tiles in range of the selected pawn's movement
-            BFSResult bfsResult = GraphSearch.BFSGetRange(hexGrid, currentHex.HexCoords, selectedPawn.pawnSpeed);
+            BFSResult bfsResult = GraphSearch.BFSGetRange(hexGrid, currentHex.HexCoords, attack.range);
             neighbours = new List<Vector3Int>(bfsResult.GetRangePositions());
+            neighbours.Remove(currentHex.HexCoords);
 
             foreach (Vector3Int neighbour in neighbours)
             {
@@ -159,56 +194,43 @@ public class SelectManager : MonoBehaviour
             }
         }
     }
-}
-    private void DisableAllHighlights()
-    {
-        foreach (Vector3Int neighbour in neighbours)
-        {
-            hexGrid.GetTileAt(neighbour).DisableHighlight();
-        }
-        neighbours.Clear();  // Clear the neighbours list after disabling highlights
-    }
-    public void HighlightTilesForAttack(Pawn pawn, Attack attack)
-{
-    DisableAllHighlights(); // Clear previous highlights
-    Hex currentHex = pawn.CurrentTile.GetComponent<Hex>();
 
-    if (currentHex != null)
+    private void HighlightValidTiles()
     {
-        // Calculate the range based on the attack
-        BFSResult bfsResult = GraphSearch.BFSGetRange(hexGrid, currentHex.HexCoords, attack.range);
-        neighbours = new List<Vector3Int>(bfsResult.GetRangePositions());
-
         foreach (Vector3Int neighbour in neighbours)
         {
             Hex tileHex = hexGrid.GetTileAt(neighbour);
-            if (tileHex != null) // Ensure that the tile exists
+            if (tileHex != null && FindPawnOnTile(tileHex.gameObject) == null) // Ensure tile exists and is unoccupied
             {
                 tileHex.EnableHighlight();
             }
         }
     }
-}
+
+    private void DisableAllHighlights()
+    {
+        foreach (Vector3Int neighbour in neighbours)
+        {
+            hexGrid.GetTileAt(neighbour)?.DisableHighlight();
+        }
+        neighbours.Clear();  
+    }
+
     private Pawn FindPawnOnTile(GameObject tile)
     {
         Hex clickedHex = tile.GetComponent<Hex>();
         if (clickedHex == null) return null;
 
-        // Get the coordinates of the clicked hex
         Vector3Int hexCoords = clickedHex.HexCoords;
-
-        // Find all pawns in the game
         Pawn[] allPawns = FindObjectsOfType<Pawn>();
 
-        // Check each pawn to see if it is on the clicked tile
         foreach (Pawn pawn in allPawns)
         {
             if (pawn.CurrentTile.GetComponent<Hex>().HexCoords == hexCoords)
             {
-                return pawn; // Return the pawn found on the clicked tile
+                return pawn; 
             }
         }
-        
-        return null; // No pawn found on this tile
+        return null; 
     }
 }
