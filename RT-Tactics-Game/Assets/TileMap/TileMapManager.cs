@@ -6,19 +6,15 @@ public class TileMapManager : MonoBehaviour
     public GameObject[] TileMaps; 
     public Camera mainCamera;
     private HexGrid hexGrid;
-    // List<Vector3Int> neighbours = new List<Vector3Int>();
     public SelectManager selectManager;
 
-    void Start()
-    {
-        // GenerateTileMap(); (Uncomment this line if you want to generate a tile map on start)
-    }
+    // GenerateTileMap is called in BattleSystem. ZO
 
     public void GenerateTileMap()
     {
         //gen tile map
         // GameObject tileMap = Instantiate(TileMaps[Random.Range(0, TileMaps.Length)]);
-        GameObject tileMap = Instantiate(TileMaps[0]);
+        GameObject tileMap = Instantiate(TileMaps[0]); // Hardcoded as TileMap[0] is only one with correct tile prefabs. ZO
         Debug.Log("Tile Map: " + tileMap.name);
         CenterTileMap(tileMap);
 
@@ -53,9 +49,5 @@ public class TileMapManager : MonoBehaviour
         }
 
         return bounds;
-    }
-    void Update()
-    {
-        selectManager.HandleInput();  // Delegate tile click handling to SelectManager
     }
 }

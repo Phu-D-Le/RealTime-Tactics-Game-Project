@@ -10,14 +10,14 @@ using TMPro;
 public class PawnHUD : MonoBehaviour
 {
     private List<Button> pawnButtons;
-    private AttackHUD attackHUD;  // Reference AttackHUD once instead of on each pawn
+    private AttackHUD attackHUD;  // Reference AttackHUD once instead of on each pawn. ZO
     public Pawn selectedPawn;
     private SelectManager selectManager;
 
     void Awake()
     {
         pawnButtons = new List<Button>(GetComponentsInChildren<Button>());
-        attackHUD = GameObject.FindObjectOfType<AttackHUD>();  // Find AttackHUD globally
+        attackHUD = GameObject.FindObjectOfType<AttackHUD>();
         selectManager = FindObjectOfType<SelectManager>();
     }
 
@@ -41,7 +41,9 @@ public class PawnHUD : MonoBehaviour
                     {
                         OpenAttackHUD(pawn);
                         OnPawnSelected(pawn);
-                        OnMoveButtonClicked();
+                        OnMoveButtonClicked(); // Open AttackHUD and populate buttons according to pawn attack list. Then update
+                        // SelectManager so it knows what pawn is being referenced from the menu. Finally update SelectManager
+                        // so that it knows the pawn can move. ZO
                     });
                     pawnButtons[i].gameObject.SetActive(true);
                 }
@@ -55,14 +57,13 @@ public class PawnHUD : MonoBehaviour
 
     private void OpenAttackHUD(Pawn pawn)
     {
-        if (pawn.hasAttacked == true)
+        if (pawn.hasAttacked)
         {
             Debug.Log($"{pawn.pawnName} has already attacked and cannot attack again this turn.");
             return;
         }
-        else if (attackHUD != null && pawn.hasAttacked == false)
+        else if (attackHUD != null && !pawn.hasAttacked)
         {
-            selectedPawn = pawn; // Store the selected pawn
             attackHUD.gameObject.SetActive(true);
             attackHUD.SetUpAttacks(pawn);  // Pass the pawn to the AttackHUD to display attacks. ZO
         }
@@ -76,7 +77,7 @@ public class PawnHUD : MonoBehaviour
         }
         else
         {
-            Debug.LogError("SelectManager not found or selectedPawn is null.");
+            Debug.Log($"SelectManager not found or selectedPawn is null.");
         }
     }
     public void OnMoveButtonClicked()
