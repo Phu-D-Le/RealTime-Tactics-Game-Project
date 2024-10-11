@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Very beefy and very likely to be ineffecient class. Handles clicking the map and all behaviours associated with activating
+// the BFS. ZO
 public class SelectManager : MonoBehaviour
 {
     private Camera mainCamera;
@@ -33,17 +35,17 @@ public class SelectManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Space))
         {
-            DisableAllHighlights();  
+            DisableAllHighlights(); // Cheating way of not having to reference this in BattleSystem. ZO 
         }
     }
 
     private void HandleMouseClick()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition); // Mesh collider necessary to find tile. ZO
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             GameObject clickedTile = hit.collider.gameObject;
-            Debug.Log($"Hit object: {clickedTile.name} with tag: {clickedTile.tag}");
+            // Debug.Log($"Hit object: {clickedTile.name} with tag: {clickedTile.tag}");
 
             if (IsTile(clickedTile))
             {
@@ -51,12 +53,12 @@ public class SelectManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Clicked on a non-tile object.");
+                Debug.Log("Clicked on a non-tile object."); // Like a player object. Objects on tile will have to be child? ZO
             }
         }
     }
 
-    private bool IsTile(GameObject clickedTile)
+    private bool IsTile(GameObject clickedTile) // Ensure tile has valid tag and cost within Hex for BFS to work. ZO
     {
         return clickedTile.CompareTag("Hazard") ||
                clickedTile.CompareTag("Free") ||
@@ -82,7 +84,7 @@ public class SelectManager : MonoBehaviour
 
     private void TryMovePawn(Hex hexComponent, GameObject clickedTile)
     {
-        if (IsTileInRange(hexComponent.HexCoords) && FindPawnOnTile(clickedTile) == null)
+        if (IsTileInRange(hexComponent.HexCoords) && FindPawnOnTile(clickedTile) == null) // Highlighted and no pawn is on tile. ZO
         {
             Pawn currentPawn = GetCurrentPawn();
 
@@ -117,6 +119,17 @@ public class SelectManager : MonoBehaviour
                     currentPawn.Attack();
                     Debug.Log($"{currentPawn.pawnName} has attacked {targetPawn.pawnName}.");
                     DisableAllHighlights();
+
+                    Player targetPlayer = targetPawn.GetComponentInParent<Player>(); // Win condition in BattleSystem once all pawns dead. ZO
+                    if (targetPlayer.pawns.Count == 0)
+                    {
+                        Player currentPlayer = currentPawn.GetComponentInParent<Player>();
+                        BattleSystem battleSystem = (BattleSystem)FindObjectOfType(typeof(BattleSystem));
+                        if (battleSystem != null)
+                        {
+                            battleSystem.Win(currentPlayer);
+                        }
+                    }
                 }
                 else
                 {
@@ -134,18 +147,18 @@ public class SelectManager : MonoBehaviour
         }
     }
 
-    private Pawn GetCurrentPawn()
+    private Pawn GetCurrentPawn() // PawnHUD button selected pawn. ZO
     {
         PawnHUD pawnHUD = FindObjectOfType<PawnHUD>();
         return pawnHUD?.selectedPawn;
     }
 
-    private bool IsTileInRange(Vector3Int tileCoords)
+    private bool IsTileInRange(Vector3Int tileCoords) // does BFS find a valid coordinate? ZO
     {
         return neighbours.Contains(tileCoords);
     }
 
-    private void MovePawnToTile(Pawn pawn, GameObject targetTile)
+    private void MovePawnToTile(Pawn pawn, GameObject targetTile) // Simple transform. ZO
     {
         Vector3 newPosition = targetTile.transform.position + new Vector3(0, 2.0f, 0); 
         pawn.transform.position = newPosition;
@@ -153,7 +166,7 @@ public class SelectManager : MonoBehaviour
         pawn.Move();
     }
 
-    public void HighlightTilesForPawn(Pawn pawn)
+    public void HighlightTilesForPawn(Pawn pawn) // Shader highlights tiles, BFS finds valid neighbours. ZO
     {
         DisableAllHighlights();
         selectedPawn = pawn;  
@@ -166,14 +179,14 @@ public class SelectManager : MonoBehaviour
             {
                 BFSResult bfsResult = GraphSearch.BFSGetRange(hexGrid, currentHex.HexCoords, selectedPawn.pawnSpeed);
                 neighbours = new List<Vector3Int>(bfsResult.GetRangePositions());
-                neighbours.Remove(currentHex.HexCoords); // Exclude the current tile
+                neighbours.Remove(currentHex.HexCoords); // Exclude the current tile. ZO
 
                 HighlightValidTiles();
             }
         }
     }
 
-    public void HighlightTilesForAttack(Pawn pawn, Attack attack)
+    public void HighlightTilesForAttack(Pawn pawn, Attack attack) // Ensures all tiles are highlighted. including if a pawn is on it. ZO
     {
         DisableAllHighlights(); 
         Hex currentHex = pawn.CurrentTile.GetComponent<Hex>();
@@ -207,7 +220,7 @@ public class SelectManager : MonoBehaviour
         }
     }
 
-    private void DisableAllHighlights()
+    private void DisableAllHighlights() // Reset. ZO
     {
         foreach (Vector3Int neighbour in neighbours)
         {

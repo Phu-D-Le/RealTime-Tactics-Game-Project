@@ -8,6 +8,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public List<GameObject> pawns;
+    public string playerName { get; set; }
 
     void Awake()
     {
