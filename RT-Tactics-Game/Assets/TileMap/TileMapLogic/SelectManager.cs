@@ -32,6 +32,7 @@ public class SelectManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             HandleMouseClick();
+            DisableAllHighlights();
         }
         else if (Input.GetKeyDown(KeyCode.Space))
         {

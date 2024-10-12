@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     public List<GameObject> pawns;
     public string playerName { get; set; }
 
-    void Awake()
+    public void SetList()
     {
         for (int i = 0; i < transform.childCount; i++)
         {

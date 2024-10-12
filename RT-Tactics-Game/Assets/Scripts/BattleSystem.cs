@@ -24,6 +24,9 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.START;
 
+        Player = GameObject.FindWithTag("Player");
+        Enemy = GameObject.FindWithTag("Enemy");
+
         tileMapManager.GenerateTileMap();
 
         TileMapSpawner spawner = FindObjectOfType<TileMapSpawner>();
@@ -31,9 +34,21 @@ public class BattleSystem : MonoBehaviour
 
         firstPlayer = Player.GetComponent<Player>();
         firstPlayer.playerName = "Player";
+        firstPlayer.SetList();
+        foreach (var pawn in firstPlayer.pawns)
+        {
+            Pawn currentPawn = pawn.GetComponent<Pawn>();
+            currentPawn.AwakenPawn();
+        }
 
         enemyPlayer = Enemy.GetComponent<Player>();
         enemyPlayer.playerName = "Enemy";
+        enemyPlayer.SetList();
+        foreach (var pawn in enemyPlayer.pawns)
+        {
+            Pawn currentPawn = pawn.GetComponent<Pawn>();
+            currentPawn.AwakenPawn();
+        }
 
         firstPlayer.SpawnPawnsOnMap(spawner); // Spawner tag tiles must be in order within map. ZO
         enemyPlayer.SpawnPawnsOnMap(spawner);
@@ -86,6 +101,8 @@ public class BattleSystem : MonoBehaviour
         }
         else
         {
+            Destroy(Player);
+            Destroy(Enemy);
             SceneManager.LoadScene("Test Menu");
         }
     }
