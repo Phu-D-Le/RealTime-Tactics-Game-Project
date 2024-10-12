@@ -20,10 +20,11 @@ public class Pawn : MonoBehaviour
     public PawnType pawnType;
     public HealthHUD healthHUD;
     private Player player;
-    void Awake()
+
+    public void AwakenPawn()
     {
         player = GetComponentInParent<Player>();
-        healthHUD = GetComponent<HealthHUD>();
+        healthHUD = GetComponentInChildren<HealthHUD>();
         InitializeFromPawnType(pawnType);
         healthHUD.SetHealthHUD(this);
     }

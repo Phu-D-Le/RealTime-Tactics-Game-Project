@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // Start must be here as this controls game logic. Other objects should be on Awake(). This
 // code serves as the game manager and switches from Player to Enemy (with space bar input) during the game
@@ -23,13 +24,31 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.START;
 
+        Player = GameObject.FindWithTag("Player");
+        Enemy = GameObject.FindWithTag("Enemy");
+
         tileMapManager.GenerateTileMap();
 
         TileMapSpawner spawner = FindObjectOfType<TileMapSpawner>();
         spawner.InitializeSpawner();
 
         firstPlayer = Player.GetComponent<Player>();
+        firstPlayer.playerName = "Player";
+        firstPlayer.SetList();
+        foreach (var pawn in firstPlayer.pawns)
+        {
+            Pawn currentPawn = pawn.GetComponent<Pawn>();
+            currentPawn.AwakenPawn();
+        }
+
         enemyPlayer = Enemy.GetComponent<Player>();
+        enemyPlayer.playerName = "Enemy";
+        enemyPlayer.SetList();
+        foreach (var pawn in enemyPlayer.pawns)
+        {
+            Pawn currentPawn = pawn.GetComponent<Pawn>();
+            currentPawn.AwakenPawn();
+        }
 
         firstPlayer.SpawnPawnsOnMap(spawner); // Spawner tag tiles must be in order within map. ZO
         enemyPlayer.SpawnPawnsOnMap(spawner);
@@ -72,6 +91,20 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.PLAYERTURN;
         PlayerTurn();
+    }
+    public void Win(Player winner)
+    {
+        turnDialogueText.text = ($"{winner.playerName} wins!");
+        if (winner.playerName == "Player")
+        {
+            SceneManager.LoadScene("Gamedemo");
+        }
+        else
+        {
+            Destroy(Player);
+            Destroy(Enemy);
+            SceneManager.LoadScene("Test Menu");
+        }
     }
     // Space bar is turn ultimatum. Selection logic in SelectManager. ZO
     void Update()

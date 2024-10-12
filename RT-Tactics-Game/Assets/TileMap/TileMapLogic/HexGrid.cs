@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Get the current coordinates and all neighbours. Odd and even rows vary due to hex grid style. Offset calculated
+// in HexCoordinates. Essentially sets the HexGrid so that the BFS can access connected tiles within structure. ZO
+
 public class HexGrid : MonoBehaviour
 {
     Dictionary<Vector3Int, Hex> hexTileDict = new Dictionary<Vector3Int, Hex>();

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Performs hex to grid coordinate conversion. accomodates for offset. since map is inverted, z and x are inverted.
+// y has a FloorToInt to find proper value. may cause issue in multilayered maps? ZO
 public class HexCoordinates : MonoBehaviour
 {
     public static float xOffset = 1.8186f, yOffset = 3.023109f, zOffset = 1.575f;
