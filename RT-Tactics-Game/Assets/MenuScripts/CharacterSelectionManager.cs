@@ -121,7 +121,7 @@ public class CharacterSelectionManager : MonoBehaviour
     // Function to load the game scene (update with your actual scene name)
     void LoadGameScene()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("GameDemo");
     }
 
     // Function to reset all selections and undo everything

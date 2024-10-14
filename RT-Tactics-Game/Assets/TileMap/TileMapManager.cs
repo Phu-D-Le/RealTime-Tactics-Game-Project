@@ -1,20 +1,54 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TileMapManager : MonoBehaviour
 {
-    public GameObject[] TileMaps;
-    
-    void Start()
+    public GameObject[] TileMaps; 
+    public Camera mainCamera;
+    private HexGrid hexGrid;
+    public SelectManager selectManager;
+
+    // GenerateTileMap is called in BattleSystem. ZO
+    // Updated tile maps to use correct tile prefabs, adjusted spawn points for pawns. JP
+
+    public void GenerateTileMap()
     {
-        GenerateTileMap();
+        //gen tile map
+        GameObject tileMap = Instantiate(TileMaps[Random.Range(0, TileMaps.Length)]);
+        //GameObject tileMap = Instantiate(TileMaps[5]); // Hardcoded as TileMap[0] is only one with correct tile prefabs. ZO
+        Debug.Log("Tile Map: " + tileMap.name);
+        CenterTileMap(tileMap);
+
+        hexGrid = GetComponent<HexGrid>();
+        hexGrid.StartHexGrid();
+
+        selectManager = GetComponent<SelectManager>();
+        selectManager.InitializeSelectManager(mainCamera, hexGrid);
     }
 
-    void GenerateTileMap()
+    void CenterTileMap(GameObject tileMap)
     {
-        Instantiate(TileMaps[Random.Range(0, TileMaps.Length)], transform.position, Quaternion.identity);
+        Bounds tileMapBounds = CalculateBounds(tileMap);
+        Vector3 cameraCenter = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        cameraCenter.z = 0;
+        Vector3 offset = cameraCenter - tileMapBounds.center;
+        tileMap.transform.position += offset;
     }
 
-    
+    Bounds CalculateBounds(GameObject obj)
+    {
+        Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0)
+        {
+            return new Bounds(obj.transform.position, Vector3.zero);
+        }
+
+        Bounds bounds = renderers[0].bounds;
+        foreach (Renderer renderer in renderers)
+        {
+            bounds.Encapsulate(renderer.bounds);
+        }
+
+        return bounds;
+    }
 }

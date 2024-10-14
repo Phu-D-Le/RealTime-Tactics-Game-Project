@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Pawn
+  - Hazard
+  - Free
+  - Interactable
+  - Spawner
   layers:
   - Default
   - TransparentFX

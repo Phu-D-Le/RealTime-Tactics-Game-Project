@@ -55,3 +55,4 @@ MonoBehaviour:
   - {fileID: 7025910328609071292, guid: c60db331e0ef2ef40a05764b80ccf874, type: 3}
   - {fileID: 3559416109178669008, guid: 486c0bfcbe639aa46b4757ee51f6a22f, type: 3}
   - {fileID: 6375657862910312739, guid: 2b62f827a5a6a8d40bd98da7d522cf86, type: 3}
+  mainCamera: {fileID: 0}
