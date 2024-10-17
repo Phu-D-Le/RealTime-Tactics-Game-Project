@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 434991053152476352}
+  - component: {fileID: 5006513135071334330}
   m_Layer: 0
   m_Name: Ravine
   m_TagString: Untagged
@@ -24,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8700575800858746383}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -35,7 +36,8 @@ Transform:
   - {fileID: 6374688089833926589}
   - {fileID: 555593184087434237}
   - {fileID: 261573533085750602}
-  - {fileID: 6530539698994103065}
+  - {fileID: 5344594725465640047}
+  - {fileID: 8110840917772583985}
   - {fileID: 5225776679992862012}
   - {fileID: 3255031433864071894}
   - {fileID: 1658820174482423916}
@@ -70,14 +72,13 @@ Transform:
   - {fileID: 2641060624053114897}
   - {fileID: 611770546735329572}
   - {fileID: 918022589679426284}
-  - {fileID: 8110840917772583985}
+  - {fileID: 6530539698994103065}
+  - {fileID: 8608200504070536821}
   - {fileID: 4975436284175464460}
   - {fileID: 7304595482862073259}
   - {fileID: 5900504464838074537}
   - {fileID: 3800703496455113580}
   - {fileID: 8183926581957230889}
-  - {fileID: 5344594725465640047}
-  - {fileID: 8608200504070536821}
   - {fileID: 9089514552752416709}
   - {fileID: 372503058798476280}
   - {fileID: 2472027917596058012}
@@ -133,7 +134,21 @@ Transform:
   - {fileID: 7072788853719076760}
   - {fileID: 923738979701797813}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+--- !u!114 &5006513135071334330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8700575800858746383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36921da0feca7a64093eef34f540384e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heightOffset: 2
+  spawnTag: Spawner
 --- !u!1001 &12102274852950562
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -516,7 +531,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (105)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -826,7 +845,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (109)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1198,7 +1221,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (62)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1446,7 +1473,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (110)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2004,7 +2035,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (58)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4112,7 +4147,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (42)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x

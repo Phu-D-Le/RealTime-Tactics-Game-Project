@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 434991053152476352}
+  - component: {fileID: 6243297863641351297}
   m_Layer: 0
   m_Name: 2Fort
   m_TagString: Untagged
@@ -24,13 +25,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8700575800858746383}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5203797814099319283}
-  - {fileID: 4526230494955081340}
   - {fileID: 81534493270199677}
   - {fileID: 555593184087434237}
   - {fileID: 6453399052319995563}
@@ -49,18 +49,20 @@ Transform:
   - {fileID: 1645800307883262051}
   - {fileID: 8709744954611853387}
   - {fileID: 4855603782018510857}
+  - {fileID: 4526230494955081340}
   - {fileID: 1679128949249397900}
+  - {fileID: 8183926581957230889}
   - {fileID: 2825463127044202081}
   - {fileID: 611770546735329572}
   - {fileID: 918022589679426284}
   - {fileID: 178737635236753152}
   - {fileID: 5900504464838074537}
-  - {fileID: 9132617180154904776}
   - {fileID: 3800703496455113580}
-  - {fileID: 8183926581957230889}
   - {fileID: 8052583151397288344}
   - {fileID: 9089514552752416709}
+  - {fileID: 9132617180154904776}
   - {fileID: 372503058798476280}
+  - {fileID: 4573050668251321501}
   - {fileID: 2472027917596058012}
   - {fileID: 5492198735444066154}
   - {fileID: 818670286931623172}
@@ -77,7 +79,6 @@ Transform:
   - {fileID: 2423126490535958305}
   - {fileID: 738576358443791528}
   - {fileID: 100836891961122989}
-  - {fileID: 4573050668251321501}
   - {fileID: 5303156026075158023}
   - {fileID: 5355031449903093794}
   - {fileID: 7587781665159104697}
@@ -111,7 +112,21 @@ Transform:
   - {fileID: 5703002434582951121}
   - {fileID: 6292840436788306207}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+--- !u!114 &6243297863641351297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8700575800858746383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36921da0feca7a64093eef34f540384e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heightOffset: 2
+  spawnTag: Spawner
 --- !u!1001 &207393316525182690
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1424,7 +1439,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (61)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1672,7 +1691,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (6)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2478,7 +2501,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (56)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3282,9 +3309,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 434991053152476352}
     m_Modifications:
+    - target: {fileID: 732618329546094396, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: hexType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (91)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4400,7 +4435,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (99)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4524,7 +4563,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (40)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x

@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1504794584035270003}
+  - component: {fileID: 2912817207946213750}
   m_Layer: 0
   m_Name: Process
   m_TagString: Untagged
@@ -44,7 +45,6 @@ Transform:
   - {fileID: 3509099924614929859}
   - {fileID: 6043345424185069571}
   - {fileID: 6853471954815569474}
-  - {fileID: 7358517010744353964}
   - {fileID: 3150892707836061002}
   - {fileID: 2484715372966277835}
   - {fileID: 5914500554325083049}
@@ -107,22 +107,23 @@ Transform:
   - {fileID: 8338959392841620680}
   - {fileID: 38529129563953356}
   - {fileID: 1024702049246194812}
+  - {fileID: 7358517010744353964}
+  - {fileID: 3547913704791388293}
   - {fileID: 9207710084057328018}
   - {fileID: 267871188315526229}
   - {fileID: 3699798645641258148}
   - {fileID: 734219213513764325}
   - {fileID: 1102482857853573997}
-  - {fileID: 3547913704791388293}
   - {fileID: 3801437165380574416}
   - {fileID: 5577145772774500357}
   - {fileID: 1493288197500695931}
-  - {fileID: 2900629274444077409}
   - {fileID: 6940224138215680992}
+  - {fileID: 2900629274444077409}
+  - {fileID: 3969233935006966101}
   - {fileID: 2152882858562184857}
   - {fileID: 4781917710987875664}
   - {fileID: 7864625414391058864}
   - {fileID: 8602159076283754217}
-  - {fileID: 3969233935006966101}
   - {fileID: 3754225860915565583}
   - {fileID: 6662452581751291685}
   - {fileID: 2698049729466574682}
@@ -130,6 +131,20 @@ Transform:
   - {fileID: 3264672889808006033}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2912817207946213750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6904554997334109950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36921da0feca7a64093eef34f540384e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heightOffset: 2
+  spawnTag: Spawner
 --- !u!1001 &198836444540657750
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1814,7 +1829,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (31)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2186,7 +2205,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (40)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3488,7 +3511,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (67)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4418,7 +4445,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (78)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5100,7 +5131,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (35)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6216,7 +6251,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_Name
-      value: TileFree (77)
+      value: TileSpawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339691668438605994, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
+      propertyPath: m_TagString
+      value: Spawner
       objectReference: {fileID: 0}
     - target: {fileID: 6290139937816067451, guid: 96bed9dda77fd9c44af5a90ec4051838, type: 3}
       propertyPath: m_LocalPosition.x
