@@ -203,6 +203,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5842216067044194911, guid: 074965e4307f68849a4f6af4e695f41e, type: 3}
     - target: {fileID: 9082189156880079638, guid: b897262fbc2d96246a683f0407c0a4a5, type: 3}
+      propertyPath: TileMaps.Array.data[4]
+      value: 
+      objectReference: {fileID: 2657847287715096399, guid: 1288c44deefd3b041b95c24c7ecd2db3, type: 3}
+    - target: {fileID: 9082189156880079638, guid: b897262fbc2d96246a683f0407c0a4a5, type: 3}
       propertyPath: TileMaps.Array.data[5]
       value: 
       objectReference: {fileID: 856194131244642171, guid: 53d46ce546d814845927fe3be7ce57df, type: 3}
