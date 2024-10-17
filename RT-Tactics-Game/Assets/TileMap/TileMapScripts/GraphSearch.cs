@@ -60,6 +60,14 @@ public class GraphSearch
         path.Reverse();
         return path.Skip(1).ToList();
     }
+    public static List<Vector3Int> GetExactPathToDestination(Vector3Int destination, Dictionary<Vector3Int, Vector3Int?> visitedNodesDict)
+{
+    // Check if the destination is reachable
+    if (!visitedNodesDict.ContainsKey(destination))
+        return new List<Vector3Int>(); // Return an empty path if the destination is unreachable
+
+    return GeneratePathBFS(destination, visitedNodesDict);
+}
 }
 public struct BFSResult // Checks if the tile clicked contains a valid path. ZO
 {

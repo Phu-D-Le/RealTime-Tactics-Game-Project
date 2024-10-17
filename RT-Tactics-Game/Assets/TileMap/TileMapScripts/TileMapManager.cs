@@ -15,7 +15,7 @@ public class TileMapManager : MonoBehaviour
     {
         //gen tile map
         GameObject tileMap = Instantiate(TileMaps[Random.Range(0, TileMaps.Length)]);
-        //GameObject tileMap = Instantiate(TileMaps[5]); // Hardcoded as TileMap[0] is only one with correct tile prefabs. ZO
+        //GameObject tileMap = Instantiate(TileMaps[0]); // Hardcoded as TileMap[0] is only one with correct tile prefabs. ZO
         Debug.Log("Tile Map: " + tileMap.name);
         CenterTileMap(tileMap);
 
