@@ -38,9 +38,10 @@ public class Hex : MonoBehaviour
         hexCoordinates = GetComponent<HexCoordinates>();
         highlight = GetComponent<GlowHighlight>();
     }
-    public void EnableHighlight()
+    public void EnableHighlight(Color color)
     {
         highlight.ToggleGlow(true);
+        this.GetComponent<Renderer>().material.color = color;
     }
     public void DisableHighlight()
     {
