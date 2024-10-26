@@ -16,29 +16,24 @@ public class Pawn : MonoBehaviour
     public bool hasAttacked { get; private set; }
     public bool hasMoved { get; private set; }
     public GameObject CurrentTile { get; set; }
+    public Attack selectedAttack { get; set; }
 
     public PawnType pawnType;
     public HealthHUD healthHUD;
     private Player player;
-    void Awake()
+
+    public void AwakenPawn()
     {
         player = GetComponentInParent<Player>();
-        healthHUD = GetComponent<HealthHUD>();
+        healthHUD = GetComponentInChildren<HealthHUD>();
         InitializeFromPawnType(pawnType);
         healthHUD.SetHealthHUD(this);
     }
     public void DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
     {
-        if (!hasAttacked)
-        {
-            target.TakeDamage(attack.damage);
-            hasAttacked = true;
-            Debug.Log($"{pawnName} has attacked {target.pawnName} with {attack.attackName}, dealing {attack.damage} damage.");
-        }
-        else
-        {
-            Debug.Log($"{pawnName} has already attacked this turn."); // Kinda useless as per PawnHUD. ZO
-        }
+        target.TakeDamage(attack.damage);
+        hasAttacked = true;
+        Debug.Log($"{pawnName} has attacked {target.pawnName} with {attack.attackName}, dealing {attack.damage} damage.");
     }
     public void TakeDamage(int amount) // Current pawn will take certain damage and value of slider will renew
                                         // We could push in negative values to heal as well. ZO

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+// Serves to set behaviours and values depending on the hex type. The cost of travel can be set for each tile (so
+// slowing tiles like water/slime can be supported) and environmental hazard tiles can be added that the pawn must
+// travel around (instead of having gaps in map we can have tiles like lava that player cannot interact with). The current
+// hazard tiles are skippable. no traps yet. ZO
+
 [SelectionBase]
 public class Hex : MonoBehaviour
 {

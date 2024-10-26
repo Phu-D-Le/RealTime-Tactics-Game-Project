@@ -41,7 +41,7 @@ public class PawnHUD : MonoBehaviour
                     {
                         OpenAttackHUD(pawn);
                         OnPawnSelected(pawn);
-                        OnMoveButtonClicked(); // Open AttackHUD and populate buttons according to pawn attack list. Then update
+                        // Open AttackHUD and populate buttons according to pawn attack list. Then update
                         // SelectManager so it knows what pawn is being referenced from the menu. Finally update SelectManager
                         // so that it knows the pawn can move. ZO
                     });
@@ -79,10 +79,5 @@ public class PawnHUD : MonoBehaviour
         {
             Debug.Log($"SelectManager not found or selectedPawn is null.");
         }
-    }
-    public void OnMoveButtonClicked()
-    {
-        selectManager.IsMoving = true;
-        selectManager.IsAttacking = false;
     }
 }
