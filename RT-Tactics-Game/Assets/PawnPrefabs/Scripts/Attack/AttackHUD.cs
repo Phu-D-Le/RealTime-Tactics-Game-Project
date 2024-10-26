@@ -59,8 +59,9 @@ public class AttackHUD : MonoBehaviour
     }
     private void HandleAttackSelection(Pawn pawn, Attack attack)
     {
-        if (selectManager.currentPhase == GamePhase.AttackPhase)
+        if (selectManager.ready)
         {
+            selectManager.SetAttackMode(true);
             selectManager.HighlightTilesForAttack(pawn, attack);
             selectManager.selectedAttack = attack;
         }

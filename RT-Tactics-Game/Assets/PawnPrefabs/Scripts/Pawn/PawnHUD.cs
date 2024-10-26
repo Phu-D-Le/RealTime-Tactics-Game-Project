@@ -62,7 +62,7 @@ public class PawnHUD : MonoBehaviour
             Debug.Log($"{pawn.pawnName} has already attacked and cannot attack again this turn.");
             return;
         }
-        else if (attackHUD != null && !pawn.hasAttacked)
+        else if (attackHUD != null && !pawn.hasAttacked && selectManager.ready)
         {
             attackHUD.gameObject.SetActive(true);
             attackHUD.SetUpAttacks(pawn);  // Pass the pawn to the AttackHUD to display attacks. ZO
@@ -71,8 +71,9 @@ public class PawnHUD : MonoBehaviour
     public void OnPawnSelected(Pawn pawn)
     {
         selectedPawn = pawn;
-        if (selectManager != null && selectedPawn != null && !selectedPawn.hasMoved)
+        if (selectManager != null && selectedPawn != null && !selectedPawn.hasMoved && selectManager.ready)
         {
+            selectManager.SetMovementMode(true);
             selectManager.HighlightTilesForPawn(selectedPawn);
         }
         else
