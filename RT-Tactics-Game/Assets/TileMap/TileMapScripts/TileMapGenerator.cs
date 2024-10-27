@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TileMapGenerator : MonoBehaviour
 {
-    public GameObject freeTile;     
+    public GameObject freeTile;
     public GameObject[] TileTypes;
     public int[] TileCounts;
     public int gridX = 10;
@@ -16,7 +16,7 @@ public class TileMapGenerator : MonoBehaviour
     private float tileWidth;
     private float verticalSpacing;
     private float horizontalSpacing;
-    private List<Vector2Int> availablePositions; 
+    private List<Vector2Int> availablePositions;
 
     void Start()
     {
@@ -26,18 +26,16 @@ public class TileMapGenerator : MonoBehaviour
 
     void CalculateHexDimensions()
     {
-        // hexagon math
         tileHeight = Mathf.Sqrt(3) * tileRadius;
         tileWidth = 2 * tileRadius;
         verticalSpacing = tileWidth * 0.75f * vSpacing;
-        horizontalSpacing = tileHeight * hSpacing; 
+        horizontalSpacing = tileHeight * hSpacing;
     }
 
     void GenerateTileMap()
     {
         availablePositions = new List<Vector2Int>();
 
-        //create list for available tile spots
         for (int y = 0; y < gridY; y++)
         {
             for (int x = 0; x < gridX; x++)
@@ -46,7 +44,6 @@ public class TileMapGenerator : MonoBehaviour
             }
         }
 
-        //randomly place hazards, interactables, and empty tiles
         for (int i = 0; i < TileTypes.Length; i++)
         {
             if (TileTypes[i] != null && i < TileCounts.Length)
@@ -59,19 +56,16 @@ public class TileMapGenerator : MonoBehaviour
                         return;
                     }
 
-                    //choose random position
                     int randomIndex = Random.Range(0, availablePositions.Count);
                     Vector2Int position = availablePositions[randomIndex];
                     availablePositions.RemoveAt(randomIndex);
 
-                    //convert grid position to world position and place tile
                     Vector3 worldPosition = CalculateWorldPosition(position.x, position.y);
                     Instantiate(TileTypes[i], worldPosition, Quaternion.identity, transform);
                 }
             }
         }
 
-        //fill rest of map with free tiles
         foreach (Vector2Int pos in availablePositions)
         {
             Vector3 worldPosition = CalculateWorldPosition(pos.x, pos.y);
@@ -84,7 +78,6 @@ public class TileMapGenerator : MonoBehaviour
         float xOffset = x * horizontalSpacing;
         float yOffset = y * verticalSpacing;
 
-        //offset for hexagons in odd rows
         if (y % 2 == 1)
         {
             xOffset += horizontalSpacing * 0.5f;
@@ -92,5 +85,4 @@ public class TileMapGenerator : MonoBehaviour
 
         return new Vector3(xOffset, 0, yOffset);
     }
-
 }

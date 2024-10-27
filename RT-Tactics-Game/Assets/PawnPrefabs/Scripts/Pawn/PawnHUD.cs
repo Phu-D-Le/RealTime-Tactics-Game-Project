@@ -3,14 +3,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-// This does the same thing as AttackHUD except it selects from the player's list of pawns
-// and populates the buttons within PawnHUD with the player's pawns. This allows for one PawnHUD to exist and it
-// only needs to be assigned to BattleSystem within scene. ZO
-
 public class PawnHUD : MonoBehaviour
 {
     private List<Button> pawnButtons;
-    private AttackHUD attackHUD;  // Reference AttackHUD once instead of on each pawn. ZO
+    private AttackHUD attackHUD;
     public Pawn selectedPawn;
     private SelectManager selectManager;
 
@@ -27,8 +23,8 @@ public class PawnHUD : MonoBehaviour
         {
             if (i < player.pawns.Count)
             {
-                Pawn pawn = player.pawns[i].GetComponent<Pawn>(); 
-                if (pawn != null)
+                Pawn pawn = player.pawns[i].GetComponent<Pawn>();
+                if (pawn != null && !pawn.isAIControlled)
                 {
                     pawnButtons[i].GetComponent<Image>().sprite = pawn.pawnSprite;
                     TextMeshProUGUI buttonText = pawnButtons[i].GetComponentInChildren<TextMeshProUGUI>();
@@ -37,21 +33,26 @@ public class PawnHUD : MonoBehaviour
                         buttonText.text = pawn.pawnName;
                     }
                     pawnButtons[i].onClick.RemoveAllListeners();
-                    pawnButtons[i].onClick.AddListener(() => 
+                    pawnButtons[i].onClick.AddListener(() =>
                     {
                         OpenAttackHUD(pawn);
                         OnPawnSelected(pawn);
-                        // Open AttackHUD and populate buttons according to pawn attack list. Then update
-                        // SelectManager so it knows what pawn is being referenced from the menu. Finally update SelectManager
-                        // so that it knows the pawn can move. ZO
                     });
                     pawnButtons[i].gameObject.SetActive(true);
                 }
             }
             else
             {
-                pawnButtons[i].gameObject.SetActive(false);  // Hide buttons if no matching pawn
+                pawnButtons[i].gameObject.SetActive(false);
             }
+        }
+    }
+
+    public void HidePlayerCanvas()
+    {
+        foreach (var button in pawnButtons)
+        {
+            button.gameObject.SetActive(false);
         }
     }
 
@@ -65,9 +66,10 @@ public class PawnHUD : MonoBehaviour
         else if (attackHUD != null && !pawn.hasAttacked && selectManager.ready)
         {
             attackHUD.gameObject.SetActive(true);
-            attackHUD.SetUpAttacks(pawn);  // Pass the pawn to the AttackHUD to display attacks. ZO
+            attackHUD.SetUpAttacks(pawn);
         }
     }
+
     public void OnPawnSelected(Pawn pawn)
     {
         selectedPawn = pawn;

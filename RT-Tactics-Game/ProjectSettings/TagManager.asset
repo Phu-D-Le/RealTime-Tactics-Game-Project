@@ -9,6 +9,9 @@ TagManager:
   - Free
   - Interactable
   - Spawner
+  - Enemy
+  - Ai
+  - AI
   layers:
   - Default
   - TransparentFX

@@ -18,6 +18,12 @@ public class Hex : MonoBehaviour
     [SerializeField]
     private HexType hexType;
 
+    public bool isPassable = true; // Set this based on tile type or obstacles
+
+    public bool IsPassable()
+    {
+        return isPassable;
+    }
     public Vector3Int HexCoords => hexCoordinates.GetHexCoords();
 
     public int GetCost()
