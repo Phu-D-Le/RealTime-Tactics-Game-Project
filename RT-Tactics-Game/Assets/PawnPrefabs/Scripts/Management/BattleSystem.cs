@@ -1,19 +1,22 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
-public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
+// Start must be here as this controls game logic. Other objects should be on Awake(). This
+// code serves as the game manager and switches from Player to Enemy (with space bar input) during the game
+// and will also need more methods to handle future changes such as win/lose criteria.
+// Logic here follows the states and is updated by the space bar. Further updates is within Pawn and HUD buttons. ZO
 
+public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST}
 public class BattleSystem : MonoBehaviour
 {
     public GameObject Player;
-    public GameObject AI;
+    public GameObject Enemy;
     private Player firstPlayer;
-    private Player aiPlayer;
+    private Player enemyPlayer;
     public PawnHUD pawnHUD;
     public AttackHUD attackHUD;
-    public TextMeshProUGUI turnDialogueText;
+    public TextMeshProUGUI turnDialogueText; // Set as Turn Display in PlayerUI. ZO
     public BattleState state;
     public TileMapManager tileMapManager;
 
@@ -22,7 +25,7 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.START;
 
         Player = GameObject.FindWithTag("Player");
-        AI = GameObject.FindWithTag("AI");
+        Enemy = GameObject.FindWithTag("Enemy");
 
         tileMapManager.GenerateTileMap();
 
@@ -36,84 +39,52 @@ public class BattleSystem : MonoBehaviour
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
             currentPawn.AwakenPawn();
-            currentPawn.isAIControlled = false;
         }
 
-        aiPlayer = AI.GetComponent<Player>();
-        aiPlayer.playerName = "AI";
-        aiPlayer.SetList();
-        foreach (var pawn in aiPlayer.pawns)
+        enemyPlayer = Enemy.GetComponent<Player>();
+        enemyPlayer.playerName = "Enemy";
+        enemyPlayer.SetList();
+        foreach (var pawn in enemyPlayer.pawns)
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
             currentPawn.AwakenPawn();
-            currentPawn.isAIControlled = true;
         }
 
-        firstPlayer.SpawnPawnsOnMap(spawner);
-        aiPlayer.SpawnPawnsOnMap(spawner);
+        firstPlayer.SpawnPawnsOnMap(spawner); // Spawner tag tiles must be in order within map. ZO
+        enemyPlayer.SpawnPawnsOnMap(spawner);
 
         attackHUD.gameObject.SetActive(false);
 
         SetUpBattle();
     }
-
     void SetUpBattle()
     {
         state = BattleState.PLAYERTURN;
         PlayerTurn();
     }
-
     void PlayerTurn()
     {
         turnDialogueText.text = "Player's Turn!";
         pawnHUD.SetPlayerCanvas(firstPlayer);
-        foreach (var pawn in firstPlayer.pawns)
-        {
-            Pawn currentPawn = pawn.GetComponent<Pawn>();
-            currentPawn.ResetStatus();
-        }
     }
-
-    void EndPlayerTurn()
+    void PlayerAttack()
     {
         state = BattleState.ENEMYTURN;
-        StartCoroutine(ExecuteEnemyTurn());
+        EnemyTurn();
     }
-
-    IEnumerator ExecuteEnemyTurn()
+    void EnemyTurn()
     {
-        turnDialogueText.text = "AI's Turn!";
-        pawnHUD.HidePlayerCanvas();
-
-        foreach (var pawn in aiPlayer.pawns)
-        {
-            Pawn currentPawn = pawn.GetComponent<Pawn>();
-            currentPawn.ResetStatus();
-
-            if (IsPlayerInRange(currentPawn))
-            {
-                currentPawn.AttackNearestPlayer();
-            }
-            else
-            {
-                currentPawn.MoveTowardsPlayer(firstPlayer);
-            }
-
-            yield return new WaitForSeconds(1.0f);
-        }
-
-        EndEnemyTurn();
+        turnDialogueText.text = "Enemy's Turn!";
+        pawnHUD.SetPlayerCanvas(enemyPlayer);
     }
-
-    void EndEnemyTurn()
+    void EnemyAttack()
     {
         state = BattleState.PLAYERTURN;
         PlayerTurn();
     }
-
     public void Win(Player winner)
     {
-        turnDialogueText.text = $"{winner.playerName} wins!";
+        turnDialogueText.text = ($"{winner.playerName} wins!");
         if (winner.playerName == "Player")
         {
             SceneManager.LoadScene("Gamedemo");
@@ -121,29 +92,26 @@ public class BattleSystem : MonoBehaviour
         else
         {
             Destroy(Player);
-            Destroy(AI);
+            Destroy(Enemy);
             SceneManager.LoadScene("Test Menu");
         }
     }
-
+    // Space bar is turn ultimatum. Selection logic in SelectManager. ZO
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && state == BattleState.PLAYERTURN)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             attackHUD.gameObject.SetActive(false);
-            EndPlayerTurn();
-        }
-    }
 
-    private bool IsPlayerInRange(Pawn aiPawn)
-    {
-        foreach (var playerPawn in firstPlayer.pawns)
-        {
-            if (Vector3.Distance(aiPawn.transform.position, playerPawn.transform.position) <= aiPawn.attackRange)
+            if (state == BattleState.PLAYERTURN)
             {
-                return true;
+                PlayerAttack();
+            }
+            else if (state == BattleState.ENEMYTURN)
+            {
+                EnemyAttack();
             }
         }
-        return false;
     }
 }
+

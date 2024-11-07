@@ -3,23 +3,19 @@ using UnityEngine;
 
 public class TileMapManager : MonoBehaviour
 {
-    public static TileMapManager Instance { get; private set; }
-    public GameObject[] TileMaps;
+    public GameObject[] TileMaps; 
     public Camera mainCamera;
     private HexGrid hexGrid;
     public SelectManager selectManager;
 
-    void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-    }
+    // GenerateTileMap is called in BattleSystem. ZO
+    // Updated tile maps to use correct tile prefabs, adjusted spawn points for pawns. JP
 
     public void GenerateTileMap()
     {
-        GameObject tileMap = Instantiate(TileMaps[Random.Range(0, TileMaps.Length)]);
+        //gen tile map
+        //GameObject tileMap = Instantiate(TileMaps[Random.Range(0, TileMaps.Length)]); //random map pool
+        GameObject tileMap = Instantiate(TileMaps[5]); // Hardcode for testing, minus one for manual input -> work (1, 4, 8, 9), dont (2, 3, 5, 6, 7, 10)
         Debug.Log("Tile Map: " + tileMap.name);
         CenterTileMap(tileMap);
 
@@ -54,10 +50,5 @@ public class TileMapManager : MonoBehaviour
         }
 
         return bounds;
-    }
-
-    public HexGrid GetHexGrid()
-    {
-        return hexGrid;
     }
 }
