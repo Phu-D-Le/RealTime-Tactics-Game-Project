@@ -15,7 +15,7 @@ public class TileMapManager : MonoBehaviour
     {
         //gen tile map
         GameObject tileMap = Instantiate(TileMaps[Random.Range(0, TileMaps.Length)]); //random map pool
-        //GameObject tileMap = Instantiate(TileMaps[3]); // Hardcode for testing
+        //GameObject tileMap = Instantiate(TileMaps[4]); // Hardcode for testing, minus one for manual input -> work (1, 4, 8, 9), dont (2, 3, 5, 6, 7, 10)
         Debug.Log("Tile Map: " + tileMap.name);
         CenterTileMap(tileMap);
 

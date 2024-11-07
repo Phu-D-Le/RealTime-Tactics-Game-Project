@@ -68,11 +68,6 @@ public class BattleSystem : MonoBehaviour
     {
         turnDialogueText.text = "Player's Turn!";
         pawnHUD.SetPlayerCanvas(firstPlayer);
-        foreach (var pawn in firstPlayer.pawns)
-        {
-            Pawn currentPawn = pawn.GetComponent<Pawn>();
-            currentPawn.ResetStatus();  // Reset flag for all pawns so they can attack again. ZO
-        }
     }
     void PlayerAttack()
     {
@@ -83,11 +78,6 @@ public class BattleSystem : MonoBehaviour
     {
         turnDialogueText.text = "Enemy's Turn!";
         pawnHUD.SetPlayerCanvas(enemyPlayer);
-        foreach (var pawn in enemyPlayer.pawns)
-        {
-            Pawn currentPawn = pawn.GetComponent<Pawn>();
-            currentPawn.ResetStatus();
-        }
     }
     void EnemyAttack()
     {
