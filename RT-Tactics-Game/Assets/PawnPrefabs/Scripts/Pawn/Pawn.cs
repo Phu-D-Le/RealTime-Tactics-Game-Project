@@ -10,6 +10,7 @@ public class Pawn : MonoBehaviour
     public string pawnName { get; private set; }
     public Sprite pawnSprite { get; private set; }
     public List<Attack> attacks { get; private set; }
+    public List<SpecialAction> actions { get; set; }
     public int pawnSpeed { get; private set; }
     public int maxHP { get; private set; }
     public int currentHP { get; private set; }
@@ -17,6 +18,7 @@ public class Pawn : MonoBehaviour
     public bool hasMoved { get; private set; }
     public GameObject CurrentTile { get; set; }
     public Attack selectedAttack { get; set; }
+    public SpecialAction selectedAction { get; set; }
 
     public PawnType pawnType;
     public HealthHUD healthHUD;
@@ -53,7 +55,10 @@ public class Pawn : MonoBehaviour
         pawnName = type.pawnTypeName;
         pawnSprite = type.pawnTypeSprite;
         attacks = new List<Attack>(type.pawnTypeAttacks);  // Create the list of attacks from everything in PawnType.
-                                                            // Edit list when adding attacks between scenes. ZO
+                                                           // Edit list when adding attacks between scenes. ZO
+
+        actions = new List<SpecialAction>(type.pawnTypeActions);
+
         pawnSpeed = type.pawnTypeSpeed;
         maxHP = type.pawnTypeMaxHP;
         currentHP = type.pawnTypeCurrentHP;

@@ -16,6 +16,7 @@ public class BattleSystem : MonoBehaviour
     private Player enemyPlayer;
     public PawnHUD pawnHUD;
     public AttackHUD attackHUD;
+    public ActionHUD actionHUD;
     public TextMeshProUGUI turnDialogueText; // Set as Turn Display in PlayerUI. ZO
     public BattleState state;
     public TileMapManager tileMapManager;
@@ -54,6 +55,7 @@ public class BattleSystem : MonoBehaviour
         enemyPlayer.SpawnPawnsOnMap(spawner);
 
         attackHUD.gameObject.SetActive(false);
+        actionHUD.gameObject.SetActive(false);
 
         SetUpBattle();
     }
@@ -112,6 +114,7 @@ public class BattleSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             attackHUD.gameObject.SetActive(false);
+            actionHUD.gameObject.SetActive(false);
 
             if (state == BattleState.PLAYERTURN)
             {

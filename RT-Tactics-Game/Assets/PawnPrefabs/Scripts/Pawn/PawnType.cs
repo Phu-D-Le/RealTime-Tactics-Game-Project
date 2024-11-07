@@ -9,6 +9,7 @@ public class PawnType : ScriptableObject
     public string pawnTypeName;
     public Sprite pawnTypeSprite;
     public List<Attack> pawnTypeAttacks;
+    public List<SpecialAction> pawnTypeActions;
     public int pawnTypeSpeed;
     public int pawnTypeMaxHP;
     public int pawnTypeCurrentHP;

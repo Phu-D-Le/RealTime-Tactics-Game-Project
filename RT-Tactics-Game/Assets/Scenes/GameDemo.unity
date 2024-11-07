@@ -323,6 +323,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1989487630}
     - target: {fileID: 8540826369957723827, guid: e979300ac3b51764b8a84121191624a2, type: 3}
+      propertyPath: actionHUD
+      value: 
+      objectReference: {fileID: 1392367489}
+    - target: {fileID: 8540826369957723827, guid: e979300ac3b51764b8a84121191624a2, type: 3}
       propertyPath: attackHUD
       value: 
       objectReference: {fileID: 214405824}
@@ -790,6 +794,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 069bfa0489342c444a53ce8ed1b2c32c, type: 3}
+--- !u!114 &1392367489 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8306760458420117286, guid: 069bfa0489342c444a53ce8ed1b2c32c, type: 3}
+  m_PrefabInstance: {fileID: 1392367488}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07026170d07256d44aa4463a71e97e9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1713016684 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9082189156880079638, guid: b897262fbc2d96246a683f0407c0a4a5, type: 3}
