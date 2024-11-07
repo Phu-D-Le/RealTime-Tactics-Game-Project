@@ -826,6 +826,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedAttack: {fileID: 0}
+  movementSpeed: 7
+  rotationSpeed: 7
 --- !u!114 &1719050255 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8493848686326217956, guid: 069bfa0489342c444a53ce8ed1b2c32c, type: 3}

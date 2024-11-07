@@ -11,7 +11,7 @@ public class SelectManager : MonoBehaviour
     private Camera mainCamera;
     private HexGrid hexGrid;
     private List<Vector3Int> neighbours = new List<Vector3Int>();
-    
+
     private Pawn selectedPawn;  
     private Vector3Int selectedTile; 
     private Pawn selectedTargetPawn; 
@@ -22,12 +22,17 @@ public class SelectManager : MonoBehaviour
     public bool ready {get; set; }
 
     private List<Action> actionQueue = new List<Action>();
-    private HashSet<Vector3Int> occupiedTiles = new HashSet<Vector3Int>();
     private HashSet<Vector3Int> plannedTiles = new HashSet<Vector3Int>();
+
+    private bool isSecondPlayerTurn;
+    private Hex highlightedTile;
+    public float movementSpeed = 7f; // Change the pawns movement speed here. ZO
+    public float rotationSpeed = 7f; // Change the pawns rotation speed here. ZO
 
     void Start()
     {
         ready = true;
+        isSecondPlayerTurn = false;
     }
     public void InitializeSelectManager(Camera camera, HexGrid grid)
     {
@@ -46,8 +51,17 @@ public class SelectManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Space))
         {
-            DisableAllHighlights(); // These are failsafes so player cannot select or move on enemy turn. ZO
-            ExecuteActions();
+            if (isSecondPlayerTurn)
+            {
+                isSecondPlayerTurn = false;
+                DisableAllHighlights(); // These are failsafes so player cannot select or move on enemy turn. ZO
+                ExecuteActions();
+            }
+            else
+            {
+                isSecondPlayerTurn = true;
+                DisableAllHighlights();
+            }
         }
     }
     private void HandleMouseClick() // Check if mouse hits tile. ZO
@@ -56,7 +70,6 @@ public class SelectManager : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             GameObject clickedTile = hit.collider.gameObject;
-            // Debug.Log($"Hit object: {clickedTile.name} with tag: {clickedTile.tag}");
 
             if (IsTile(clickedTile))
             {
@@ -97,7 +110,7 @@ public class SelectManager : MonoBehaviour
         isAttacking = !enabled;
         DisableAllHighlights();
     }
-    public void SetAttackMode(bool enabled)
+    public void SetAttackMode(bool enabled) // Called by attackHUD. ZO
     {
         isAttacking = enabled;
         isMoving = !enabled;
@@ -108,29 +121,52 @@ public class SelectManager : MonoBehaviour
     // and a plannedTile that the pawn wants to move to. ZO
     {
         Vector3Int targetCoords = hexComponent.HexCoords;
+        Pawn currentPawn = GetCurrentPawn();
 
-        if (IsTileInRange(hexComponent.HexCoords) && FindPawnOnTile(clickedTile) == null) // Highlighted and no pawn is on tile. ZO
+        if (IsTileInRange(hexComponent.HexCoords)) // Highlighted and no pawn is on tile. ZO
         {
-            Pawn currentPawn = GetCurrentPawn();
-
-            if (currentPawn != null && !currentPawn.hasMoved)
+            if (plannedTiles.Contains(targetCoords))
             {
-                occupiedTiles.Remove(currentPawn.CurrentTile.GetComponent<Hex>().HexCoords); // Remove current tile. ZO
-                actionQueue.Add(new Action(ActionType.Move, currentPawn, targetCoords)); // Queue up movement. ZO
-                plannedTiles.Add(targetCoords);
-                currentPawn.Move(); // set hasMoved to true so pawn cant move again. ZO
-                occupiedTiles.Add(targetCoords); // do not let other pawns move here on same turn. ZO
-                DisableAllHighlights(); // move done. ZO
-                Debug.Log($"{currentPawn.pawnName} queued to move.");
+                Debug.Log("Cannot move to a planned tile.");
+                return;
             }
-            else
+            Pawn pawnOnTile = FindPawnOnTile(clickedTile);
+            if (pawnOnTile == null)
             {
-                Debug.Log("No pawn selected to move or pawn has already moved.");
+                if (currentPawn != null && !currentPawn.hasMoved) // Allow movement if the current pawn hasn't moved yet. ZO
+                {
+                    actionQueue.Add(new Action(ActionType.Move, currentPawn, targetCoords));
+                    plannedTiles.Add(targetCoords); // Add the planned tile. ZO
+                    currentPawn.Move(); // Move the pawn. ZO
+                    DisableAllHighlights(); // Move done. ZO
+                    Debug.Log($"{currentPawn.pawnName} queued to move.");
+                }
+                else
+                {
+                    Debug.Log("No pawn selected to move or pawn has already moved.");
+                }
+            }
+            else // If there is a pawn on the clicked tile. ZO
+            {
+                if (pawnOnTile.hasMoved)
+                {
+                    // Allow movement if the other pawn has already moved
+                    actionQueue.Add(new Action(ActionType.Move, currentPawn, targetCoords));
+                    plannedTiles.Add(targetCoords);
+                    currentPawn.Move();
+                    DisableAllHighlights();
+                    Debug.Log($"{currentPawn.pawnName} queued to move to a tile occupied by a pawn that has already moved.");
+                }
+                else
+                {
+                    // Cannot move to a tile occupied by another pawn that hasn't moved. ZO
+                    Debug.Log("Cannot move to a tile that is occupied by another pawn that has not moved.");
+                }
             }
         }
         else
         {
-            Debug.Log(FindPawnOnTile(clickedTile) != null ? "Cannot move to a tile that is occupied by another pawn." : "Clicked tile is not within movement range.");
+            Debug.Log("Clicked tile is not within movement range.");
         }
     }
     private void TryAttackPawn(Hex hexComponent, GameObject clickedTile) // AttackHUD has done our BFS and highlighting so now
@@ -140,7 +176,7 @@ public class SelectManager : MonoBehaviour
         {
             Pawn targetPawn = FindPawnOnTile(clickedTile);
 
-            if (targetPawn != null) // Pawn must be on tile for an attack to work. Perhaps set no friendly fire here? ZO && !targetpawn.hasMoved
+            if (targetPawn != null && !targetPawn.hasMoved) // Pawn must be on tile for an attack to work. Perhaps set no friendly fire here? ZO
             { // Keep friendly fire but pawn cannot attack a tile where a pawn has moved from. ZO
 
                 Pawn currentPawn = GetCurrentPawn();
@@ -163,17 +199,18 @@ public class SelectManager : MonoBehaviour
                     Debug.Log("No pawn selected to attack or pawn has already attacked.");
                 }
             }
-            else if(targetPawn.hasMoved && plannedTiles.Contains(hexComponent.HexCoords)) // Pawn can attack a tile where a pawn moves to. ZO
+            else if(targetPawn != null && targetPawn.hasMoved && plannedTiles.Contains(hexComponent.HexCoords)) // Pawn can attack a tile where a pawn moves to. ZO
             {
                 Pawn currentPawn = GetCurrentPawn();
                 if (currentPawn != null && !currentPawn.hasAttacked)
                 {
-                    // Ensure the selected attack is assigned before queuing the attack
+                    // Ensure the selected attack is assigned before queuing the attack. ZO
                     if (selectedAttack != null)
                     {
                         actionQueue.Add(new Action(ActionType.Attack, currentPawn, targetPawn, selectedAttack));
                         currentPawn.Attack(); // hasAttacked = true. ZO
                         DisableAllHighlights();
+                        Debug.Log($"{currentPawn.pawnName} queued to attack {targetPawn.pawnName} for {selectedAttack} dealing {selectedAttack.damage} damage.");
                     }
                     else
                     {
@@ -205,7 +242,7 @@ public class SelectManager : MonoBehaviour
         return neighbours.Contains(tileCoords);
     }
     private IEnumerator MovePawnToTile(Pawn pawn, GameObject targetTile) // Physical movement called once dequeueing.
-    // essentially redo the BFS but since tile is valid we can find our path here.
+    // essentially redo the BFS but since tile is valid we can find our path here. ZO
     {
         Hex targetHex = targetTile.GetComponent<Hex>();
         Hex currentHex = pawn.CurrentTile.GetComponent<Hex>();
@@ -244,7 +281,7 @@ public class SelectManager : MonoBehaviour
             // Have the pawn face where it goes to each tile. ZO
             while (Quaternion.Angle(pawn.transform.rotation, lookRotation) > 0.1f)
             {
-                pawn.transform.rotation = Quaternion.Slerp(pawn.transform.rotation, lookRotation, Time.deltaTime * 5f);
+                pawn.transform.rotation = Quaternion.Slerp(pawn.transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
                 yield return null;
             }
 
@@ -252,7 +289,7 @@ public class SelectManager : MonoBehaviour
             Vector3 targetPosition = tile.transform.position + new Vector3(0, 2.0f, 0);
             while (Vector3.Distance(pawn.transform.position, targetPosition) > 0.1f)
             {
-                pawn.transform.position = Vector3.Lerp(pawn.transform.position, targetPosition, Time.deltaTime * 3f);
+                pawn.transform.position = Vector3.Lerp(pawn.transform.position, targetPosition, Time.deltaTime * movementSpeed);
                 yield return null;
             }
 
@@ -262,7 +299,6 @@ public class SelectManager : MonoBehaviour
         pawn.CurrentTile = path.Last(); // Pawn has moved. we would have to move this if we want all actions at once. ZO
         pawn.Move();
         DisableAllHighlights();
-        //occupiedTiles.Add(pawn.CurrentTile.GetComponent<Hex>().HexCoords);
     }
     public void HighlightTilesForPawn(Pawn pawn) // Shader highlights tiles, BFS finds valid neighbours. 
     // called by pawnHUD once pawn is selected and current phase is MovePhase. ZO
@@ -281,15 +317,25 @@ public class SelectManager : MonoBehaviour
 
                 foreach (Vector3Int neighbour in neighbours) // Tiles not occupied by another from either queue or if a pawn is there. ZO
                 {
-                    if (!occupiedTiles.Contains(neighbour) && !plannedTiles.Contains(neighbour))
+                    if (!plannedTiles.Contains(neighbour))
                     {
                         Hex tileHex = hexGrid.GetTileAt(neighbour);
-                        if (tileHex != null && FindPawnOnTile(tileHex.gameObject) == null)
+                        if (tileHex != null && FindPawnOnTile(tileHex.gameObject) == null) 
                         {
-                            tileHex.EnableHighlight(Color.red);
+                            tileHex.EnableHighlight(Color.green);
+                        }
+                        else if(tileHex != null)
+                        {
+                            Pawn emptyPawn = FindPawnOnTile(tileHex.gameObject);
+                            if (emptyPawn.hasMoved)
+                            {
+                                tileHex.EnableHighlight(Color.green);
+                            }
                         }
                     }
-                } 
+                }
+                highlightedTile = currentHex; // Store the current tile being highlighted in white. ZO
+                highlightedTile.EnableHighlight(Color.white); 
             }
         }
     }
@@ -312,37 +358,55 @@ public class SelectManager : MonoBehaviour
         neighbours = new List<Vector3Int>(bfsResult.GetRangePositions());
         neighbours.Remove(currentTileCoords);
 
+        Hex currentTileHex = hexGrid.GetTileAt(currentTileCoords);
+        if (currentTileHex != null)
+        {
+            highlightedTile = currentTileHex;
+            currentTileHex.EnableHighlight(Color.white); // Highlight current tile in white. ZO
+        } 
+
         foreach (Vector3Int neighbour in neighbours)
         {
             Hex tileHex = hexGrid.GetTileAt(neighbour);
             if (tileHex != null)
             {
-                tileHex.EnableHighlight(Color.red); // Available tiles in red. ZO
-            }
-        }
-        foreach (Vector3Int plannedTile in plannedTiles)
-        {
-            if (plannedTile != currentTileCoords) // Skip the current tile. ZO
-            {
-                Hex plannedTileHex = hexGrid.GetTileAt(plannedTile);
-                if (plannedTileHex != null)
+                Pawn pawnOnTile = FindPawnOnTile(tileHex.gameObject);
+                if (pawnOnTile != null)
                 {
-                    plannedTileHex.EnableHighlight(Color.blue); // Allies highlighted in blue. ZO
+                    if (pawnOnTile.hasMoved && !plannedTiles.Contains(tileHex.HexCoords))
+                    {
+                        continue;
+                    }
+                    // Check the parent GameObject tag of the pawn on the tile. ZO
+                    string parentTag = pawnOnTile.transform.parent.tag;
+                    string currentTag = pawn.transform.parent.tag;
+                
+                    // Apply different highlight colors based on the parent's tag. ZO
+                    if (currentTag != parentTag)
+                    {
+                        tileHex.EnableHighlight(Color.red);  // Enemy tile in red. ZO
+                    }
+                    else if (parentTag == currentTag)
+                    {
+                        tileHex.EnableHighlight(Color.blue);  // Ally tile in blue. ZO
+                    }
                 }
-            }
-            else
-            {
-                Hex plannedTileHex = hexGrid.GetTileAt(plannedTile);
-                if (plannedTileHex != null)
+                else
                 {
-                    plannedTileHex.EnableHighlight(Color.white); // self highlighted in white. ZO
+                    tileHex.EnableHighlight(Color.green);  // blank tiles are green. show range. ZO
                 }
             }
         }
     }
     private void DisableAllHighlights() // Reset highlight and bfs but not planned tiles (only at end do we reset). ZO
     {
-        foreach (Vector3Int neighbour in neighbours)
+        // Clear highlight on the current tile if it exists. ZO
+        if (highlightedTile != null)
+        {
+            highlightedTile.DisableHighlight(); // Clear white highlight. ZO
+            highlightedTile = null; // Reset for next use. ZO
+        }
+        foreach (Vector3Int neighbour in neighbours) // Clear all highlights that are not planned tiles and reset neighbours. ZO
         {
             if (!plannedTiles.Contains(neighbour))
             {
@@ -408,21 +472,16 @@ public class SelectManager : MonoBehaviour
                 }
             }
         }
-
-        // Clear the queue after executing all actions
-        actionQueue.Clear();
-        occupiedTiles.Clear();
-        DisablePlannedTileHighlights();
-        ready = true;
+        StartNewTurn();
     }
-    private void HighlightPlannedTiles() // Continuously highlight planned tiles in green.
+    private void HighlightPlannedTiles() // Continuously highlight planned tiles in yellow. ZO
     {
         foreach (Vector3Int plannedTile in plannedTiles)
         {
             Hex tileHex = hexGrid.GetTileAt(plannedTile);
             if (tileHex != null)
             {
-                tileHex.EnableHighlight(Color.green); // Highlight planned tiles in green
+                tileHex.EnableHighlight(Color.yellow);
             }
         }
     }
@@ -430,8 +489,23 @@ public class SelectManager : MonoBehaviour
     {
         foreach (Vector3Int plannedTile in plannedTiles)
         {
-            hexGrid.GetTileAt(plannedTile)?.DisableHighlight(); // Disable highlight on each planned tile
+            hexGrid.GetTileAt(plannedTile)?.DisableHighlight(); // Disable highlight on each planned tile. ZO
         }
-        plannedTiles.Clear(); // Clear the plannedTiles after disabling
+        plannedTiles.Clear(); // Reset. ZO
+    }
+    private void ResetTurnFlags()
+    {
+        foreach (Pawn pawn in FindObjectsOfType<Pawn>())
+        {
+            pawn.ResetStatus();
+        }
+    }
+    private void StartNewTurn()
+    {
+        // Clear the queue after executing all actions and reset. ZO
+        actionQueue.Clear();
+        DisablePlannedTileHighlights();
+        ready = true;
+        ResetTurnFlags();
     }
 }
