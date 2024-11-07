@@ -27,6 +27,7 @@ public class Hex : MonoBehaviour
         HexType.Free => 1,
         // HexType.Hazard => 2,
         HexType.Spawner => 1,
+        HexType.Hazard => 1,
         _=> throw new Exception($"Hex of type {hexType} not supported")
     };
     public bool IsHazard()
