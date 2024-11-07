@@ -22,8 +22,8 @@ public class GraphSearch
             Vector3Int currentNode = nodesToVisitQueue.Dequeue(); // Look through all neighbours. ZO
             foreach (Vector3Int neighbourPosition in hexGrid.GetNeighboursFor(currentNode))
             {
-                if (hexGrid.GetTileAt(neighbourPosition).IsHazard()) // Skip Hazard tiles (skippable tiles). ZO
-                    continue;
+                //if (hexGrid.GetTileAt(neighbourPosition).IsHazard()) // Skip Hazard tiles (skippable tiles). ZO
+                  //  continue;
 
                 int nodeCost = hexGrid.GetTileAt(neighbourPosition).GetCost();
                 int currentCost = costSoFar[currentNode]; // Current tile cost is gotten and neighbour is retrieved and newCost checks if valid. ZO
