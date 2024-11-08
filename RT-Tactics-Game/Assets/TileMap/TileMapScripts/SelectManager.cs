@@ -45,11 +45,11 @@ public class SelectManager : MonoBehaviour
     }
     public void HandleInput()
     {
-        if (Input.GetMouseButtonDown(0) && ready == true)
+        if (Input.GetMouseButtonDown(0) && ready)
         {
             HandleMouseClick();
         }
-        else if (Input.GetKeyDown(KeyCode.Space))
+        else if (Input.GetKeyDown(KeyCode.Space) && ready)
         {
             if (isSecondPlayerTurn)
             {
@@ -139,7 +139,7 @@ public class SelectManager : MonoBehaviour
                     plannedTiles.Add(targetCoords); // Add the planned tile. ZO
                     currentPawn.Move(); // Move the pawn. ZO
                     DisableAllHighlights(); // Move done. ZO
-                    Debug.Log($"{currentPawn.pawnName} queued to move.");
+                    Debug.Log($"{currentPawn.gameObject.tag} {currentPawn.pawnName} queued to move.");
                 }
                 else
                 {
@@ -155,7 +155,7 @@ public class SelectManager : MonoBehaviour
                     plannedTiles.Add(targetCoords);
                     currentPawn.Move();
                     DisableAllHighlights();
-                    Debug.Log($"{currentPawn.pawnName} queued to move to a tile occupied by a pawn that has already moved.");
+                    Debug.Log($"{currentPawn.gameObject.tag} {currentPawn.pawnName} queued to move to a tile occupied by a pawn that has already moved.");
                 }
                 else
                 {
@@ -187,7 +187,7 @@ public class SelectManager : MonoBehaviour
                         actionQueue.Add(new Action(ActionType.Attack, currentPawn, targetPawn, selectedAttack));
                         currentPawn.Attack(); // hasAttacked = true. ZO
                         DisableAllHighlights();
-                        Debug.Log($"{currentPawn.pawnName} queued to attack {targetPawn.pawnName} for {selectedAttack} dealing {selectedAttack.damage} damage.");
+                        Debug.Log($"{currentPawn.gameObject.tag} {currentPawn.pawnName} queued to attack {targetPawn.gameObject.tag} {targetPawn.pawnName} for {selectedAttack} dealing {selectedAttack.damage} damage.");
                     }
                     else
                     {
@@ -210,7 +210,7 @@ public class SelectManager : MonoBehaviour
                         actionQueue.Add(new Action(ActionType.Attack, currentPawn, targetPawn, selectedAttack));
                         currentPawn.Attack(); // hasAttacked = true. ZO
                         DisableAllHighlights();
-                        Debug.Log($"{currentPawn.pawnName} queued to attack {targetPawn.pawnName} for {selectedAttack} dealing {selectedAttack.damage} damage.");
+                        Debug.Log($"{currentPawn.gameObject.tag} {currentPawn.pawnName} queued to attack {targetPawn.gameObject.tag} {targetPawn.pawnName} for {selectedAttack} dealing {selectedAttack.damage} damage.");
                     }
                     else
                     {
@@ -296,7 +296,7 @@ public class SelectManager : MonoBehaviour
             pawn.transform.position = targetPosition;
         }
 
-        pawn.CurrentTile = path.Last(); // Pawn has moved. we would have to move this if we want all actions at once. ZO
+        pawn.CurrentTile = path.Last(); // Pawn has moved. ZO
         pawn.Move();
         DisableAllHighlights();
     }
@@ -458,13 +458,18 @@ public class SelectManager : MonoBehaviour
             {
                 // Start the move coroutine and wait until it finishes. ZO
                 yield return StartCoroutine(MovePawnToTile(action.pawn, hexGrid.GetTileAt(action.targetTile).gameObject));
+                if (hexGrid.GetTileAt(action.targetTile).CompareTag("Hazard"))
+                {
+                    action.pawn.TakeDamage(5);
+                    Debug.Log($"{action.pawn.gameObject.tag} {action.pawn.pawnName} stepped on a hazard tile.");
+                }
             }
             else if (action.actionType == ActionType.Attack)
             {
                 if (action.selectedAttack != null)
                 {
                     action.pawn.DealAttack(action.selectedAttack, action.targetPawn);
-                    Debug.Log($"{action.pawn.pawnName} attacks {action.targetPawn.pawnName}.");
+                    //Debug.Log($"{action.pawn.gameObject.tag} {action.pawn.pawnName} attacks {action.targetPawn.gameObject.tag} {action.targetPawn.pawnName}.");
                 }
                 else
                 {
