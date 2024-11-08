@@ -19,6 +19,7 @@ public class BattleSystem : MonoBehaviour
     public TextMeshProUGUI turnDialogueText; // Set as Turn Display in PlayerUI. ZO
     public BattleState state;
     public TileMapManager tileMapManager;
+    public SelectManager selectManager;
 
     void Start()
     {
@@ -38,6 +39,7 @@ public class BattleSystem : MonoBehaviour
         foreach (var pawn in firstPlayer.pawns)
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
+            currentPawn.gameObject.tag = "PlayerPawn";
             currentPawn.AwakenPawn();
         }
 
@@ -47,6 +49,7 @@ public class BattleSystem : MonoBehaviour
         foreach (var pawn in enemyPlayer.pawns)
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
+            currentPawn.gameObject.tag = "EnemyPawn";
             currentPawn.AwakenPawn();
         }
 
@@ -54,13 +57,14 @@ public class BattleSystem : MonoBehaviour
         enemyPlayer.SpawnPawnsOnMap(spawner);
 
         attackHUD.gameObject.SetActive(false);
+        selectManager = FindObjectOfType<SelectManager>();
 
         SetUpBattle();
     }
     void SetUpBattle()
     {
-        state = BattleState.PLAYERTURN;
-        PlayerTurn();
+        state = BattleState.ENEMYTURN;
+        EnemyTurn();
     }
     void PlayerTurn()
     {
@@ -99,7 +103,7 @@ public class BattleSystem : MonoBehaviour
     // Space bar is turn ultimatum. Selection logic in SelectManager. ZO
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && selectManager.ready)
         {
             attackHUD.gameObject.SetActive(false);
 

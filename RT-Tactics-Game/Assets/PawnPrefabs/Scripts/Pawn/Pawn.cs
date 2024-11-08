@@ -33,7 +33,7 @@ public class Pawn : MonoBehaviour
     {
         target.TakeDamage(attack.damage);
         hasAttacked = true;
-        Debug.Log($"{pawnName} has attacked {target.pawnName} with {attack.attackName}, dealing {attack.damage} damage.");
+        Debug.Log($"{gameObject.tag} {pawnName} has attacked {target.gameObject.tag} {target.pawnName} with {attack.attackName}, dealing {attack.damage} damage.");
     }
     public void TakeDamage(int amount) // Current pawn will take certain damage and value of slider will renew
                                         // We could push in negative values to heal as well. ZO
@@ -46,7 +46,7 @@ public class Pawn : MonoBehaviour
             player.RemovePawn(this);  // Notify the Player to remove this pawn.
         } // Only reason PlayerHUD is not being notified immediately about death is because pawns should not
         // be attacking themselves. Need to add selection logic to further death logic...maybe. ZO
-        Debug.Log($"{pawnName} takes {amount} damage. Current HP: {currentHP}");
+        Debug.Log($"{gameObject.tag} {pawnName} takes {amount} damage. Current HP: {currentHP}");
     }
     public void InitializeFromPawnType(PawnType type)
     {
