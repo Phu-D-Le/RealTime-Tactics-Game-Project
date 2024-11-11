@@ -5,7 +5,8 @@ using UnityEngine;
 public enum ActionType
 {
     Move,
-    Attack
+    Attack,
+    SpecialAction
 }
 
 public class Action
@@ -15,6 +16,7 @@ public class Action
     public Vector3Int targetTile;
     public Pawn targetPawn;
     public Attack selectedAttack;
+    public SpecialAction selectedSpecialAction;
 
     public Action(ActionType type, Pawn pawn, Vector3Int targetTile)
     {
@@ -29,5 +31,13 @@ public class Action
         this.pawn = pawn;
         this.targetPawn = targetPawn;
         this.selectedAttack = selectedAttack;
+    }
+
+    public Action(ActionType type, Pawn pawn, Pawn targetPawn, SpecialAction selectedSpecialAction)
+    {
+        this.actionType = type;
+        this.pawn = pawn;
+        this.targetPawn = targetPawn;
+        this.selectedSpecialAction = selectedSpecialAction;
     }
 }

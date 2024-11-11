@@ -16,6 +16,7 @@ public class SelectManager : MonoBehaviour
     private Vector3Int selectedTile; 
     private Pawn selectedTargetPawn; 
     public Attack selectedAttack;
+    public SpecialAction selectedAction;
 
     public bool isMoving { get; set; }
     public bool isAttacking { get; set; }
@@ -232,6 +233,70 @@ public class SelectManager : MonoBehaviour
             Debug.Log("Clicked tile is not within attack range.");
         }
     }
+
+    private void TryActPawn(Hex hexComponent, GameObject clickedTile) // AttackHUD has done our BFS and highlighting so now
+    // we add our attacks to a list and associate an attack to each pawn (could use another list but eh). ZO
+    {
+        if (IsTileInRange(hexComponent.HexCoords))
+        {
+            Pawn targetPawn = FindPawnOnTile(clickedTile);
+
+            if (targetPawn != null && !targetPawn.hasMoved) // Pawn must be on tile for an attack to work. Perhaps set no friendly fire here? ZO
+            { // Keep friendly fire but pawn cannot attack a tile where a pawn has moved from. ZO
+
+                Pawn currentPawn = GetCurrentPawn();
+                if (currentPawn != null && !currentPawn.hasActed)
+                {
+                    if (selectedAction != null) // Ensure the selected attack is assigned before queuing the attack. ZO
+                    {
+                        actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
+                        currentPawn.Attack(); // hasAttacked = true. ZO
+                        DisableAllHighlights();
+                        Debug.Log($"{currentPawn.pawnName} queued to attack {targetPawn.pawnName} for {selectedAction} dealing {selectedAction.damage} damage.");
+                    }
+                    else
+                    {
+                        Debug.LogError("No attack selected for the current pawn.");
+                    }
+                }
+                else
+                {
+                    Debug.Log("No pawn selected to attack or pawn has already attacked.");
+                }
+            }
+            else if (targetPawn != null && targetPawn.hasMoved && plannedTiles.Contains(hexComponent.HexCoords)) // Pawn can attack a tile where a pawn moves to. ZO
+            {
+                Pawn currentPawn = GetCurrentPawn();
+                if (currentPawn != null && !currentPawn.hasActed)
+                {
+                    // Ensure the selected attack is assigned before queuing the attack. ZO
+                    if (selectedAction != null)
+                    {
+                        actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
+                        currentPawn.Act(); // hasAttacked = true. ZO
+                        DisableAllHighlights();
+                        Debug.Log($"{currentPawn.pawnName} queued to attack {targetPawn.pawnName} for {selectedAction} dealing {selectedAction.damage} damage.");
+                    }
+                    else
+                    {
+                        Debug.LogError("No attack selected for the current pawn.");
+                    }
+                }
+                else
+                {
+                    Debug.Log("No pawn selected to attack or pawn has already attacked.");
+                }
+            }
+            else
+            {
+                Debug.Log("No enemy pawn on this tile.");
+            }
+        }
+        else
+        {
+            Debug.Log("Clicked tile is not within attack range.");
+        }
+    }
     private Pawn GetCurrentPawn() // PawnHUD button selected pawn. ZO
     {
         PawnHUD pawnHUD = FindObjectOfType<PawnHUD>();
@@ -398,6 +463,67 @@ public class SelectManager : MonoBehaviour
             }
         }
     }
+
+    public void HighlightTilesForAction(Pawn pawn, SpecialAction action) // Ensures all tiles are highlighted. including if a pawn is on it. 
+    // do not include self for highlighting for valid. ZO
+    {
+        Vector3Int currentTileCoords;
+
+        // If pawn has a move planned, use the planned tile for attack calculations. ZO. ZO
+        Action moveAction = actionQueue.Find(action => action.pawn == pawn && action.actionType == ActionType.Move);
+        if (moveAction != null)
+        {
+            currentTileCoords = moveAction.targetTile;  // Use the planned tile. ZO
+        }
+        else
+        {
+            currentTileCoords = pawn.CurrentTile.GetComponent<Hex>().HexCoords; // Use the current tile. ZO
+        }
+        BFSResult bfsResult = GraphSearch.BFSGetRange(hexGrid, currentTileCoords, action.range);
+        neighbours = new List<Vector3Int>(bfsResult.GetRangePositions());
+        neighbours.Remove(currentTileCoords);
+
+        Hex currentTileHex = hexGrid.GetTileAt(currentTileCoords);
+        if (currentTileHex != null)
+        {
+            highlightedTile = currentTileHex;
+            currentTileHex.EnableHighlight(Color.white); // Highlight current tile in white. ZO
+        }
+
+        foreach (Vector3Int neighbour in neighbours)
+        {
+            Hex tileHex = hexGrid.GetTileAt(neighbour);
+            if (tileHex != null)
+            {
+                Pawn pawnOnTile = FindPawnOnTile(tileHex.gameObject);
+                if (pawnOnTile != null)
+                {
+                    if (pawnOnTile.hasMoved && !plannedTiles.Contains(tileHex.HexCoords))
+                    {
+                        continue;
+                    }
+                    // Check the parent GameObject tag of the pawn on the tile. ZO
+                    string parentTag = pawnOnTile.transform.parent.tag;
+                    string currentTag = pawn.transform.parent.tag;
+
+                    // Apply different highlight colors based on the parent's tag. ZO
+                    if (currentTag != parentTag)
+                    {
+                        tileHex.EnableHighlight(Color.red);  // Enemy tile in red. ZO
+                    }
+                    else if (parentTag == currentTag)
+                    {
+                        tileHex.EnableHighlight(Color.blue);  // Ally tile in blue. ZO
+                    }
+                }
+                else
+                {
+                    tileHex.EnableHighlight(Color.green);  // blank tiles are green. show range. ZO
+                }
+            }
+        }
+    }
+
     private void DisableAllHighlights() // Reset highlight and bfs but not planned tiles (only at end do we reset). ZO
     {
         // Clear highlight on the current tile if it exists. ZO

@@ -15,6 +15,7 @@ public class Pawn : MonoBehaviour
     public int maxHP { get; private set; }
     public int currentHP { get; private set; }
     public bool hasAttacked { get; private set; }
+    public bool hasActed { get; private set; }
     public bool hasMoved { get; private set; }
     public GameObject CurrentTile { get; set; }
     public Attack selectedAttack { get; set; }
@@ -76,5 +77,10 @@ public class Pawn : MonoBehaviour
     public void Attack()
     {
         hasAttacked = true;
+    }
+
+    public void Act()
+    {
+        hasActed = true;
     }
 }
