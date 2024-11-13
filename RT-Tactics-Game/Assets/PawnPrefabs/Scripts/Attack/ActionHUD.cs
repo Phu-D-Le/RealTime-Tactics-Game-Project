@@ -55,7 +55,7 @@ public class ActionHUD : MonoBehaviour
     {
         if (selectManager.ready)
         {
-            selectManager.SetAttackMode(true);
+            selectManager.SetActMode(true);
             selectManager.HighlightTilesForAction(pawn, action); //WIP, need to find a way to properly implement actions outside of damage and range, also need to figure out AOE
             selectManager.selectedAction = action;
         }
