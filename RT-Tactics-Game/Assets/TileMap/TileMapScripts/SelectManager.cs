@@ -254,6 +254,11 @@ public class SelectManager : MonoBehaviour
     {
         Vector3Int targetCoords = hexComponent.HexCoords;
         Pawn currentPawn = GetCurrentPawn();
+        if(currentPawn.specialDisable)
+        {
+            Debug.Log("This pawn is cursed, no special actions");
+            return;
+        }
         if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
         {
             switch (selectedAction.actionName) //checks which special action is being used
@@ -266,10 +271,9 @@ public class SelectManager : MonoBehaviour
                             actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, null, selectedAction));
                             plannedTiles.Add(targetCoords);
                             currentPawn.Act();
-                            //need to disable all highlights except the selected tile
-                            //selected tile should have a red highlight for 2 turns
+                            //selected tile should have a marker for 2 turns
 
-                            //DisableAllHighlights();
+                            DisableAllHighlights();
                             Debug.Log($"{currentPawn.pawnName} casts wall of fire");
                         }
                         else
@@ -331,9 +335,9 @@ public class SelectManager : MonoBehaviour
                     {
                         Pawn targetPawn = FindPawnOnTile(clickedTile);
 
-                        if (targetPawn == null && !targetPawn.hasMoved)
+                        if (targetPawn == null && !plannedTiles.Contains(hexComponent.HexCoords))
                         {
-                            if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
+                            if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasMoved && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, null, selectedAction));
                                 currentPawn.Act();
@@ -342,21 +346,7 @@ public class SelectManager : MonoBehaviour
                             }
                             else
                             {
-                                Debug.Log("No pawn selected to act or pawn has already attacked/acted.");
-                            }
-                        }
-                        else if (targetPawn == null && targetPawn.hasMoved && plannedTiles.Contains(hexComponent.HexCoords))
-                        {
-                            if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
-                            {
-                                actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, null, selectedAction));
-                                currentPawn.Act();
-                                DisableAllHighlights();
-                                Debug.Log($"{currentPawn.pawnName} casts necromancy.");
-                            }
-                            else
-                            {
-                                Debug.Log("No pawn selected to act or pawn has already attacked/acted.");
+                                Debug.Log("No pawn selected to act or pawn has already attacked/acted/moved.");
                             }
                         }
                         else
@@ -732,6 +722,19 @@ public class SelectManager : MonoBehaviour
                 else
                 {
                     Debug.LogError("attack is null during attack execution.");
+                }
+            }
+            else if (action.actionType == ActionType.SpecialAction)
+            {
+                switch(action.selectedSpecialAction.actionName)
+                {
+                    case "WallOfFire":
+                        break;
+                    case "Curse":
+                        action.targetPawn.specialDisable = true;
+                        break;
+                    case "Necromancy":
+                        break;
                 }
             }
         }

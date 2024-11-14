@@ -13,4 +13,5 @@ public class PawnType : ScriptableObject
     public int pawnTypeSpeed;
     public int pawnTypeMaxHP;
     public int pawnTypeCurrentHP;
+    //public bool specialDisable = false;
 }

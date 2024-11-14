@@ -7,6 +7,7 @@ public class ActionHUD : MonoBehaviour
 {
     private List<Button> actionButtons;
     private SelectManager selectManager;
+    public bool specialDisable;
 
     void Awake()
     {
@@ -16,6 +17,7 @@ public class ActionHUD : MonoBehaviour
     }
     public void SetUpActions(Pawn pawn)
     {
+        specialDisable = pawn.specialDisable;
         for (int i = 0; i < actionButtons.Count; i++)
         {
             if (i < pawn.actions.Count)

@@ -21,6 +21,8 @@ public class Pawn : MonoBehaviour
     public Attack selectedAttack { get; set; }
     public SpecialAction selectedAction { get; set; }
 
+    public bool specialDisable = false;
+
     public PawnType pawnType;
     public HealthHUD healthHUD;
     private Player player;

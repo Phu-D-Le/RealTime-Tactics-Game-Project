@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST}
 public class BattleSystem : MonoBehaviour
-{
+{   
     public GameObject Player;
     public GameObject Enemy;
     private Player firstPlayer;
@@ -20,7 +20,9 @@ public class BattleSystem : MonoBehaviour
     public TextMeshProUGUI turnDialogueText; // Set as Turn Display in PlayerUI. ZO
     public BattleState state;
     public TileMapManager tileMapManager;
-
+    public int turns;
+    private bool playerHadTurn;
+    private bool enemyHadTurn;
     void Start()
     {
         state = BattleState.START;
@@ -29,6 +31,11 @@ public class BattleSystem : MonoBehaviour
         Enemy = GameObject.FindWithTag("Enemy");
 
         tileMapManager.GenerateTileMap();
+
+        turns = 0;
+
+        playerHadTurn = false;
+        enemyHadTurn = false;
 
         TileMapSpawner spawner = FindObjectOfType<TileMapSpawner>();
         spawner.InitializeSpawner();
@@ -104,16 +111,29 @@ public class BattleSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             attackHUD.gameObject.SetActive(false);
+            
             actionHUD.gameObject.SetActive(false);
+            
+                
+            //pawnHUD.gameObject.SetActive(false);
 
             if (state == BattleState.PLAYERTURN)
             {
                 PlayerAttack();
+                playerHadTurn = true;
             }
             else if (state == BattleState.ENEMYTURN)
             {
                 EnemyAttack();
+                enemyHadTurn = true;
             }
+        }
+
+        if(playerHadTurn && enemyHadTurn)
+        {
+            playerHadTurn = false;
+            enemyHadTurn = false;
+            turns++;
         }
     }
 }

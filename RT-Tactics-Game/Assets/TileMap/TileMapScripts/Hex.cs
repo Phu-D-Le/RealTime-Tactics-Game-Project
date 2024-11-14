@@ -48,6 +48,7 @@ public class Hex : MonoBehaviour
     {
         highlight.ToggleGlow(false);
     }
+    
 }
 public enum HexType
 {
