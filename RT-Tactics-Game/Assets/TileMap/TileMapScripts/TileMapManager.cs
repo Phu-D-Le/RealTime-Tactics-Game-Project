@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TileMapManager : MonoBehaviour
 {
-    public GameObject[] TileMaps; 
+    public GameObject[] TileMaps;
     public Camera mainCamera;
     private HexGrid hexGrid;
     public SelectManager selectManager;
@@ -13,17 +13,38 @@ public class TileMapManager : MonoBehaviour
 
     public void GenerateTileMap()
     {
-        //gen tile map
-        GameObject tileMap = Instantiate(TileMaps[Random.Range(0, TileMaps.Length)]); //random map pool
-        //GameObject tileMap = Instantiate(TileMaps[4]); // Hardcode for testing, minus one for manual input -> work (1, 4, 8, 9), dont (2, 3, 5, 6, 7, 10)
+        // Generate a random tile map from the available prefabs
+        GameObject tileMap = Instantiate(TileMaps[Random.Range(0, TileMaps.Length)]); // Random map pool
         Debug.Log("Tile Map: " + tileMap.name);
         CenterTileMap(tileMap);
 
+        // Initialize the HexGrid
         hexGrid = GetComponent<HexGrid>();
-        hexGrid.StartHexGrid();
+        if (hexGrid == null)
+        {
+            Debug.LogError("HexGrid component not found on TileMapManager!");
+        }
+        else
+        {
+            hexGrid.StartHexGrid();
+        }
 
+        // Initialize the SelectManager
         selectManager = GetComponent<SelectManager>();
-        selectManager.InitializeSelectManager(mainCamera, hexGrid);
+        if (selectManager == null)
+        {
+            Debug.LogError("SelectManager component not found on TileMapManager!");
+        }
+        else
+        {
+            selectManager.InitializeSelectManager(mainCamera, hexGrid);
+        }
+    }
+
+    // Expose the HexGrid to other scripts
+    public HexGrid GetHexGrid()
+    {
+        return hexGrid;
     }
 
     void CenterTileMap(GameObject tileMap)

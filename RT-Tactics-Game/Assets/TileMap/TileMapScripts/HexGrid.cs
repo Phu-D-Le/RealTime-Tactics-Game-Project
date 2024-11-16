@@ -9,8 +9,12 @@ public class HexGrid : MonoBehaviour
 {
     Dictionary<Vector3Int, Hex> hexTileDict = new Dictionary<Vector3Int, Hex>();
     Dictionary<Vector3Int, List<Vector3Int>> hexTileNeighboursDict = new Dictionary<Vector3Int, List<Vector3Int>>();
+    public Dictionary<Vector3Int, Hex> GetHexTileDict()
+    {
+        return hexTileDict;
+    }
 
-    
+
     public void StartHexGrid()
     {
         foreach (Hex hex in FindObjectsOfType<Hex>())
@@ -64,6 +68,7 @@ public static class Direction
         new Vector3Int(0, 0, -1), //S1
         new Vector3Int(-1, 0, 0), //W
     };
+
     public static List<Vector3Int> GetDirectionList(int z)
         => z % 2 == 0 ? directionsOffsetEven : directionsOffsetOdd;
 }
