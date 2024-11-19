@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum ActionType
@@ -10,22 +8,24 @@ public enum ActionType
 
 public class Action
 {
-    public ActionType actionType;
-    public Pawn pawn;
-    public Vector3Int targetTile;
-    public Pawn targetPawn;
-    public Attack selectedAttack;
+    public ActionType actionType { get; }
+    public Pawn pawn { get; }
+    public Vector3Int targetTile { get; }
+    public Pawn targetPawn { get; }
+    public Attack selectedAttack { get; }
 
-    public Action(ActionType type, Pawn pawn, Vector3Int targetTile)
+    // Constructor for Move actions
+    public Action(ActionType actionType, Pawn pawn, Vector3Int targetTile)
     {
-        this.actionType = type;
+        this.actionType = actionType;
         this.pawn = pawn;
         this.targetTile = targetTile;
     }
 
-    public Action(ActionType type, Pawn pawn, Pawn targetPawn, Attack selectedAttack)
+    // Constructor for Attack actions
+    public Action(ActionType actionType, Pawn pawn, Pawn targetPawn, Attack selectedAttack)
     {
-        this.actionType = type;
+        this.actionType = actionType;
         this.pawn = pawn;
         this.targetPawn = targetPawn;
         this.selectedAttack = selectedAttack;

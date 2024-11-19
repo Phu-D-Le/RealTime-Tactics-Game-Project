@@ -6,11 +6,9 @@ using System.Linq;
 
 public enum BattleState
 {
-    START,
-    PLAYERTURN,
-    ENEMYTURN,
-    WON,
-    LOST
+    PLAYER_INPUT,
+    RESOLVING_ACTIONS,
+    GAME_OVER
 }
 
 public class BattleSystem : MonoBehaviour
@@ -26,10 +24,11 @@ public class BattleSystem : MonoBehaviour
     public TileMapManager tileMapManager;
     private TileMapSpawner spawner;
 
+    private List<Action> playerActionsQueue = new List<Action>();
+    private List<Action> enemyActionsQueue = new List<Action>();
+
     void Start()
     {
-        state = BattleState.START;
-
         Player = GameObject.FindWithTag("Player");
         Enemy = GameObject.FindWithTag("Enemy");
 
@@ -38,7 +37,7 @@ public class BattleSystem : MonoBehaviour
         spawner = FindObjectOfType<TileMapSpawner>();
         if (spawner == null)
         {
-            Debug.LogError("TileMapSpawner not found in the scene. Make sure it is attached to the TileMapManager.");
+            Debug.LogError("TileMapSpawner not found in the scene.");
             return;
         }
 
@@ -59,7 +58,8 @@ public class BattleSystem : MonoBehaviour
 
         attackHUD.gameObject.SetActive(false);
 
-        SetUpBattle();
+        state = BattleState.PLAYER_INPUT;
+        PlayerTurn();
     }
 
     private void InitializePawns(Player player, string tag)
@@ -74,62 +74,87 @@ public class BattleSystem : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (state == BattleState.PLAYER_INPUT && Input.GetKeyDown(KeyCode.Space))
         {
-            if (state == BattleState.PLAYERTURN)
-            {
-                EndPlayerTurn();
-            }
+            state = BattleState.RESOLVING_ACTIONS;
+            StartCoroutine(ResolveActions());
         }
     }
 
-    void SetUpBattle()
+    private void PlayerTurn()
     {
-        state = BattleState.PLAYERTURN;
+        if (state != BattleState.PLAYER_INPUT) return;
+
+        turnDialogueText.text = "Player's Turn!";
+        pawnHUD.SetPlayerCanvas(firstPlayer);
+
+        playerActionsQueue.Clear();
+    }
+
+    public void QueuePlayerAction(Action action)
+    {
+        if (state == BattleState.PLAYER_INPUT)
+        {
+            playerActionsQueue.Add(action);
+        }
+    }
+
+    private IEnumerator ResolveActions()
+    {
+        turnDialogueText.text = "Resolving Actions...";
+
+        GenerateEnemyActions();
+
+        List<Action> combinedActionsQueue = CombineActions(playerActionsQueue, enemyActionsQueue);
+
+        List<IEnumerator> actionCoroutines = new List<IEnumerator>();
+
+        foreach (var action in combinedActionsQueue)
+        {
+            if (action.pawn.currentHP > 0)
+            {
+                if (action.actionType == ActionType.Move)
+                {
+                    actionCoroutines.Add(MovePawn(action.pawn, action.targetTile));
+                }
+                else if (action.actionType == ActionType.Attack)
+                {
+                    actionCoroutines.Add(ExecuteAttack(action));
+                }
+            }
+        }
+
+        // Execute all actions simultaneously
+        yield return ExecuteAllActions(actionCoroutines);
+
+        state = BattleState.PLAYER_INPUT;
         PlayerTurn();
     }
 
-    void PlayerTurn()
+    private IEnumerator ExecuteAllActions(List<IEnumerator> coroutines)
     {
-        turnDialogueText.text = "Player's Turn!";
-        pawnHUD.SetPlayerCanvas(firstPlayer);
+        foreach (var coroutine in coroutines)
+        {
+            StartCoroutine(coroutine);
+        }
+
+        yield return new WaitForSeconds(2f); // Allow time for all actions to resolve
     }
 
-    void EndPlayerTurn()
+    private void GenerateEnemyActions()
     {
-        state = BattleState.ENEMYTURN;
-        StartCoroutine(ExecuteEnemyTurn());
-    }
-
-    private IEnumerator ExecuteEnemyTurn()
-    {
-        turnDialogueText.text = "Enemy's Turn!";
-
-        // Track occupied tiles to prevent stacking
-        HashSet<Vector3Int> occupiedTiles = GetOccupiedTiles();
+        enemyActionsQueue.Clear();
 
         foreach (var pawn in enemyPlayer.pawns)
         {
-            Pawn enemyPawn = pawn.GetComponent<Pawn>();
-            if (!enemyPawn.hasMoved && !enemyPawn.hasAttacked)
+            if (pawn.GetComponent<Pawn>().currentHP > 0) // Ensure pawn is alive
             {
-                // Try attacking first
-                if (TryEnemyAttack(enemyPawn))
+                if (!TryEnemyAttack(pawn.GetComponent<Pawn>()))
                 {
-                    yield return new WaitForSeconds(1f); // Simulate attack delay
-                }
-                else
-                {
-                    // Move toward the nearest player pawn
-                    TryMoveTowardPlayer(enemyPawn, occupiedTiles);
-                    yield return new WaitForSeconds(1f); // Simulate move delay
+                    TryMoveTowardPlayer(pawn.GetComponent<Pawn>());
                 }
             }
         }
-
-        // End the enemy turn and switch back to the player
-        state = BattleState.PLAYERTURN;
-        PlayerTurn();
     }
 
     private bool TryEnemyAttack(Pawn enemyPawn)
@@ -139,90 +164,118 @@ public class BattleSystem : MonoBehaviour
             List<Pawn> playerPawnsInRange = FindPawnsInRange(enemyPawn, attack.range, "PlayerPawn");
             if (playerPawnsInRange.Count > 0)
             {
-                // Target the first player pawn in range
-                Pawn targetPawn = playerPawnsInRange[0];
-                enemyPawn.DealAttack(attack, targetPawn);
-                enemyPawn.Attack(); // Mark as attacked
-                Debug.Log($"{enemyPawn.pawnName} attacked {targetPawn.pawnName}");
+                Action attackAction = new Action(ActionType.Attack, enemyPawn, playerPawnsInRange[0], attack);
+                enemyActionsQueue.Add(attackAction);
                 return true;
             }
         }
         return false;
     }
 
-    private void TryMoveTowardPlayer(Pawn enemyPawn, HashSet<Vector3Int> occupiedTiles)
+    private void TryMoveTowardPlayer(Pawn enemyPawn)
     {
-        // Find the nearest player pawn
         Pawn nearestPlayerPawn = FindNearestPawn(enemyPawn, "PlayerPawn");
-
         if (nearestPlayerPawn != null)
         {
-            // Find tiles in range of the enemy pawn
-            List<Vector3Int> tilesInRange = FindAvailableTiles(enemyPawn);
+            List<Vector3Int> tilesInRange = FindAvailableTiles(enemyPawn).ToList();
 
-            // Exclude occupied tiles
-            tilesInRange = tilesInRange.Where(tile => !occupiedTiles.Contains(tile)).ToList();
+            Vector3Int targetTile = tilesInRange
+                .OrderBy(tile => Vector3Int.Distance(tile, nearestPlayerPawn.CurrentTile.GetComponent<Hex>().HexCoords))
+                .FirstOrDefault();
 
-            if (tilesInRange.Count > 0)
+            if (targetTile != null && !IsTileOccupied(targetTile))
             {
-                // Sort tiles by distance to the nearest player pawn and move closer
-                Vector3Int targetTileCoords = tilesInRange
-                    .OrderBy(tile => Vector3Int.Distance(tile, nearestPlayerPawn.CurrentTile.GetComponent<Hex>().HexCoords))
-                    .FirstOrDefault();
-
-                GameObject targetTile = tileMapManager.GetComponent<HexGrid>().GetTileAt(targetTileCoords)?.gameObject;
-                if (targetTile != null)
-                {
-                    StartCoroutine(MovePawnToTile(enemyPawn, targetTile));
-                    enemyPawn.Move(); // Mark as moved
-                    occupiedTiles.Add(targetTileCoords); // Mark the tile as occupied
-                }
+                Action moveAction = new Action(ActionType.Move, enemyPawn, targetTile);
+                enemyActionsQueue.Add(moveAction);
             }
-            else
-            {
-                Debug.LogWarning($"{enemyPawn.pawnName} could not find an available tile to move to.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"{enemyPawn.pawnName} could not find a valid target.");
         }
     }
 
-    private HashSet<Vector3Int> GetOccupiedTiles()
+    private IEnumerator ExecuteAttack(Action action)
     {
-        HashSet<Vector3Int> occupiedTiles = new HashSet<Vector3Int>();
+        action.pawn.DealAttack(action.selectedAttack, action.targetPawn);
+        yield return new WaitForSeconds(1f);
+    }
 
-        // Include tiles occupied by all player and enemy pawns
+    private IEnumerator MovePawn(Pawn pawn, Vector3Int targetTileCoords)
+    {
+        GameObject targetTile = tileMapManager.GetComponent<HexGrid>().GetTileAt(targetTileCoords)?.gameObject;
+        if (targetTile != null)
+        {
+            Hex targetHex = targetTile.GetComponent<Hex>();
+            if (targetHex != null)
+            {
+                Vector3 targetPosition = targetHex.transform.position + new Vector3(0, 2f, 0);
+                while (Vector3.Distance(pawn.transform.position, targetPosition) > 0.1f)
+                {
+                    pawn.transform.position = Vector3.MoveTowards(
+                        pawn.transform.position,
+                        targetPosition,
+                        Time.deltaTime * pawn.pawnSpeed
+                    );
+                    yield return null;
+                }
+            }
+        }
+
+        pawn.CurrentTile = targetTile;
+    }
+
+    private bool IsTileOccupied(Vector3Int tileCoords)
+    {
         foreach (var pawn in FindObjectsOfType<Pawn>())
         {
-            if (pawn.CurrentTile != null)
+            if (pawn.CurrentTile.GetComponent<Hex>().HexCoords == tileCoords)
             {
-                Hex hex = pawn.CurrentTile.GetComponent<Hex>();
-                if (hex != null)
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<Action> CombineActions(List<Action> playerActions, List<Action> enemyActions)
+    {
+        List<Action> combinedActions = new List<Action>();
+        combinedActions.AddRange(playerActions);
+        combinedActions.AddRange(enemyActions);
+        return combinedActions;
+    }
+
+    private List<Pawn> FindPawnsInRange(Pawn pawn, int range, string targetTag)
+    {
+        BFSResult bfsResult = GraphSearch.BFSGetRange(tileMapManager.GetComponent<HexGrid>(), pawn.CurrentTile.GetComponent<Hex>().HexCoords, range);
+        List<Pawn> pawnsInRange = new List<Pawn>();
+
+        foreach (Vector3Int position in bfsResult.GetRangePositions())
+        {
+            GameObject tile = tileMapManager.GetComponent<HexGrid>().GetTileAt(position)?.gameObject;
+            if (tile != null)
+            {
+                Pawn targetPawn = FindPawnOnTile(tile);
+                if (targetPawn != null && targetPawn.CompareTag(targetTag))
                 {
-                    occupiedTiles.Add(hex.HexCoords);
+                    pawnsInRange.Add(targetPawn);
                 }
             }
         }
 
-        return occupiedTiles;
+        return pawnsInRange;
     }
 
-    private Pawn FindNearestPawn(Pawn enemyPawn, string targetTag)
+    private Pawn FindNearestPawn(Pawn pawn, string targetTag)
     {
         Pawn nearestPawn = null;
         float closestDistance = float.MaxValue;
 
-        foreach (var pawn in FindObjectsOfType<Pawn>())
+        foreach (var targetPawn in FindObjectsOfType<Pawn>())
         {
-            if (pawn.CompareTag(targetTag))
+            if (targetPawn.CompareTag(targetTag))
             {
-                float distance = Vector3.Distance(enemyPawn.transform.position, pawn.transform.position);
+                float distance = Vector3.Distance(pawn.transform.position, targetPawn.transform.position);
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;
-                    nearestPawn = pawn;
+                    nearestPawn = targetPawn;
                 }
             }
         }
@@ -230,83 +283,18 @@ public class BattleSystem : MonoBehaviour
         return nearestPawn;
     }
 
-    private IEnumerator MovePawnToTile(Pawn pawn, GameObject targetTile)
+    private IEnumerable<Vector3Int> FindAvailableTiles(Pawn pawn)
     {
-        Hex targetHex = targetTile.GetComponent<Hex>();
-        Hex currentHex = pawn.CurrentTile.GetComponent<Hex>();
-
-        if (targetHex != null && currentHex != null)
-        {
-            BFSResult bfsResult = GraphSearch.BFSGetRange(tileMapManager.GetComponent<HexGrid>(), currentHex.HexCoords, pawn.pawnSpeed);
-            if (bfsResult.IsHexPositionInRange(targetHex.HexCoords))
-            {
-                List<Vector3Int> path = GraphSearch.GetExactPathToDestination(targetHex.HexCoords, bfsResult.visitedNodesDict);
-                foreach (Vector3Int step in path)
-                {
-                    Hex stepHex = tileMapManager.GetComponent<HexGrid>().GetTileAt(step);
-                    if (stepHex != null)
-                    {
-                        Vector3 targetPosition = stepHex.transform.position + new Vector3(0, 2f, 0); // Adjust Y if needed
-                        while (Vector3.Distance(pawn.transform.position, targetPosition) > 0.1f)
-                        {
-                            pawn.transform.position = Vector3.MoveTowards(
-                                pawn.transform.position,
-                                targetPosition,
-                                Time.deltaTime * pawn.pawnSpeed
-                            );
-                            yield return null;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Debug.LogError($"No valid path to target tile {targetHex.HexCoords}");
-            }
-        }
-        else
-        {
-            Debug.LogError("Target or current hex is null.");
-        }
-
-        pawn.CurrentTile = targetTile;
-        Debug.Log($"{pawn.pawnName} moved to {targetTile.name}");
-    }
-
-    private List<Pawn> FindPawnsInRange(Pawn enemyPawn, int range, string targetTag)
-    {
-        BFSResult bfsResult = GraphSearch.BFSGetRange(tileMapManager.GetComponent<HexGrid>(), enemyPawn.CurrentTile.GetComponent<Hex>().HexCoords, range);
-        List<Vector3Int> rangePositions = new List<Vector3Int>(bfsResult.GetRangePositions());
-        List<Pawn> pawnsInRange = new List<Pawn>();
-
-        foreach (Vector3Int position in rangePositions)
-        {
-            GameObject tile = tileMapManager.GetComponent<HexGrid>().GetTileAt(position)?.gameObject;
-            if (tile != null)
-            {
-                Pawn pawnOnTile = FindPawnOnTile(tile);
-                if (pawnOnTile != null && pawnOnTile.CompareTag(targetTag))
-                {
-                    pawnsInRange.Add(pawnOnTile);
-                }
-            }
-        }
-        return pawnsInRange;
-    }
-
-    private List<Vector3Int> FindAvailableTiles(Pawn enemyPawn)
-    {
-        BFSResult bfsResult = GraphSearch.BFSGetRange(tileMapManager.GetComponent<HexGrid>(), enemyPawn.CurrentTile.GetComponent<Hex>().HexCoords, enemyPawn.pawnSpeed);
-        return bfsResult.GetRangePositions().Where(pos => tileMapManager.GetComponent<HexGrid>().GetTileAt(pos) != null).ToList();
+        BFSResult bfsResult = GraphSearch.BFSGetRange(tileMapManager.GetComponent<HexGrid>(), pawn.CurrentTile.GetComponent<Hex>().HexCoords, pawn.pawnSpeed);
+        return bfsResult.GetRangePositions().Where(pos => !IsTileOccupied(pos));
     }
 
     private Pawn FindPawnOnTile(GameObject tile)
     {
-        Hex clickedHex = tile.GetComponent<Hex>();
-        if (clickedHex == null) return null;
+        Hex hex = tile.GetComponent<Hex>();
+        if (hex == null) return null;
 
-        Vector3Int hexCoords = clickedHex.HexCoords;
-
+        Vector3Int hexCoords = hex.HexCoords;
         foreach (Pawn pawn in FindObjectsOfType<Pawn>())
         {
             if (pawn.CurrentTile.GetComponent<Hex>().HexCoords == hexCoords)
@@ -314,6 +302,7 @@ public class BattleSystem : MonoBehaviour
                 return pawn;
             }
         }
+
         return null;
     }
 }
