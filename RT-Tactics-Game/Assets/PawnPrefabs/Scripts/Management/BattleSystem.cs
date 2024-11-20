@@ -26,6 +26,7 @@ public class BattleSystem : MonoBehaviour
 
     private List<Action> playerActionsQueue = new List<Action>();
     private List<Action> enemyActionsQueue = new List<Action>();
+    private bool isFirstTurn = true; // To ensure AI moves first in the first round
 
     void Start()
     {
@@ -59,7 +60,14 @@ public class BattleSystem : MonoBehaviour
         attackHUD.gameObject.SetActive(false);
 
         state = BattleState.PLAYER_INPUT;
-        PlayerTurn();
+        if (isFirstTurn)
+        {
+            StartCoroutine(FirstTurnAI());
+        }
+        else
+        {
+            PlayerTurn();
+        }
     }
 
     private void InitializePawns(Player player, string tag)
@@ -99,6 +107,18 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    private IEnumerator FirstTurnAI()
+    {
+        turnDialogueText.text = "Enemy's Turn!";
+        isFirstTurn = false;
+
+        GenerateEnemyActions();
+        yield return ResolveSimultaneousActions(enemyActionsQueue);
+
+        PlayerTurn();
+        state = BattleState.PLAYER_INPUT;
+    }
+
     private IEnumerator ResolveActions()
     {
         turnDialogueText.text = "Resolving Actions...";
@@ -107,9 +127,18 @@ public class BattleSystem : MonoBehaviour
 
         List<Action> combinedActionsQueue = CombineActions(playerActionsQueue, enemyActionsQueue);
 
+        // Execute all actions simultaneously
+        yield return ResolveSimultaneousActions(combinedActionsQueue);
+
+        PlayerTurn();
+        state = BattleState.PLAYER_INPUT;
+    }
+
+    private IEnumerator ResolveSimultaneousActions(List<Action> actions)
+    {
         List<IEnumerator> actionCoroutines = new List<IEnumerator>();
 
-        foreach (var action in combinedActionsQueue)
+        foreach (var action in actions)
         {
             if (action.pawn.currentHP > 0)
             {
@@ -124,16 +153,7 @@ public class BattleSystem : MonoBehaviour
             }
         }
 
-        // Execute all actions simultaneously
-        yield return ExecuteAllActions(actionCoroutines);
-
-        state = BattleState.PLAYER_INPUT;
-        PlayerTurn();
-    }
-
-    private IEnumerator ExecuteAllActions(List<IEnumerator> coroutines)
-    {
-        foreach (var coroutine in coroutines)
+        foreach (var coroutine in actionCoroutines)
         {
             StartCoroutine(coroutine);
         }
