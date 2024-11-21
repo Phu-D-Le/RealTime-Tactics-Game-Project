@@ -26,7 +26,6 @@ public class BattleSystem : MonoBehaviour
 
     private List<Action> playerActionsQueue = new List<Action>();
     private List<Action> enemyActionsQueue = new List<Action>();
-    private bool isFirstTurn = true; // To ensure AI moves first in the first round
 
     void Start()
     {
@@ -60,14 +59,7 @@ public class BattleSystem : MonoBehaviour
         attackHUD.gameObject.SetActive(false);
 
         state = BattleState.PLAYER_INPUT;
-        if (isFirstTurn)
-        {
-            StartCoroutine(FirstTurnAI());
-        }
-        else
-        {
-            PlayerTurn();
-        }
+        PlayerTurn();
     }
 
     private void InitializePawns(Player player, string tag)
@@ -107,58 +99,22 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    private IEnumerator FirstTurnAI()
-    {
-        turnDialogueText.text = "Enemy's Turn!";
-        isFirstTurn = false;
-
-        GenerateEnemyActions();
-        yield return ResolveSimultaneousActions(enemyActionsQueue);
-
-        PlayerTurn();
-        state = BattleState.PLAYER_INPUT;
-    }
-
     private IEnumerator ResolveActions()
     {
         turnDialogueText.text = "Resolving Actions...";
 
+        // Generate AI actions
         GenerateEnemyActions();
 
+        // Combine player and AI actions into a single list
         List<Action> combinedActionsQueue = CombineActions(playerActionsQueue, enemyActionsQueue);
 
         // Execute all actions simultaneously
-        yield return ResolveSimultaneousActions(combinedActionsQueue);
+        yield return ExecuteSimultaneousActions(combinedActionsQueue);
 
+        // Reset for the next player turn
         PlayerTurn();
         state = BattleState.PLAYER_INPUT;
-    }
-
-    private IEnumerator ResolveSimultaneousActions(List<Action> actions)
-    {
-        List<IEnumerator> actionCoroutines = new List<IEnumerator>();
-
-        foreach (var action in actions)
-        {
-            if (action.pawn.currentHP > 0)
-            {
-                if (action.actionType == ActionType.Move)
-                {
-                    actionCoroutines.Add(MovePawn(action.pawn, action.targetTile));
-                }
-                else if (action.actionType == ActionType.Attack)
-                {
-                    actionCoroutines.Add(ExecuteAttack(action));
-                }
-            }
-        }
-
-        foreach (var coroutine in actionCoroutines)
-        {
-            StartCoroutine(coroutine);
-        }
-
-        yield return new WaitForSeconds(2f); // Allow time for all actions to resolve
     }
 
     private void GenerateEnemyActions()
@@ -167,7 +123,7 @@ public class BattleSystem : MonoBehaviour
 
         foreach (var pawn in enemyPlayer.pawns)
         {
-            if (pawn.GetComponent<Pawn>().currentHP > 0) // Ensure pawn is alive
+            if (pawn.GetComponent<Pawn>().currentHP > 0)
             {
                 if (!TryEnemyAttack(pawn.GetComponent<Pawn>()))
                 {
@@ -211,6 +167,33 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    private IEnumerator ExecuteSimultaneousActions(List<Action> actions)
+    {
+        List<IEnumerator> actionCoroutines = new List<IEnumerator>();
+
+        foreach (var action in actions)
+        {
+            if (action.pawn.currentHP > 0)
+            {
+                if (action.actionType == ActionType.Move)
+                {
+                    actionCoroutines.Add(MovePawn(action.pawn, action.targetTile));
+                }
+                else if (action.actionType == ActionType.Attack)
+                {
+                    actionCoroutines.Add(ExecuteAttack(action));
+                }
+            }
+        }
+
+        foreach (var coroutine in actionCoroutines)
+        {
+            StartCoroutine(coroutine);
+        }
+
+        yield return new WaitForSeconds(2f); // Allow time for all actions to resolve
+    }
+
     private IEnumerator ExecuteAttack(Action action)
     {
         action.pawn.DealAttack(action.selectedAttack, action.targetPawn);
@@ -219,6 +202,12 @@ public class BattleSystem : MonoBehaviour
 
     private IEnumerator MovePawn(Pawn pawn, Vector3Int targetTileCoords)
     {
+        if (IsTileOccupied(targetTileCoords))
+        {
+            Debug.LogWarning($"Target tile {targetTileCoords} is already occupied. Finding nearest available tile.");
+            targetTileCoords = FindNearestAvailableTile(targetTileCoords);
+        }
+
         GameObject targetTile = tileMapManager.GetComponent<HexGrid>().GetTileAt(targetTileCoords)?.gameObject;
         if (targetTile != null)
         {
@@ -251,6 +240,19 @@ public class BattleSystem : MonoBehaviour
             }
         }
         return false;
+    }
+
+    private Vector3Int FindNearestAvailableTile(Vector3Int startingTile)
+    {
+        BFSResult bfsResult = GraphSearch.BFSGetRange(tileMapManager.GetComponent<HexGrid>(), startingTile, 1);
+        foreach (Vector3Int position in bfsResult.GetRangePositions())
+        {
+            if (!IsTileOccupied(position))
+            {
+                return position;
+            }
+        }
+        return startingTile;
     }
 
     private List<Action> CombineActions(List<Action> playerActions, List<Action> enemyActions)
