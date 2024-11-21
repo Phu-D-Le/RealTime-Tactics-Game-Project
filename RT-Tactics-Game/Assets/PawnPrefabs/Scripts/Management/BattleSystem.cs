@@ -20,7 +20,7 @@ public class BattleSystem : MonoBehaviour
     public TextMeshProUGUI turnDialogueText; // Set as Turn Display in PlayerUI. ZO
     public BattleState state;
     public TileMapManager tileMapManager;
-    public int turns;
+
     private bool playerHadTurn;
     private bool enemyHadTurn;
     void Start()
@@ -31,8 +31,6 @@ public class BattleSystem : MonoBehaviour
         Enemy = GameObject.FindWithTag("Enemy");
 
         tileMapManager.GenerateTileMap();
-
-        turns = 0;
 
         playerHadTurn = false;
         enemyHadTurn = false;
@@ -47,6 +45,7 @@ public class BattleSystem : MonoBehaviour
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
             currentPawn.AwakenPawn();
+            currentPawn.team = 1;
         }
 
         enemyPlayer = Enemy.GetComponent<Player>();
@@ -56,6 +55,7 @@ public class BattleSystem : MonoBehaviour
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
             currentPawn.AwakenPawn();
+            currentPawn.team = 0;
         }
 
         firstPlayer.SpawnPawnsOnMap(spawner); // Spawner tag tiles must be in order within map. ZO
@@ -79,6 +79,7 @@ public class BattleSystem : MonoBehaviour
     void PlayerAttack()
     {
         state = BattleState.ENEMYTURN;
+        
         EnemyTurn();
     }
     void EnemyTurn()
@@ -89,6 +90,7 @@ public class BattleSystem : MonoBehaviour
     void EnemyAttack()
     {
         state = BattleState.PLAYERTURN;
+        
         PlayerTurn();
     }
     public void Win(Player winner)
@@ -105,6 +107,7 @@ public class BattleSystem : MonoBehaviour
             SceneManager.LoadScene("Test Menu");
         }
     }
+
     // Space bar is turn ultimatum. Selection logic in SelectManager. ZO
     void Update()
     {
@@ -127,13 +130,7 @@ public class BattleSystem : MonoBehaviour
                 EnemyAttack();
                 enemyHadTurn = true;
             }
-        }
-
-        if(playerHadTurn && enemyHadTurn)
-        {
-            playerHadTurn = false;
-            enemyHadTurn = false;
-            turns++;
+           // GetComponentInParent<GlobalVariables>().playerTurns++;
         }
     }
 }

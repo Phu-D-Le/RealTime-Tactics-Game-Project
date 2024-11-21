@@ -23,6 +23,13 @@ public class Pawn : MonoBehaviour
 
     public bool specialDisable = false;
 
+    public int startDuration;
+
+    public int duration;
+
+    public int team; // 1 is player, 0 is enemy
+
+
     public PawnType pawnType;
     public HealthHUD healthHUD;
     private Player player;
@@ -33,6 +40,21 @@ public class Pawn : MonoBehaviour
         healthHUD = GetComponentInChildren<HealthHUD>();
         InitializeFromPawnType(pawnType);
         healthHUD.SetHealthHUD(this);
+    }
+
+    public void Cursed(int duration)
+    {
+        specialDisable = true;
+        this.duration = duration;
+    }
+
+    public void UpdateDuration()
+    {
+        duration--;
+        if(duration == 0)
+        {
+            specialDisable = false;
+        }
     }
     public void DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
     {

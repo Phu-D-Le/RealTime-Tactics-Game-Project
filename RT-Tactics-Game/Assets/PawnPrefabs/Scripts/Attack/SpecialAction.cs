@@ -10,10 +10,4 @@ public class SpecialAction : ScriptableObject
     public int damage;
     public Sprite actionSprite;
     public int range;
-
-    public void WallOfFire()
-    {
-
-    }
-
 }

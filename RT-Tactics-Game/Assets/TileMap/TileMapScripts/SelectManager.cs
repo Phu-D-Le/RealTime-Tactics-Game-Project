@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 using System.Linq;
+using Unity.VisualScripting;
 
 // Very beefy and very likely to be ineffecient class. Handles clicking the map and all behaviours associated with activating
 // the BFS. ZO
@@ -32,8 +33,14 @@ public class SelectManager : MonoBehaviour
     public float movementSpeed = 7f; // Change the pawns movement speed here. ZO
     public float rotationSpeed = 7f; // Change the pawns rotation speed here. ZO
 
+    // Action effects
+    public GameObject fire;
+    public List<GameObject> fires;
+
+    //public BattleSystem system;
     void Start()
     {
+        //system = GetComponentInChildren<BattleSystem>();
         ready = true;
         isSecondPlayerTurn = false;
     }
@@ -268,12 +275,14 @@ public class SelectManager : MonoBehaviour
                     {
                         if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                         {
-                            actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, null, selectedAction));
+                            actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, clickedTile.transform.position + new Vector3(0,2,0), selectedAction));
                             plannedTiles.Add(targetCoords);
                             currentPawn.Act();
-                            //selected tile should have a marker for 2 turns
-
+                            // need to find a way to instantiate multiple instances of fire while maintaining each fire's individuality
+                            //GameObject f = fire;
+                            //mapEffects.Add(f);
                             DisableAllHighlights();
+                            
                             Debug.Log($"{currentPawn.pawnName} casts wall of fire");
                         }
                         else
@@ -366,7 +375,7 @@ public class SelectManager : MonoBehaviour
             }
         }
         
-
+        //general outline for copy pasting lol
         //if (IsTileInRange(hexComponent.HexCoords))
         //{
         //    Pawn targetPawn = FindPawnOnTile(clickedTile);
@@ -729,6 +738,7 @@ public class SelectManager : MonoBehaviour
                 switch(action.selectedSpecialAction.actionName)
                 {
                     case "WallOfFire":
+                        fires.Add(Instantiate(fire, action.targetPos, Quaternion.identity));
                         break;
                     case "Curse":
                         action.targetPawn.specialDisable = true;
@@ -738,6 +748,9 @@ public class SelectManager : MonoBehaviour
                 }
             }
         }
+
+        
+
         StartNewTurn();
     }
     private void HighlightPlannedTiles() // Continuously highlight planned tiles in yellow. ZO
@@ -769,6 +782,12 @@ public class SelectManager : MonoBehaviour
     private void StartNewTurn()
     {
         // Clear the queue after executing all actions and reset. ZO
+        foreach(GameObject f in fires)
+        {
+            f.GetComponent<WallOfFire>().EmptyStack();
+            f.GetComponent<WallOfFire>().UpdateTurn();
+        }
+        GetComponentInParent<GlobalVariables>().turns++;
         actionQueue.Clear();
         DisablePlannedTileHighlights();
         ready = true;

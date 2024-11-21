@@ -17,6 +17,8 @@ public class Action
     public Pawn targetPawn;
     public Attack selectedAttack;
     public SpecialAction selectedSpecialAction;
+    public Vector3 targetPos;
+    public int radius;
 
     public Action(ActionType type, Pawn pawn, Vector3Int targetTile)
     {
@@ -33,11 +35,27 @@ public class Action
         this.selectedAttack = selectedAttack;
     }
 
-    public Action(ActionType type, Pawn pawn, Pawn targetPawn, SpecialAction selectedSpecialAction)
+    public Action(ActionType type, Pawn pawn, Pawn targetPawn, SpecialAction selectedSpecialAction) //actions for targeting pawns
     {
         this.actionType = type;
         this.pawn = pawn;
         this.targetPawn = targetPawn;
+        this.selectedSpecialAction = selectedSpecialAction;
+    }
+
+    public Action(ActionType type, Pawn pawn, Vector3 targetPos, SpecialAction selectedSpecialAction) //actions that don't require a target pawn
+    {
+        this.actionType = type;
+        this.pawn = pawn;
+        this.targetPos = targetPos;
+        this.selectedSpecialAction = selectedSpecialAction;
+    }
+
+    public Action(ActionType type, Pawn pawn, int radius, SpecialAction selectedSpecialAction) //actions that are aura based
+    {
+        this.actionType = type;
+        this.pawn = pawn;
+        this.radius = radius;
         this.selectedSpecialAction = selectedSpecialAction;
     }
 }
