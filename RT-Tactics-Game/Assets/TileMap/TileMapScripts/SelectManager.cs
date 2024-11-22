@@ -21,11 +21,12 @@ public class SelectManager : MonoBehaviour
     public bool isAttacking { get; set; }
     public bool ready {get; set; }
 
-    private List<Action> actionQueue = new List<Action>();
-    private HashSet<Vector3Int> plannedTiles = new HashSet<Vector3Int>();
+    public List<Action> actionQueue = new List<Action>();
+    public HashSet<Vector3Int> plannedTiles = new HashSet<Vector3Int>();
 
     private bool isSecondPlayerTurn;
     private Hex highlightedTile;
+    public BattleSystem battleSystem;
     public float movementSpeed = 7f; // Change the pawns movement speed here. ZO
     public float rotationSpeed = 7f; // Change the pawns rotation speed here. ZO
 
@@ -33,6 +34,7 @@ public class SelectManager : MonoBehaviour
     {
         ready = true;
         isSecondPlayerTurn = false;
+        battleSystem = FindObjectOfType<BattleSystem>();
     }
     public void InitializeSelectManager(Camera camera, HexGrid grid)
     {
@@ -61,6 +63,7 @@ public class SelectManager : MonoBehaviour
             {
                 isSecondPlayerTurn = true;
                 DisableAllHighlights();
+                battleSystem.UpdateHUD();
             }
         }
     }
@@ -247,7 +250,7 @@ public class SelectManager : MonoBehaviour
         Hex targetHex = targetTile.GetComponent<Hex>();
         Hex currentHex = pawn.CurrentTile.GetComponent<Hex>();
 
-        if (targetHex != null && currentHex != null)
+        if (targetHex != null && currentHex != null && pawn != null)
         {
             BFSResult bfsResult = GraphSearch.BFSGetRange(hexGrid, currentHex.HexCoords, pawn.pawnSpeed);
 
@@ -266,34 +269,49 @@ public class SelectManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Current or target tile is invalid.");
+            Debug.Log("Current or target tile is invalid or pawn is dead.");
         }
     }
     private IEnumerator MoveAlongPath(Pawn pawn, List<GameObject> path) // Now the pawn can actually move. ZO
     {
         foreach (GameObject tile in path)
         {
-            // Calculate how pawn will rotate. y is zero so it wont face down/up.  ZO
-            Vector3 direction = (tile.transform.position - pawn.transform.position).normalized;
-            direction.y = 0;
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-
-            // Have the pawn face where it goes to each tile. ZO
-            while (Quaternion.Angle(pawn.transform.rotation, lookRotation) > 0.1f)
+            if (pawn != null)
             {
-                pawn.transform.rotation = Quaternion.Slerp(pawn.transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
-                yield return null;
-            }
+                // Calculate how pawn will rotate. y is zero so it wont face down/up.  ZO
+                Vector3 direction = (tile.transform.position - pawn.transform.position).normalized;
+                direction.y = 0;
+                Quaternion lookRotation = Quaternion.LookRotation(direction);
 
-            // Speed of movement is here, can increase/decrease as necessary. ZO
-            Vector3 targetPosition = tile.transform.position + new Vector3(0, 2.0f, 0);
-            while (Vector3.Distance(pawn.transform.position, targetPosition) > 0.1f)
+                // Have the pawn face where it goes to each tile. ZO
+                while (Quaternion.Angle(pawn.transform.rotation, lookRotation) > 0.1f)
+                {
+                    pawn.transform.rotation = Quaternion.Slerp(pawn.transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+                    yield return null;
+                }
+
+                // Play move sound once for each tile. ZO
+                bool moveSoundPlayed = false;
+
+                // Speed of movement is here, can increase/decrease as necessary. ZO
+                Vector3 targetPosition = tile.transform.position + new Vector3(0, 2.0f, 0);
+                while (Vector3.Distance(pawn.transform.position, targetPosition) > 0.1f)
+                {
+                    if (!moveSoundPlayed)
+                    {
+                        pawn.PlayMoveSound(); // Play the move sound once.
+                        moveSoundPlayed = true;
+                    }
+                    pawn.transform.position = Vector3.Lerp(pawn.transform.position, targetPosition, Time.deltaTime * movementSpeed);
+                    yield return null;
+                }
+
+                pawn.transform.position = targetPosition;
+            }
+            else
             {
-                pawn.transform.position = Vector3.Lerp(pawn.transform.position, targetPosition, Time.deltaTime * movementSpeed);
-                yield return null;
+                Debug.Log($"{pawn} is dead so they cannot move");
             }
-
-            pawn.transform.position = targetPosition;
         }
 
         pawn.CurrentTile = path.Last(); // Pawn has moved. ZO
@@ -461,14 +479,15 @@ public class SelectManager : MonoBehaviour
                 if (hexGrid.GetTileAt(action.targetTile).CompareTag("Hazard"))
                 {
                     action.pawn.TakeDamage(5);
-                    Debug.Log($"{action.pawn.gameObject.tag} {action.pawn.pawnName} stepped on a hazard tile.");
+                    Debug.Log($"{action.pawn.gameObject.tag} {action.pawn.pawnName} landed on a hazard tile.");
                 }
             }
             else if (action.actionType == ActionType.Attack)
             {
                 if (action.selectedAttack != null)
                 {
-                    action.pawn.DealAttack(action.selectedAttack, action.targetPawn);
+                    yield return StartCoroutine(action.pawn.DealAttack(action.selectedAttack, action.targetPawn));
+                    //action.pawn.DealAttack(action.selectedAttack, action.targetPawn);
                     //Debug.Log($"{action.pawn.gameObject.tag} {action.pawn.pawnName} attacks {action.targetPawn.gameObject.tag} {action.targetPawn.pawnName}.");
                 }
                 else
@@ -512,5 +531,6 @@ public class SelectManager : MonoBehaviour
         DisablePlannedTileHighlights();
         ready = true;
         ResetTurnFlags();
+        battleSystem.UpdateHUD();
     }
 }
