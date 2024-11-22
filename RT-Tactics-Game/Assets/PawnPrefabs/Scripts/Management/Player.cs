@@ -9,9 +9,11 @@ public class Player : MonoBehaviour
 {
     public List<GameObject> pawns;
     public string playerName { get; set; }
+    public PawnHUD pawnHUD;
 
     public void SetList()
     {
+        pawnHUD = FindObjectOfType<PawnHUD>();
         for (int i = 0; i < transform.childCount; i++)
         {
             GameObject child = transform.GetChild(i).gameObject;
@@ -35,8 +37,9 @@ public class Player : MonoBehaviour
         if (pawns.Contains(pawnObject))
         {
             pawns.Remove(pawnObject);
-            Destroy(pawnObject);  // Optional destroy. Maybe revive feature later? ZO
+            pawnObject.SetActive(false);
             Debug.Log($"{pawn.pawnName} has been removed from the player's list.");
+            pawnHUD.SetPlayerCanvas(this); // Update the PawnHUD
         }
     }
 }

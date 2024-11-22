@@ -12,4 +12,7 @@ public class PawnType : ScriptableObject
     public int pawnTypeSpeed;
     public int pawnTypeMaxHP;
     public int pawnTypeCurrentHP;
+    public AudioClip pawnTypeMoveSound;
+    public AudioClip pawnTypeDeathSound;
+    public AudioClip pawnTypeDamageSound;
 }

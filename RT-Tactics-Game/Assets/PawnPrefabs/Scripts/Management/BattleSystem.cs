@@ -101,20 +101,17 @@ public class BattleSystem : MonoBehaviour
         }
     }
     // Space bar is turn ultimatum. Selection logic in SelectManager. ZO
-    void Update()
+    public void UpdateHUD()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && selectManager.ready)
-        {
-            attackHUD.gameObject.SetActive(false);
+        attackHUD.gameObject.SetActive(false);
 
-            if (state == BattleState.PLAYERTURN)
-            {
-                PlayerAttack();
-            }
-            else if (state == BattleState.ENEMYTURN)
-            {
-                EnemyAttack();
-            }
+        if (state == BattleState.PLAYERTURN)
+        {
+            PlayerAttack();
+        }
+        else if (state == BattleState.ENEMYTURN)
+        {
+            EnemyAttack();
         }
     }
 }
