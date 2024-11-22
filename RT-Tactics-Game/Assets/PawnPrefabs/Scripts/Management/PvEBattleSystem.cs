@@ -4,14 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public enum BattleState
+public enum PvEBattleState
 {
     PLAYER_INPUT,
     RESOLVING_ACTIONS,
     GAME_OVER
 }
 
-public class PvPBattleSystem : MonoBehaviour // Changed class name to PvPBattleSystem
+public class PvEBattleSystem : MonoBehaviour // Changed class name to PveBattleSystem
 {
     public GameObject Player;
     public GameObject Enemy;
@@ -20,7 +20,7 @@ public class PvPBattleSystem : MonoBehaviour // Changed class name to PvPBattleS
     public PawnHUD pawnHUD;
     public AttackHUD attackHUD;
     public TextMeshProUGUI turnDialogueText;
-    public BattleState state;
+    public PvEBattleState state;
     public TileMapManager tileMapManager;
     private TileMapSpawner spawner;
 
@@ -58,7 +58,7 @@ public class PvPBattleSystem : MonoBehaviour // Changed class name to PvPBattleS
 
         attackHUD.gameObject.SetActive(false);
 
-        state = BattleState.PLAYER_INPUT;
+        state = PvEBattleState.PLAYER_INPUT;
         PlayerTurn();
     }
 
@@ -74,16 +74,16 @@ public class PvPBattleSystem : MonoBehaviour // Changed class name to PvPBattleS
 
     void Update()
     {
-        if (state == BattleState.PLAYER_INPUT && Input.GetKeyDown(KeyCode.Space))
+        if (state == PvEBattleState.PLAYER_INPUT && Input.GetKeyDown(KeyCode.Space))
         {
-            state = BattleState.RESOLVING_ACTIONS;
+            state = PvEBattleState.RESOLVING_ACTIONS;
             StartCoroutine(ResolveActions());
         }
     }
 
     private void PlayerTurn()
     {
-        if (state != BattleState.PLAYER_INPUT) return;
+        if (state != PvEBattleState.PLAYER_INPUT) return;
 
         turnDialogueText.text = "Player's Turn!";
         pawnHUD.SetPlayerCanvas(firstPlayer);
@@ -93,7 +93,7 @@ public class PvPBattleSystem : MonoBehaviour // Changed class name to PvPBattleS
 
     public void QueuePlayerAction(Action action)
     {
-        if (state == BattleState.PLAYER_INPUT)
+        if (state == PvEBattleState.PLAYER_INPUT)
         {
             playerActionsQueue.Add(action);
         }
@@ -114,7 +114,7 @@ public class PvPBattleSystem : MonoBehaviour // Changed class name to PvPBattleS
 
         // Reset for the next player turn
         PlayerTurn();
-        state = BattleState.PLAYER_INPUT;
+        state = PvEBattleState.PLAYER_INPUT;
     }
 
     private void GenerateEnemyActions()
