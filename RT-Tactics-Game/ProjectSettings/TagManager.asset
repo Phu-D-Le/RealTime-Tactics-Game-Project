@@ -9,6 +9,9 @@ TagManager:
   - Free
   - Interactable
   - Spawner
+  - Enemy
+  - PlayerPawn
+  - EnemyPawn
   layers:
   - Default
   - TransparentFX

@@ -10,4 +10,5 @@ public class Attack : ScriptableObject
     public int damage;
     public Sprite attackSprite;
     public int range;
+    public AudioClip attackSound;
 }

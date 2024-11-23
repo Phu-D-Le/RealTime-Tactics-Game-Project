@@ -20,6 +20,7 @@ public class BattleSystem : MonoBehaviour
     public TextMeshProUGUI turnDialogueText; // Set as Turn Display in PlayerUI. ZO
     public BattleState state;
     public TileMapManager tileMapManager;
+    public SelectManager selectManager;
 
     private bool playerHadTurn;
     private bool enemyHadTurn;
@@ -44,6 +45,7 @@ public class BattleSystem : MonoBehaviour
         foreach (var pawn in firstPlayer.pawns)
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
+            currentPawn.gameObject.tag = "PlayerPawn";
             currentPawn.AwakenPawn();
             currentPawn.team = 1;
         }
@@ -54,6 +56,7 @@ public class BattleSystem : MonoBehaviour
         foreach (var pawn in enemyPlayer.pawns)
         {
             Pawn currentPawn = pawn.GetComponent<Pawn>();
+            currentPawn.gameObject.tag = "EnemyPawn";
             currentPawn.AwakenPawn();
             currentPawn.team = 0;
         }
@@ -62,14 +65,18 @@ public class BattleSystem : MonoBehaviour
         enemyPlayer.SpawnPawnsOnMap(spawner);
 
         attackHUD.gameObject.SetActive(false);
+
+        selectManager = FindObjectOfType<SelectManager>();
+
         actionHUD.gameObject.SetActive(false);
+
 
         SetUpBattle();
     }
     void SetUpBattle()
     {
-        state = BattleState.PLAYERTURN;
-        PlayerTurn();
+        state = BattleState.ENEMYTURN;
+        EnemyTurn();
     }
     void PlayerTurn()
     {
@@ -109,8 +116,19 @@ public class BattleSystem : MonoBehaviour
     }
 
     // Space bar is turn ultimatum. Selection logic in SelectManager. ZO
-    void Update()
+    public void UpdateHUD()
     {
+
+        attackHUD.gameObject.SetActive(false);
+
+        if (state == BattleState.PLAYERTURN)
+        {
+            PlayerAttack();
+        }
+        else if (state == BattleState.ENEMYTURN)
+        {
+            EnemyAttack();
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             attackHUD.gameObject.SetActive(false);
@@ -130,7 +148,7 @@ public class BattleSystem : MonoBehaviour
                 EnemyAttack();
                 enemyHadTurn = true;
             }
-           // GetComponentInParent<GlobalVariables>().playerTurns++;
+
         }
     }
 }
