@@ -128,7 +128,7 @@ public class BattleSystem : MonoBehaviour
         else if (state == BattleState.ENEMYTURN)
         {
             EnemyAttack();
-
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             attackHUD.gameObject.SetActive(false);
