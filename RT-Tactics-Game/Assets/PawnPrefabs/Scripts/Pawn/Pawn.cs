@@ -11,16 +11,29 @@ public class Pawn : MonoBehaviour
     public string pawnName { get; private set; }
     public Sprite pawnSprite { get; private set; }
     public List<Attack> attacks { get; private set; }
+    public List<SpecialAction> actions { get; set; }
     public int pawnSpeed { get; private set; }
     public int maxHP { get; private set; }
     public int currentHP { get; private set; }
     public bool hasAttacked { get; private set; }
+    public bool hasActed { get; private set; }
     public bool hasMoved { get; private set; }
     public GameObject CurrentTile { get; set; }
     public Attack selectedAttack { get; set; }
+
     public AudioClip moveSound;
     public AudioClip deathSound;
     public AudioClip damageSound;
+
+    public SpecialAction selectedAction { get; set; }
+
+    public bool specialDisable = false;
+
+    public int startDuration;
+
+    public int duration;
+
+    public int team; // 1 is player, 0 is enemy
 
     public PawnType pawnType;
     public HealthHUD healthHUD;
@@ -35,7 +48,25 @@ public class Pawn : MonoBehaviour
         healthHUD.SetHealthHUD(this);
         audioSource = GetComponent<AudioSource>();
     }
+
     public IEnumerator DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
+
+    public void Cursed(int duration)
+    {
+        specialDisable = true;
+        this.duration = duration;
+    }
+
+    public void UpdateDuration()
+    {
+        duration--;
+        if(duration == 0)
+        {
+            specialDisable = false;
+        }
+    }
+    public void DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
+
     {
         if (this != null)
         {
@@ -80,7 +111,10 @@ public class Pawn : MonoBehaviour
         pawnName = type.pawnTypeName;
         pawnSprite = type.pawnTypeSprite;
         attacks = new List<Attack>(type.pawnTypeAttacks);  // Create the list of attacks from everything in PawnType.
-                                                            // Edit list when adding attacks between scenes. ZO
+                                                           // Edit list when adding attacks between scenes. ZO
+
+        actions = new List<SpecialAction>(type.pawnTypeActions);
+
         pawnSpeed = type.pawnTypeSpeed;
         maxHP = type.pawnTypeMaxHP;
         currentHP = type.pawnTypeCurrentHP;
@@ -102,6 +136,7 @@ public class Pawn : MonoBehaviour
     {
         hasAttacked = true;
     }
+
     public void PlayMoveSound()
     {
         if (this != null)
@@ -150,5 +185,10 @@ public class Pawn : MonoBehaviour
             audioSource.clip = clip;
             audioSource.Play();
         }
+
+
+    public void Act()
+    {
+        hasActed = true;
     }
 }

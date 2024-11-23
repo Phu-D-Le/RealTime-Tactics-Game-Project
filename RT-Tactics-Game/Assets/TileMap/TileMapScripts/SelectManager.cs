@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 using System.Linq;
+using Unity.VisualScripting;
 
 // Very beefy and very likely to be ineffecient class. Handles clicking the map and all behaviours associated with activating
 // the BFS. ZO
@@ -16,9 +17,12 @@ public class SelectManager : MonoBehaviour
     private Vector3Int selectedTile; 
     private Pawn selectedTargetPawn; 
     public Attack selectedAttack;
+    public SpecialAction selectedAction;
 
     public bool isMoving { get; set; }
     public bool isAttacking { get; set; }
+
+    public bool isActing { get; set; }
     public bool ready {get; set; }
 
     public List<Action> actionQueue = new List<Action>();
@@ -30,8 +34,14 @@ public class SelectManager : MonoBehaviour
     public float movementSpeed = 7f; // Change the pawns movement speed here. ZO
     public float rotationSpeed = 7f; // Change the pawns rotation speed here. ZO
 
+    // Action effects
+    public GameObject fire;
+    public List<GameObject> fires;
+
+    //public BattleSystem system;
     void Start()
     {
+        //system = GetComponentInChildren<BattleSystem>();
         ready = true;
         isSecondPlayerTurn = false;
         battleSystem = FindObjectOfType<BattleSystem>();
@@ -105,18 +115,32 @@ public class SelectManager : MonoBehaviour
             {
                 TryAttackPawn(hexComponent, clickedTile);
             }
+            else if (isActing)
+            {
+                TryActPawn(hexComponent, clickedTile);
+            }
         }
     }
     public void SetMovementMode(bool enabled) // Called by pawnHUD. ZO
     {
         isMoving = enabled;
         isAttacking = !enabled;
+        isActing = !enabled;
         DisableAllHighlights();
     }
     public void SetAttackMode(bool enabled) // Called by attackHUD. ZO
     {
         isAttacking = enabled;
         isMoving = !enabled;
+        isActing = !enabled;
+        DisableAllHighlights();
+    }
+
+    public void SetActMode(bool enabled) // Called by attackHUD. ZO
+    {
+        isAttacking = !enabled;
+        isMoving = !enabled;
+        isActing = enabled;
         DisableAllHighlights();
     }
     private void TryMovePawn(Hex hexComponent, GameObject clickedTile) // Handles the pawn selected from pawnHUD, 
@@ -183,7 +207,7 @@ public class SelectManager : MonoBehaviour
             { // Keep friendly fire but pawn cannot attack a tile where a pawn has moved from. ZO
 
                 Pawn currentPawn = GetCurrentPawn();
-                if (currentPawn != null && !currentPawn.hasAttacked)
+                if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                 {
                     if (selectedAttack != null) // Ensure the selected attack is assigned before queuing the attack. ZO
                     {
@@ -205,7 +229,7 @@ public class SelectManager : MonoBehaviour
             else if(targetPawn != null && targetPawn.hasMoved && plannedTiles.Contains(hexComponent.HexCoords)) // Pawn can attack a tile where a pawn moves to. ZO
             {
                 Pawn currentPawn = GetCurrentPawn();
-                if (currentPawn != null && !currentPawn.hasAttacked)
+                if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                 {
                     // Ensure the selected attack is assigned before queuing the attack. ZO
                     if (selectedAttack != null)
@@ -234,6 +258,183 @@ public class SelectManager : MonoBehaviour
         {
             Debug.Log("Clicked tile is not within attack range.");
         }
+    }
+
+    private void TryActPawn(Hex hexComponent, GameObject clickedTile)
+    {
+        Vector3Int targetCoords = hexComponent.HexCoords;
+        Pawn currentPawn = GetCurrentPawn();
+        if(currentPawn.specialDisable)
+        {
+            Debug.Log("This pawn is cursed, no special actions");
+            return;
+        }
+        if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
+        {
+            switch (selectedAction.actionName) //checks which special action is being used
+            {
+                case "WallOfFire":
+                    if (IsTileInRange(hexComponent.HexCoords))
+                    {
+                        if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
+                        {
+                            actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, clickedTile.transform.position + new Vector3(0,2,0), selectedAction));
+                            plannedTiles.Add(targetCoords);
+                            currentPawn.Act();
+                            // need to find a way to instantiate multiple instances of fire while maintaining each fire's individuality
+                            //GameObject f = fire;
+                            //mapEffects.Add(f);
+                            DisableAllHighlights();
+                            
+                            Debug.Log($"{currentPawn.pawnName} casts wall of fire");
+                        }
+                        else
+                        {
+                            Debug.Log("No pawn selected to act or pawn has already attacked/acted.");
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Clicked tile is not within movement range.");
+                    }
+                    break;
+                case "Curse":
+                    if (IsTileInRange(hexComponent.HexCoords))
+                    {
+                        Pawn targetPawn = FindPawnOnTile(clickedTile);
+
+                        if (targetPawn != null && !targetPawn.hasMoved)
+                        {
+                            if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
+                            {
+                                actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
+                                currentPawn.Act();
+                                DisableAllHighlights();
+                                Debug.Log($"{currentPawn.pawnName} casted curse on {targetPawn.pawnName}.");
+                            }
+                            else
+                            {
+                                Debug.Log("No pawn selected to act or pawn has already attacked/acted.");
+                            }
+                        }
+                        else if (targetPawn != null && targetPawn.hasMoved && plannedTiles.Contains(hexComponent.HexCoords))
+                        {
+                            if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
+                            {
+                                actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
+                                currentPawn.Act();
+                                DisableAllHighlights();
+                                Debug.Log($"{currentPawn.pawnName} casted curse on {targetPawn.pawnName}.");
+                            }
+                            else
+                            {
+                                Debug.Log("No pawn selected to act or pawn has already attacked/acted.");
+                            }
+                        }
+                        else
+                        {
+                            Debug.Log("No enemy pawn on this tile.");
+                        }
+
+                    }
+                    else
+                    {
+                        Debug.Log("Clicked tile is not within movement range.");
+                    }
+                    break;
+                case "Necromancy":
+                    if (IsTileInRange(hexComponent.HexCoords))
+                    {
+                        Pawn targetPawn = FindPawnOnTile(clickedTile);
+
+                        if (targetPawn == null && !plannedTiles.Contains(hexComponent.HexCoords))
+                        {
+                            if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasMoved && !currentPawn.hasActed)
+                            {
+                                actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, null, selectedAction));
+                                currentPawn.Act();
+                                DisableAllHighlights();
+                                Debug.Log($"{currentPawn.pawnName} casts necromancy.");
+                            }
+                            else
+                            {
+                                Debug.Log("No pawn selected to act or pawn has already attacked/acted/moved.");
+                            }
+                        }
+                        else
+                        {
+                            Debug.Log("Cannot cast necromancy with enemy pawn on this tile.");
+                        }
+
+                    }
+                    else
+                    {
+                        Debug.Log("Clicked tile is not within movement range.");
+                    }
+                    break;
+                default:
+                    Debug.Log("Not a valid action");
+                    break;
+            }
+        }
+        
+        //general outline for copy pasting lol
+        //if (IsTileInRange(hexComponent.HexCoords))
+        //{
+        //    Pawn targetPawn = FindPawnOnTile(clickedTile);
+
+        //    if (targetPawn != null && !targetPawn.hasMoved) 
+        //    { 
+        //        if (currentPawn != null && !currentPawn.hasActed)
+        //        {
+        //            if (selectedAction != null) // Ensure the selected action is assigned before queuing the attack
+        //            {
+        //                actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
+        //                currentPawn.Act(); // hasAttacked = true. ZO
+        //                DisableAllHighlights();
+        //                Debug.Log($"{currentPawn.pawnName} queued to attack {targetPawn.pawnName} for {selectedAction} dealing {selectedAction.damage} damage.");
+        //            }
+        //            else
+        //            {
+        //                Debug.LogError("No attack selected for the current pawn.");
+        //            }
+        //        }
+        //        else
+        //        {
+        //            Debug.Log("No pawn selected to attack or pawn has already attacked.");
+        //        }
+        //    }
+        //    else if (targetPawn != null && targetPawn.hasMoved && plannedTiles.Contains(hexComponent.HexCoords)) // Pawn can attack a tile where a pawn moves to. ZO
+        //    {
+        //        if (currentPawn != null && !currentPawn.hasActed)
+        //        {
+        //            // Ensure the selected attack is assigned before queuing the attack. ZO
+        //            if (selectedAction != null)
+        //            {
+        //                actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
+        //                currentPawn.Act(); // hasAttacked = true. ZO
+        //                DisableAllHighlights();
+        //                Debug.Log($"{currentPawn.pawnName} queued to attack {targetPawn.pawnName} for {selectedAction} dealing {selectedAction.damage} damage.");
+        //            }
+        //            else
+        //            {
+        //                Debug.LogError("No attack selected for the current pawn.");
+        //            }
+        //        }
+        //        else
+        //        {
+        //            Debug.Log("No pawn selected to attack or pawn has already attacked.");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Debug.Log("No enemy pawn on this tile.");
+        //    }
+        //}
+        //else
+        //{
+        //    Debug.Log("Clicked tile is not within attack range.");
+        //}
     }
     private Pawn GetCurrentPawn() // PawnHUD button selected pawn. ZO
     {
@@ -416,6 +617,67 @@ public class SelectManager : MonoBehaviour
             }
         }
     }
+
+    public void HighlightTilesForAction(Pawn pawn, SpecialAction action) // Ensures all tiles are highlighted. including if a pawn is on it. 
+    // do not include self for highlighting for valid. ZO
+    {
+        Vector3Int currentTileCoords;
+
+        // If pawn has a move planned, use the planned tile for attack calculations. ZO. ZO
+        Action moveAction = actionQueue.Find(action => action.pawn == pawn && action.actionType == ActionType.Move);
+        if (moveAction != null)
+        {
+            currentTileCoords = moveAction.targetTile;  // Use the planned tile. ZO
+        }
+        else
+        {
+            currentTileCoords = pawn.CurrentTile.GetComponent<Hex>().HexCoords; // Use the current tile. ZO
+        }
+        BFSResult bfsResult = GraphSearch.BFSGetRange(hexGrid, currentTileCoords, action.range);
+        neighbours = new List<Vector3Int>(bfsResult.GetRangePositions());
+        neighbours.Remove(currentTileCoords);
+
+        Hex currentTileHex = hexGrid.GetTileAt(currentTileCoords);
+        if (currentTileHex != null)
+        {
+            highlightedTile = currentTileHex;
+            currentTileHex.EnableHighlight(Color.white); // Highlight current tile in white. ZO
+        }
+
+        foreach (Vector3Int neighbour in neighbours)
+        {
+            Hex tileHex = hexGrid.GetTileAt(neighbour);
+            if (tileHex != null)
+            {
+                Pawn pawnOnTile = FindPawnOnTile(tileHex.gameObject);
+                if (pawnOnTile != null)
+                {
+                    if (pawnOnTile.hasMoved && !plannedTiles.Contains(tileHex.HexCoords))
+                    {
+                        continue;
+                    }
+                    // Check the parent GameObject tag of the pawn on the tile. ZO
+                    string parentTag = pawnOnTile.transform.parent.tag;
+                    string currentTag = pawn.transform.parent.tag;
+
+                    // Apply different highlight colors based on the parent's tag. ZO
+                    if (currentTag != parentTag)
+                    {
+                        tileHex.EnableHighlight(Color.red);  // Enemy tile in red. ZO
+                    }
+                    else if (parentTag == currentTag)
+                    {
+                        tileHex.EnableHighlight(Color.blue);  // Ally tile in blue. ZO
+                    }
+                }
+                else
+                {
+                    tileHex.EnableHighlight(Color.green);  // blank tiles are green. show range. ZO
+                }
+            }
+        }
+    }
+
     private void DisableAllHighlights() // Reset highlight and bfs but not planned tiles (only at end do we reset). ZO
     {
         // Clear highlight on the current tile if it exists. ZO
@@ -495,7 +757,24 @@ public class SelectManager : MonoBehaviour
                     Debug.LogError("attack is null during attack execution.");
                 }
             }
+            else if (action.actionType == ActionType.SpecialAction)
+            {
+                switch(action.selectedSpecialAction.actionName)
+                {
+                    case "WallOfFire":
+                        fires.Add(Instantiate(fire, action.targetPos, Quaternion.identity));
+                        break;
+                    case "Curse":
+                        action.targetPawn.specialDisable = true;
+                        break;
+                    case "Necromancy":
+                        break;
+                }
+            }
         }
+
+        
+
         StartNewTurn();
     }
     private void HighlightPlannedTiles() // Continuously highlight planned tiles in yellow. ZO
@@ -527,6 +806,12 @@ public class SelectManager : MonoBehaviour
     private void StartNewTurn()
     {
         // Clear the queue after executing all actions and reset. ZO
+        foreach(GameObject f in fires)
+        {
+            f.GetComponent<WallOfFire>().EmptyStack();
+            f.GetComponent<WallOfFire>().UpdateTurn();
+        }
+        GetComponentInParent<GlobalVariables>().turns++;
         actionQueue.Clear();
         DisablePlannedTileHighlights();
         ready = true;

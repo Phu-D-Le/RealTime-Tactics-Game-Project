@@ -11,6 +11,7 @@ public class PawnHUD : MonoBehaviour
 {
     private List<Button> pawnButtons;
     private AttackHUD attackHUD;  // Reference AttackHUD once instead of on each pawn. ZO
+    private ActionHUD actionHUD;
     public Pawn selectedPawn;
     private SelectManager selectManager;
 
@@ -18,6 +19,7 @@ public class PawnHUD : MonoBehaviour
     {
         pawnButtons = new List<Button>(GetComponentsInChildren<Button>());
         attackHUD = GameObject.FindObjectOfType<AttackHUD>();
+        actionHUD = GameObject.FindObjectOfType<ActionHUD>();
         selectManager = FindObjectOfType<SelectManager>();
     }
 
@@ -40,6 +42,7 @@ public class PawnHUD : MonoBehaviour
                     pawnButtons[i].onClick.AddListener(() => 
                     {
                         OpenAttackHUD(pawn);
+                        OpenActionHUD(pawn);
                         OnPawnSelected(pawn);
                         // Open AttackHUD and populate buttons according to pawn attack list. Then update
                         // SelectManager so it knows what pawn is being referenced from the menu. Finally update SelectManager
@@ -66,6 +69,20 @@ public class PawnHUD : MonoBehaviour
         {
             attackHUD.gameObject.SetActive(true);
             attackHUD.SetUpAttacks(pawn);  // Pass the pawn to the AttackHUD to display attacks. ZO
+        }
+    }
+
+    private void OpenActionHUD(Pawn pawn)
+    {
+        if (pawn.hasAttacked)
+        {
+            Debug.Log($"{pawn.pawnName} has already attacked and cannot attack again this turn.");
+            return;
+        }
+        else if (actionHUD != null && !pawn.hasAttacked && selectManager.ready)
+        {
+            actionHUD.gameObject.SetActive(true);
+            actionHUD.SetUpActions(pawn);
         }
     }
     public void OnPawnSelected(Pawn pawn)

@@ -9,18 +9,21 @@ using UnityEngine.SceneManagement;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST}
 public class BattleSystem : MonoBehaviour
-{
+{   
     public GameObject Player;
     public GameObject Enemy;
     private Player firstPlayer;
     private Player enemyPlayer;
     public PawnHUD pawnHUD;
     public AttackHUD attackHUD;
+    public ActionHUD actionHUD;
     public TextMeshProUGUI turnDialogueText; // Set as Turn Display in PlayerUI. ZO
     public BattleState state;
     public TileMapManager tileMapManager;
     public SelectManager selectManager;
 
+    private bool playerHadTurn;
+    private bool enemyHadTurn;
     void Start()
     {
         state = BattleState.START;
@@ -29,6 +32,9 @@ public class BattleSystem : MonoBehaviour
         Enemy = GameObject.FindWithTag("Enemy");
 
         tileMapManager.GenerateTileMap();
+
+        playerHadTurn = false;
+        enemyHadTurn = false;
 
         TileMapSpawner spawner = FindObjectOfType<TileMapSpawner>();
         spawner.InitializeSpawner();
@@ -41,6 +47,7 @@ public class BattleSystem : MonoBehaviour
             Pawn currentPawn = pawn.GetComponent<Pawn>();
             currentPawn.gameObject.tag = "PlayerPawn";
             currentPawn.AwakenPawn();
+            currentPawn.team = 1;
         }
 
         enemyPlayer = Enemy.GetComponent<Player>();
@@ -51,13 +58,18 @@ public class BattleSystem : MonoBehaviour
             Pawn currentPawn = pawn.GetComponent<Pawn>();
             currentPawn.gameObject.tag = "EnemyPawn";
             currentPawn.AwakenPawn();
+            currentPawn.team = 0;
         }
 
         firstPlayer.SpawnPawnsOnMap(spawner); // Spawner tag tiles must be in order within map. ZO
         enemyPlayer.SpawnPawnsOnMap(spawner);
 
         attackHUD.gameObject.SetActive(false);
+
         selectManager = FindObjectOfType<SelectManager>();
+
+        actionHUD.gameObject.SetActive(false);
+
 
         SetUpBattle();
     }
@@ -74,6 +86,7 @@ public class BattleSystem : MonoBehaviour
     void PlayerAttack()
     {
         state = BattleState.ENEMYTURN;
+        
         EnemyTurn();
     }
     void EnemyTurn()
@@ -84,6 +97,7 @@ public class BattleSystem : MonoBehaviour
     void EnemyAttack()
     {
         state = BattleState.PLAYERTURN;
+        
         PlayerTurn();
     }
     public void Win(Player winner)
@@ -100,9 +114,11 @@ public class BattleSystem : MonoBehaviour
             SceneManager.LoadScene("Test Menu");
         }
     }
+
     // Space bar is turn ultimatum. Selection logic in SelectManager. ZO
     public void UpdateHUD()
     {
+
         attackHUD.gameObject.SetActive(false);
 
         if (state == BattleState.PLAYERTURN)
@@ -112,6 +128,27 @@ public class BattleSystem : MonoBehaviour
         else if (state == BattleState.ENEMYTURN)
         {
             EnemyAttack();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            attackHUD.gameObject.SetActive(false);
+            
+            actionHUD.gameObject.SetActive(false);
+            
+                
+            //pawnHUD.gameObject.SetActive(false);
+
+            if (state == BattleState.PLAYERTURN)
+            {
+                PlayerAttack();
+                playerHadTurn = true;
+            }
+            else if (state == BattleState.ENEMYTURN)
+            {
+                EnemyAttack();
+                enemyHadTurn = true;
+            }
+
         }
     }
 }

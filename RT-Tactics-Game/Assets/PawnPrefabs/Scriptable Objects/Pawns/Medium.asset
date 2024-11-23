@@ -16,6 +16,9 @@ MonoBehaviour:
   pawnTypeSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   pawnTypeAttacks:
   - {fileID: 11400000, guid: 6e09a579f344f6b439b45ca190fd4226, type: 2}
+  pawnTypeActions:
+  - {fileID: 11400000, guid: ba4e161ecc03dff4794c7176ce6355b1, type: 2}
+  - {fileID: 11400000, guid: 10673d79ec385da49a7d93b700f5f390, type: 2}
   pawnTypeSpeed: 3
   pawnTypeMaxHP: 15
   pawnTypeCurrentHP: 15
