@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TileMapGenerator : MonoBehaviour
 {
-    public GameObject freeTile;     
+    public GameObject freeTile;
     public GameObject[] TileTypes;
     public int[] TileCounts;
     public int gridX = 10;
@@ -16,7 +16,7 @@ public class TileMapGenerator : MonoBehaviour
     private float tileWidth;
     private float verticalSpacing;
     private float horizontalSpacing;
-    private List<Vector2Int> availablePositions; 
+    private List<Vector2Int> availablePositions;
 
     void Start()
     {
@@ -30,7 +30,7 @@ public class TileMapGenerator : MonoBehaviour
         tileHeight = Mathf.Sqrt(3) * tileRadius;
         tileWidth = 2 * tileRadius;
         verticalSpacing = tileWidth * 0.75f * vSpacing;
-        horizontalSpacing = tileHeight * hSpacing; 
+        horizontalSpacing = tileHeight * hSpacing;
     }
 
     void GenerateTileMap()
