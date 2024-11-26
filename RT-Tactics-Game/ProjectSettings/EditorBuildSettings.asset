@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameDemo.unity
     guid: 78880912be921f946b2d74734013b5a4
+  - enabled: 1
+    path: Assets/Scenes/GameDemoPVE.unity
+    guid: 9bc67fc5f261058499be936aa5515862
   m_configObjects: {}
