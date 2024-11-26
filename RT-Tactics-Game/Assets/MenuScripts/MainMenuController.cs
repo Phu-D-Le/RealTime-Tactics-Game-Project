@@ -78,9 +78,14 @@ public class MainMenuController : MonoBehaviour
         SceneManager.LoadScene("Test menu");
     }
 
-    public void NewGameDialogYes()
+    public void NewGameDialogPlayer()
     {
-        SceneManager.LoadScene("InGameMenu");
+        // previously NewGameDialogYes
+        SceneManager.LoadScene("InGameMenuPvP");
+    }
+    public void NewGameDialogBot()
+    {
+        SceneManager.LoadScene("InGameMenuPvE");
     }
 
 

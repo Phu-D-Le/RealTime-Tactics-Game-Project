@@ -68,7 +68,7 @@ public class BattleSystem : MonoBehaviour
     }
     void PlayerTurn()
     {
-        turnDialogueText.text = "Player's Turn!";
+        turnDialogueText.text = "Player 1's Turn!";
         pawnHUD.SetPlayerCanvas(firstPlayer);
     }
     void PlayerAttack()
@@ -78,7 +78,7 @@ public class BattleSystem : MonoBehaviour
     }
     void EnemyTurn()
     {
-        turnDialogueText.text = "Enemy's Turn!";
+        turnDialogueText.text = "Player 2's Turn!";
         pawnHUD.SetPlayerCanvas(enemyPlayer);
     }
     void EnemyAttack()
