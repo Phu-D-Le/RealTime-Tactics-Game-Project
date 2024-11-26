@@ -272,7 +272,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 696719795}
-  - component: {fileID: 696719794}
   m_Layer: 0
   m_Name: Scene
   m_TagString: Untagged
@@ -280,20 +279,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &696719794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 696719793}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7b6c40a1d380584694230feba826b2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerTurns: 0
-  enemyTurns: 0
 --- !u!4 &696719795
 Transform:
   m_ObjectHideFlags: 0
@@ -909,10 +894,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectedAttack: {fileID: 0}
   selectedAction: {fileID: 0}
+  battleSystem: {fileID: 0}
   movementSpeed: 7
   rotationSpeed: 7
   fire: {fileID: 6246079853651930265, guid: 233f95ef413f7af45b28843c75cfb7c7, type: 3}
-  mapEffects: []
+  fires: []
 --- !u!114 &1719050255 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8493848686326217956, guid: 069bfa0489342c444a53ce8ed1b2c32c, type: 3}

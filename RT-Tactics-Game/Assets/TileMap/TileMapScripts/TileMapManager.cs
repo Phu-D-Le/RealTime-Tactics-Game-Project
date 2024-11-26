@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TileMapManager : MonoBehaviour
 {
-    public GameObject[] TileMaps; 
+    public GameObject[] TileMaps;
     public Camera mainCamera;
     private HexGrid hexGrid;
     public SelectManager selectManager;

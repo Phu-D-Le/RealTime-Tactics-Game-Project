@@ -49,8 +49,7 @@ public class Pawn : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    public IEnumerator DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
-
+    
     public void Cursed(int duration)
     {
         specialDisable = true;
@@ -65,7 +64,7 @@ public class Pawn : MonoBehaviour
             specialDisable = false;
         }
     }
-    public void DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
+    public IEnumerator DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
 
     {
         if (this != null)
@@ -122,11 +121,13 @@ public class Pawn : MonoBehaviour
         deathSound = type.pawnTypeDeathSound;
         moveSound = type.pawnTypeMoveSound;
         hasAttacked = false;
+        hasActed = false;
     }
     public void ResetStatus()
     {
         hasAttacked = false;
         hasMoved = false;
+        hasActed = false;
     }
     public void Move()
     {
@@ -185,7 +186,7 @@ public class Pawn : MonoBehaviour
             audioSource.clip = clip;
             audioSource.Play();
         }
-
+    }
 
     public void Act()
     {

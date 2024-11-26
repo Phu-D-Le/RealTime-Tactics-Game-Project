@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 7230162585259348963}
   - component: {fileID: 7903390796929747990}
   - component: {fileID: 8519391892910120536}
+  - component: {fileID: 8365404649029965760}
   m_Layer: 0
   m_Name: Medium
   m_TagString: Untagged
@@ -176,6 +177,10 @@ MonoBehaviour:
   moveSound: {fileID: 0}
   deathSound: {fileID: 0}
   damageSound: {fileID: 0}
+  specialDisable: 0
+  startDuration: 0
+  duration: 0
+  team: 0
   pawnType: {fileID: 11400000, guid: aa3326b0b00823647bd8d4d45756421c, type: 2}
   healthHUD: {fileID: 0}
 --- !u!114 &7903390796929747990
@@ -287,6 +292,33 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!54 &8365404649029965760
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5757964600339287260}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &6016937973810209549
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,7 +568,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
