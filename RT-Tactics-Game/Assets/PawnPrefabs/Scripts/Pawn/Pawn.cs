@@ -121,11 +121,13 @@ public class Pawn : MonoBehaviour
         deathSound = type.pawnTypeDeathSound;
         moveSound = type.pawnTypeMoveSound;
         hasAttacked = false;
+        hasActed = false;
     }
     public void ResetStatus()
     {
         hasAttacked = false;
         hasMoved = false;
+        hasActed = false;
     }
     public void Move()
     {

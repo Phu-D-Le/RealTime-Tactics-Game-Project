@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GlobalVariables : MonoBehaviour
+public static class GlobalVariables
 {
-    public int turns = 0;
+    public static int turns = 0;
 }
