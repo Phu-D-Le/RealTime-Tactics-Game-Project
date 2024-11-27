@@ -6,12 +6,13 @@ using System.Linq;
 
 public enum PvEBattleState
 {
+    ENEMY_PLANNING,
     PLAYER_INPUT,
     RESOLVING_ACTIONS,
     GAME_OVER
 }
 
-public class PvEBattleSystem : MonoBehaviour // Changed class name to PveBattleSystem
+public class PvEBattleSystem : MonoBehaviour
 {
     public GameObject Player;
     public GameObject Enemy;
@@ -26,6 +27,8 @@ public class PvEBattleSystem : MonoBehaviour // Changed class name to PveBattleS
 
     private List<Action> playerActionsQueue = new List<Action>();
     private List<Action> enemyActionsQueue = new List<Action>();
+    private Dictionary<Pawn, Vector3Int> aiPlannedTiles = new Dictionary<Pawn, Vector3Int>();
+    private HashSet<Vector3Int> highlightedAITiles = new HashSet<Vector3Int>();
 
     void Start()
     {
@@ -58,8 +61,8 @@ public class PvEBattleSystem : MonoBehaviour // Changed class name to PveBattleS
 
         attackHUD.gameObject.SetActive(false);
 
-        state = PvEBattleState.PLAYER_INPUT;
-        PlayerTurn();
+        state = PvEBattleState.ENEMY_PLANNING;
+        StartCoroutine(EnemyPlanningPhase());
     }
 
     private void InitializePawns(Player player, string tag)
@@ -81,10 +84,35 @@ public class PvEBattleSystem : MonoBehaviour // Changed class name to PveBattleS
         }
     }
 
+    private IEnumerator EnemyPlanningPhase()
+    {
+        turnDialogueText.text = "Enemy is Planning...";
+        enemyActionsQueue.Clear();
+        aiPlannedTiles.Clear();
+
+        // Plan AI moves and highlight tiles
+        foreach (var pawn in enemyPlayer.pawns)
+        {
+            if (pawn.GetComponent<Pawn>().currentHP > 0)
+            {
+                if (!TryEnemyAttack(pawn.GetComponent<Pawn>()))
+                {
+                    TryMoveTowardPlayer(pawn.GetComponent<Pawn>());
+                }
+            }
+        }
+
+        HighlightAITiles();
+
+        yield return new WaitForSeconds(1f);
+
+        // End AI planning phase
+        state = PvEBattleState.PLAYER_INPUT;
+        PlayerTurn();
+    }
+
     private void PlayerTurn()
     {
-        if (state != PvEBattleState.PLAYER_INPUT) return;
-
         turnDialogueText.text = "Player's Turn!";
         pawnHUD.SetPlayerCanvas(firstPlayer);
 
@@ -103,34 +131,41 @@ public class PvEBattleSystem : MonoBehaviour // Changed class name to PveBattleS
     {
         turnDialogueText.text = "Resolving Actions...";
 
-        // Generate AI actions
-        GenerateEnemyActions();
-
         // Combine player and AI actions into a single list
         List<Action> combinedActionsQueue = CombineActions(playerActionsQueue, enemyActionsQueue);
 
         // Execute all actions simultaneously
         yield return ExecuteSimultaneousActions(combinedActionsQueue);
 
-        // Reset for the next player turn
-        PlayerTurn();
-        state = PvEBattleState.PLAYER_INPUT;
+        // Reset and proceed to the next turn
+        state = PvEBattleState.ENEMY_PLANNING;
+        StartCoroutine(EnemyPlanningPhase());
     }
 
-    private void GenerateEnemyActions()
+    private void HighlightAITiles()
     {
-        enemyActionsQueue.Clear();
-
-        foreach (var pawn in enemyPlayer.pawns)
+        foreach (var tile in aiPlannedTiles.Values)
         {
-            if (pawn.GetComponent<Pawn>().currentHP > 0)
+            highlightedAITiles.Add(tile);
+            var hex = tileMapManager.GetComponent<HexGrid>().GetTileAt(tile);
+            if (hex != null)
             {
-                if (!TryEnemyAttack(pawn.GetComponent<Pawn>()))
-                {
-                    TryMoveTowardPlayer(pawn.GetComponent<Pawn>());
-                }
+                hex.EnableHighlight(Color.yellow);
             }
         }
+    }
+
+    private void ClearAIHighlights()
+    {
+        foreach (var tile in highlightedAITiles)
+        {
+            var hex = tileMapManager.GetComponent<HexGrid>().GetTileAt(tile);
+            if (hex != null)
+            {
+                hex.DisableHighlight();
+            }
+        }
+        highlightedAITiles.Clear();
     }
 
     private bool TryEnemyAttack(Pawn enemyPawn)
@@ -157,18 +192,21 @@ public class PvEBattleSystem : MonoBehaviour // Changed class name to PveBattleS
 
             Vector3Int targetTile = tilesInRange
                 .OrderBy(tile => Vector3Int.Distance(tile, nearestPlayerPawn.CurrentTile.GetComponent<Hex>().HexCoords))
-                .FirstOrDefault();
+                .FirstOrDefault(tile => !IsTileOccupied(tile));
 
-            if (targetTile != null && !IsTileOccupied(targetTile))
+            if (targetTile != null)
             {
                 Action moveAction = new Action(ActionType.Move, enemyPawn, targetTile);
                 enemyActionsQueue.Add(moveAction);
+                aiPlannedTiles[enemyPawn] = targetTile;
             }
         }
     }
 
     private IEnumerator ExecuteSimultaneousActions(List<Action> actions)
     {
+        ClearAIHighlights();
+
         List<IEnumerator> actionCoroutines = new List<IEnumerator>();
 
         foreach (var action in actions)
@@ -234,7 +272,7 @@ public class PvEBattleSystem : MonoBehaviour // Changed class name to PveBattleS
     {
         foreach (var pawn in FindObjectsOfType<Pawn>())
         {
-            if (pawn.CurrentTile.GetComponent<Hex>().HexCoords == tileCoords)
+            if (pawn.CurrentTile != null && pawn.CurrentTile.GetComponent<Hex>().HexCoords == tileCoords)
             {
                 return true;
             }
@@ -319,7 +357,7 @@ public class PvEBattleSystem : MonoBehaviour // Changed class name to PveBattleS
         Vector3Int hexCoords = hex.HexCoords;
         foreach (Pawn pawn in FindObjectsOfType<Pawn>())
         {
-            if (pawn.CurrentTile.GetComponent<Hex>().HexCoords == hexCoords)
+            if (pawn.CurrentTile != null && pawn.CurrentTile.GetComponent<Hex>().HexCoords == hexCoords)
             {
                 return pawn;
             }
