@@ -90,7 +90,6 @@ public class PvEBattleSystem : MonoBehaviour
         enemyActionsQueue.Clear();
         aiPlannedTiles.Clear();
 
-        // Plan AI moves and highlight tiles
         foreach (var pawn in enemyPlayer.pawns)
         {
             if (pawn.GetComponent<Pawn>().currentHP > 0)
@@ -106,7 +105,6 @@ public class PvEBattleSystem : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        // End AI planning phase
         state = PvEBattleState.PLAYER_INPUT;
         PlayerTurn();
     }
@@ -115,7 +113,6 @@ public class PvEBattleSystem : MonoBehaviour
     {
         turnDialogueText.text = "Player's Turn!";
         pawnHUD.SetPlayerCanvas(firstPlayer);
-
         playerActionsQueue.Clear();
     }
 
@@ -130,14 +127,12 @@ public class PvEBattleSystem : MonoBehaviour
     private IEnumerator ResolveActions()
     {
         turnDialogueText.text = "Resolving Actions...";
+        ClearAIHighlights();
 
-        // Combine player and AI actions into a single list
         List<Action> combinedActionsQueue = CombineActions(playerActionsQueue, enemyActionsQueue);
 
-        // Execute all actions simultaneously
         yield return ExecuteSimultaneousActions(combinedActionsQueue);
 
-        // Reset and proceed to the next turn
         state = PvEBattleState.ENEMY_PLANNING;
         StartCoroutine(EnemyPlanningPhase());
     }
@@ -175,8 +170,12 @@ public class PvEBattleSystem : MonoBehaviour
             List<Pawn> playerPawnsInRange = FindPawnsInRange(enemyPawn, attack.range, "PlayerPawn");
             if (playerPawnsInRange.Count > 0)
             {
-                Action attackAction = new Action(ActionType.Attack, enemyPawn, playerPawnsInRange[0], attack);
-                enemyActionsQueue.Add(attackAction);
+                foreach (var playerPawn in playerPawnsInRange)
+                {
+                    Action attackAction = new Action(ActionType.Attack, enemyPawn, playerPawn, attack);
+                    enemyActionsQueue.Add(attackAction);
+                    Debug.Log($"{enemyPawn.pawnName} plans to attack {playerPawn.pawnName}.");
+                }
                 return true;
             }
         }
@@ -205,8 +204,6 @@ public class PvEBattleSystem : MonoBehaviour
 
     private IEnumerator ExecuteSimultaneousActions(List<Action> actions)
     {
-        ClearAIHighlights();
-
         List<IEnumerator> actionCoroutines = new List<IEnumerator>();
 
         foreach (var action in actions)
@@ -235,6 +232,7 @@ public class PvEBattleSystem : MonoBehaviour
     private IEnumerator ExecuteAttack(Action action)
     {
         action.pawn.DealAttack(action.selectedAttack, action.targetPawn);
+        Debug.Log($"{action.pawn.pawnName} attacked {action.targetPawn.pawnName} with {action.selectedAttack.name}.");
         yield return new WaitForSeconds(1f);
     }
 
@@ -242,7 +240,6 @@ public class PvEBattleSystem : MonoBehaviour
     {
         if (IsTileOccupied(targetTileCoords))
         {
-            Debug.LogWarning($"Target tile {targetTileCoords} is already occupied. Finding nearest available tile.");
             targetTileCoords = FindNearestAvailableTile(targetTileCoords);
         }
 
