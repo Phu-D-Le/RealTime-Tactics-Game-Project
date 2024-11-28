@@ -80,6 +80,7 @@ public class BattleSystem : MonoBehaviour
     }
     void PlayerTurn()
     {
+        pawnHUD.gameObject.SetActive(true);
         turnDialogueText.text = "Player 1's Turn!";
         pawnHUD.SetPlayerCanvas(firstPlayer);
     }
@@ -91,6 +92,7 @@ public class BattleSystem : MonoBehaviour
     }
     void EnemyTurn()
     {
+        pawnHUD.gameObject.SetActive(true);
         turnDialogueText.text = "Player 2's Turn!";
         pawnHUD.SetPlayerCanvas(enemyPlayer);
     }
@@ -117,6 +119,20 @@ public class BattleSystem : MonoBehaviour
 
     // Space bar is turn ultimatum. Selection logic in SelectManager. ZO
     public void UpdateHUD()
+    {
+        attackHUD.gameObject.SetActive(false);
+        actionHUD.gameObject.SetActive(false);
+
+        if (state == BattleState.PLAYERTURN)
+        {
+            PlayerAttack();
+        }
+        else if (state == BattleState.ENEMYTURN)
+        {
+            EnemyAttack();
+        }
+    }
+    public void UpdateHUD2()
     {
 
         attackHUD.gameObject.SetActive(false);
@@ -150,6 +166,13 @@ public class BattleSystem : MonoBehaviour
             }
 
         }
+    }
+    public void ActionsPlaying()
+    {
+        turnDialogueText.text = "Actions Commencing...";
+        pawnHUD.gameObject.SetActive(false);
+        attackHUD.gameObject.SetActive(false);
+        actionHUD.gameObject.SetActive(false);
     }
 }
 

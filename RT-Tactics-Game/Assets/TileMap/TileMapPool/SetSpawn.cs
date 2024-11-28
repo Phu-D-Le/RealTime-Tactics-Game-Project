@@ -37,7 +37,7 @@ public class TileMapSpawner : MonoBehaviour
         availableSpawnTiles.RemoveAt(0);
 
         // Spawn pawn on the tile
-        Vector3 movePosition = tile.transform.position + new Vector3(0, heightOffset, 0);
+        Vector3 movePosition = tile.transform.position + new Vector3(0, 1, 0);
         pawn.transform.position = movePosition;
 
         //foreach (GameObject tile in spawnTiles)
