@@ -22,8 +22,8 @@ public class BattleSystem : MonoBehaviour
     public TileMapManager tileMapManager;
     public SelectManager selectManager;
 
-    private bool playerHadTurn;
-    private bool enemyHadTurn;
+    //private bool playerHadTurn;
+    //private bool enemyHadTurn;
     void Start()
     {
         state = BattleState.START;
@@ -33,8 +33,8 @@ public class BattleSystem : MonoBehaviour
 
         tileMapManager.GenerateTileMap();
 
-        playerHadTurn = false;
-        enemyHadTurn = false;
+        //playerHadTurn = false;
+        //enemyHadTurn = false;
 
         TileMapSpawner spawner = FindObjectOfType<TileMapSpawner>();
         spawner.InitializeSpawner();
@@ -87,7 +87,7 @@ public class BattleSystem : MonoBehaviour
     void PlayerAttack()
     {
         state = BattleState.ENEMYTURN;
-        
+        //playerHadTurn = true;
         EnemyTurn();
     }
     void EnemyTurn()
@@ -99,7 +99,7 @@ public class BattleSystem : MonoBehaviour
     void EnemyAttack()
     {
         state = BattleState.PLAYERTURN;
-        
+        //enemyHadTurn = true;
         PlayerTurn();
     }
     public void Win(Player winner)
@@ -132,10 +132,10 @@ public class BattleSystem : MonoBehaviour
             EnemyAttack();
         }
     }
-    public void UpdateHUD2()
-    {
+    //public void UpdateHUD2()
+    //{
 
-        attackHUD.gameObject.SetActive(false);
+        //attackHUD.gameObject.SetActive(false);
 
         //if (state == BattleState.PLAYERTURN)
         //{
@@ -145,28 +145,28 @@ public class BattleSystem : MonoBehaviour
         //{
         //    EnemyAttack();
         //}
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            attackHUD.gameObject.SetActive(false);
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+            //attackHUD.gameObject.SetActive(false);
             
-            actionHUD.gameObject.SetActive(false);
+            //actionHUD.gameObject.SetActive(false);
             
                 
             //pawnHUD.gameObject.SetActive(false);
 
-            if (state == BattleState.PLAYERTURN)
-            {
-                PlayerAttack();
-                playerHadTurn = true;
-            }
-            else if (state == BattleState.ENEMYTURN)
-            {
-                EnemyAttack();
-                enemyHadTurn = true;
-            }
+            //if (state == BattleState.PLAYERTURN)
+            //{
+                //PlayerAttack();
+              //  playerHadTurn = true;
+            //}
+           // else if (state == BattleState.ENEMYTURN)
+           // {
+            //    EnemyAttack();
+          //      enemyHadTurn = true;
+        //    }
 
-        }
-    }
+      //  }
+    //}
     public void ActionsPlaying()
     {
         turnDialogueText.text = "Actions Commencing...";

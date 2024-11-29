@@ -283,7 +283,7 @@ public class SelectManager : MonoBehaviour
                         {
                             actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, clickedTile.transform.position + new Vector3(0,1,0), selectedAction));
                             plannedTiles.Add(targetCoords);
-                            currentPawn.Act();
+                            currentPawn.Attack();
                             DisableAllHighlights();
                             
                             Debug.Log($"{currentPawn.pawnName} casts wall of fire");
@@ -308,7 +308,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
-                                currentPawn.Act();
+                                currentPawn.Attack();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casted curse on {targetPawn.pawnName}.");
                             }
@@ -322,7 +322,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
-                                currentPawn.Act();
+                                currentPawn.Attack();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casted curse on {targetPawn.pawnName}.");
                             }
@@ -352,7 +352,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasMoved && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, null, selectedAction));
-                                currentPawn.Act();
+                                currentPawn.Attack();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casts necromancy.");
                             }
