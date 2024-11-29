@@ -74,9 +74,9 @@ public class SelectManager : MonoBehaviour
             }
             else
             {
+                battleSystem.UpdateHUD();
                 isSecondPlayerTurn = true;
                 DisableAllHighlights();
-                battleSystem.UpdateHUD();
             }
         }
     }
@@ -281,9 +281,9 @@ public class SelectManager : MonoBehaviour
                     {
                         if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                         {
-                            actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, clickedTile.transform.position + new Vector3(0,2,0), selectedAction));
+                            actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, clickedTile.transform.position + new Vector3(0,1,0), selectedAction));
                             plannedTiles.Add(targetCoords);
-                            currentPawn.Act();
+                            currentPawn.Attack();
                             DisableAllHighlights();
                             
                             Debug.Log($"{currentPawn.pawnName} casts wall of fire");
@@ -308,7 +308,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
-                                currentPawn.Act();
+                                currentPawn.Attack();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casted curse on {targetPawn.pawnName}.");
                             }
@@ -322,7 +322,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
-                                currentPawn.Act();
+                                currentPawn.Attack();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casted curse on {targetPawn.pawnName}.");
                             }
@@ -352,7 +352,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasMoved && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, null, selectedAction));
-                                currentPawn.Act();
+                                currentPawn.Attack();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casts necromancy.");
                             }
@@ -417,6 +417,8 @@ public class SelectManager : MonoBehaviour
     }
     private IEnumerator MoveAlongPath(Pawn pawn, List<GameObject> path) // Now the pawn can actually move. ZO
     {
+        pawn.pawnAnimation.StartWalking();
+        
         foreach (GameObject tile in path)
         {
             if (pawn != null)
@@ -437,7 +439,7 @@ public class SelectManager : MonoBehaviour
                 bool moveSoundPlayed = false;
 
                 // Speed of movement is here, can increase/decrease as necessary. ZO
-                Vector3 targetPosition = tile.transform.position + new Vector3(0, 2.0f, 0);
+                Vector3 targetPosition = tile.transform.position + new Vector3(0, 1.0f, 0);
                 while (Vector3.Distance(pawn.transform.position, targetPosition) > 0.1f)
                 {
                     if (!moveSoundPlayed)
@@ -457,6 +459,7 @@ public class SelectManager : MonoBehaviour
             }
         }
 
+        pawn.pawnAnimation.StopWalking();
         pawn.CurrentTile = path.Last(); // Pawn has moved. ZO
         pawn.Move();
         DisableAllHighlights();
@@ -674,6 +677,7 @@ public class SelectManager : MonoBehaviour
     }
     private IEnumerator ExecuteActionsSequentially() // Change to IEnumerator to handle coroutines sequentially. ZO
     {
+        battleSystem.ActionsPlaying();
         foreach (Action action in actionQueue)
         {
             if (action.actionType == ActionType.Move)
@@ -721,9 +725,6 @@ public class SelectManager : MonoBehaviour
                 action.pawn.Act();
             }
         }
-
-        
-
         StartNewTurn();
     } 
 
