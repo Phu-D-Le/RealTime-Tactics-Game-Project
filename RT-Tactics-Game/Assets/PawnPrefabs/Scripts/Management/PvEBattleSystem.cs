@@ -65,6 +65,33 @@ public class PvEBattleSystem : MonoBehaviour
         StartCoroutine(EnemyPlanningPhase());
     }
 
+    public void QueuePlayerActions(List<Action> playerActions)
+    {
+        playerActionsQueue.Clear();
+        playerActionsQueue.AddRange(playerActions);
+    }
+
+    public void ResolveActions()
+    {
+        StartCoroutine(ResolveActionsCoroutine());
+    }
+
+    private IEnumerator ResolveActionsCoroutine()
+    {
+        turnDialogueText.text = "Resolving Actions...";
+        ClearAIHighlights();
+
+        // Combine player and AI actions
+        List<Action> combinedActionsQueue = CombineActions(playerActionsQueue, enemyActionsQueue);
+
+        // Execute combined actions
+        yield return ExecuteSimultaneousActions(combinedActionsQueue);
+
+        // Transition to the next phase
+        state = PvEBattleState.ENEMY_PLANNING;
+        StartCoroutine(EnemyPlanningPhase());
+    }
+
     private void InitializePawns(Player player, string tag)
     {
         foreach (var pawn in player.pawns)
@@ -80,7 +107,7 @@ public class PvEBattleSystem : MonoBehaviour
         if (state == PvEBattleState.PLAYER_INPUT && Input.GetKeyDown(KeyCode.Space))
         {
             state = PvEBattleState.RESOLVING_ACTIONS;
-            StartCoroutine(ResolveActions());
+            ResolveActions();
         }
     }
 
@@ -114,27 +141,6 @@ public class PvEBattleSystem : MonoBehaviour
         turnDialogueText.text = "Player's Turn!";
         pawnHUD.SetPlayerCanvas(firstPlayer);
         playerActionsQueue.Clear();
-    }
-
-    public void QueuePlayerAction(Action action)
-    {
-        if (state == PvEBattleState.PLAYER_INPUT)
-        {
-            playerActionsQueue.Add(action);
-        }
-    }
-
-    private IEnumerator ResolveActions()
-    {
-        turnDialogueText.text = "Resolving Actions...";
-        ClearAIHighlights();
-
-        List<Action> combinedActionsQueue = CombineActions(playerActionsQueue, enemyActionsQueue);
-
-        yield return ExecuteSimultaneousActions(combinedActionsQueue);
-
-        state = PvEBattleState.ENEMY_PLANNING;
-        StartCoroutine(EnemyPlanningPhase());
     }
 
     private void HighlightAITiles()

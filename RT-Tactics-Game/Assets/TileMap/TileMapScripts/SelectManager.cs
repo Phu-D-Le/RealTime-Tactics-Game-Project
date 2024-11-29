@@ -58,6 +58,13 @@ public class SelectManager : MonoBehaviour
     {
         HandleInput();
     }
+    private void ClearQueuedActions()
+    {
+        actionQueue.Clear();
+        DisableAllHighlights();
+        plannedTiles.Clear();
+    }
+
     public void HandleInput()
     {
         if (Input.GetMouseButtonDown(0) && ready)
@@ -66,18 +73,16 @@ public class SelectManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Space) && ready)
         {
-            if (isSecondPlayerTurn)
+            if (battleSystem == null)
             {
-                isSecondPlayerTurn = false;
-                DisableAllHighlights(); // These are failsafes so player cannot select or move on enemy turn. ZO
-                ExecuteActions();
+                Debug.LogError("BattleSystem is not assigned in SelectManager!");
+                return;
             }
-            else
-            {
-                isSecondPlayerTurn = true;
-                DisableAllHighlights();
-                battleSystem.UpdateHUD();
-            }
+
+            // Submit player actions to PvEBattleSystem and resolve both player and AI actions
+            PvEbattleSystem.QueuePlayerActions(actionQueue);
+            PvEattleSystem.ResolveActions();
+            ClearQueuedActions();
         }
     }
     private void HandleMouseClick() // Check if mouse hits tile. ZO
