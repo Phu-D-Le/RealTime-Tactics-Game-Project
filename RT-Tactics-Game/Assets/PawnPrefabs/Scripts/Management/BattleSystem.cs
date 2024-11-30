@@ -61,7 +61,17 @@ public class BattleSystem : MonoBehaviour
             currentPawn.team = 0;
         }
 
+        //adjusted to face pawns in correct direction at spawn. JP
+        foreach (var pawn in firstPlayer.pawns)
+        {
+            pawn.transform.Rotate(0, 90, 0);
+        }
         firstPlayer.SpawnPawnsOnMap(spawner); // Spawner tag tiles must be in order within map. ZO
+
+        foreach (var pawn in enemyPlayer.pawns)
+        {
+            pawn.transform.Rotate(0, -90, 0);
+        }
         enemyPlayer.SpawnPawnsOnMap(spawner);
 
         attackHUD.gameObject.SetActive(false);
