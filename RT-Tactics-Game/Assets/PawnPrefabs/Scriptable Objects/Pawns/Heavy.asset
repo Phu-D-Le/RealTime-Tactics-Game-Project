@@ -18,10 +18,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 17aa3781836c9e443bb0fa4356689aa9, type: 2}
   - {fileID: 11400000, guid: 9fb39e4935e84a44da73cf46db417b05, type: 2}
   pawnTypeActions:
-  - {fileID: 11400000, guid: ba4e161ecc03dff4794c7176ce6355b1, type: 2}
+  - {fileID: 11400000, guid: 0df747c843851124f9503aefbfd4ef3a, type: 2}
   pawnTypeSpeed: 1
   pawnTypeMaxHP: 20
   pawnTypeCurrentHP: 20
+
   pawnTypeMoveSound: {fileID: 8300000, guid: 248fbcdc9e6689748be6f07889364363, type: 3}
   pawnTypeDeathSound: {fileID: 8300000, guid: 130f470f278d6a447ad2b2b25a8962a4, type: 3}
   pawnTypeDamageSound: {fileID: 8300000, guid: 40e087c0708cfdd489559acba1896bff, type: 3}
+

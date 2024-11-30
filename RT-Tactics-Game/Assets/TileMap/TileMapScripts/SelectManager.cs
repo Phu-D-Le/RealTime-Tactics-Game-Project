@@ -342,7 +342,7 @@ public class SelectManager : MonoBehaviour
                         Debug.Log("Clicked tile is not within movement range.");
                     }
                     break;
-                case "Necromancy":
+                case "Necromancy": //probably not gonna be implemented by deadline, keeping it for now tho lol
                     if (IsTileInRange(hexComponent.HexCoords))
                     {
                         Pawn targetPawn = FindPawnOnTile(clickedTile);
@@ -364,6 +364,50 @@ public class SelectManager : MonoBehaviour
                         else
                         {
                             Debug.Log("Cannot cast necromancy with enemy pawn on this tile.");
+                        }
+
+                    }
+                    else
+                    {
+                        Debug.Log("Clicked tile is not within movement range.");
+                    }
+                    break;
+                case "Lure":
+                    if (IsTileInRange(hexComponent.HexCoords))
+                    {
+                        Pawn targetPawn = FindPawnOnTile(clickedTile);
+
+                        if (targetPawn != null && !targetPawn.hasMoved)
+                        {
+                            if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
+                            {
+                                actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
+                                currentPawn.Act();
+                                DisableAllHighlights();
+                                Debug.Log($"{currentPawn.pawnName} casted lure on {targetPawn.pawnName}.");
+                            }
+                            else
+                            {
+                                Debug.Log("No pawn selected to act or pawn has already attacked/acted.");
+                            }
+                        }
+                        else if (targetPawn != null && targetPawn.hasMoved && plannedTiles.Contains(hexComponent.HexCoords))
+                        {
+                            if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
+                            {
+                                actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
+                                currentPawn.Act();
+                                DisableAllHighlights();
+                                Debug.Log($"{currentPawn.pawnName} casted lure on {targetPawn.pawnName}.");
+                            }
+                            else
+                            {
+                                Debug.Log("No pawn selected to act or pawn has already attacked/acted.");
+                            }
+                        }
+                        else
+                        {
+                            Debug.Log("No enemy pawn on this tile.");
                         }
 
                     }
@@ -716,7 +760,13 @@ public class SelectManager : MonoBehaviour
                         action.targetPawn.specialDisable = true;
                         action.pawn.Act();
                         break;
-                    case "Necromancy":
+                    case "Necromancy": // will not be implemented
+                        Debug.Log($"{action.pawn.name} casts necromancy");
+                        action.pawn.Act();
+                        break;
+                    case "Lure":
+                        
+                        action.pawn.Act();
                         break;
                     default:
                         Debug.Log("Not a valid action");

@@ -30,9 +30,11 @@ public class Pawn : MonoBehaviour
 
     public bool specialDisable = false;
 
-    public int startDuration;
+    public int curseStart;
+    public int lureStart;
 
-    public int duration;
+    public int curseDuration;
+    public int lureDuration;
 
     public int team; // 1 is player, 0 is enemy
 
@@ -55,17 +57,26 @@ public class Pawn : MonoBehaviour
     public void Cursed(int duration)
     {
         specialDisable = true;
-        this.duration = duration;
+        this.curseDuration = duration;
     }
 
-    public void UpdateDuration()
+    public void UpdateCurseDuration()
     {
-        duration--;
-        if(duration == 0)
+        curseDuration--;
+        if(curseDuration == 0)
         {
             specialDisable = false;
         }
     }
+    public void UpdateLureDuration()
+    {
+        curseDuration--;
+        if (curseDuration == 0)
+        {
+            specialDisable = false;
+        }
+    }
+
     public IEnumerator DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
 
     {
