@@ -16,3 +16,4 @@ MonoBehaviour:
   damage: 5
   attackSprite: {fileID: 21300000, guid: 3f3a5ea5ace79004eba15d892dcc01a3, type: 3}
   range: 1
+  attackSound: {fileID: 8300000, guid: c43a9e78bc35e804d80409273d9f2886, type: 3}

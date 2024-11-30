@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
-public class CharacterSelection : MonoBehaviour
+public class CharacterSelectionPvE : MonoBehaviour
 {
     public Button lightPawnButton;
     public Button mediumPawnButton;
@@ -20,7 +20,6 @@ public class CharacterSelection : MonoBehaviour
     public GameObject heavyPawnPrefab;
 
     public Transform playerSpawnPoint;
-    public Transform enemySpawnPoint;
 
     private int maxSelections = 3;
     private int currentSelectionCount = 0;
@@ -31,7 +30,8 @@ public class CharacterSelection : MonoBehaviour
     private bool isPlayerSelecting = true; // Track if it's player's turn
 
     private List<GameObject> playerPawns = new List<GameObject>();
-    private List<GameObject> enemyPawns = new List<GameObject>();
+
+    public TextMeshProUGUI characterSelectionText;
 
     void Start()
     {
@@ -40,6 +40,9 @@ public class CharacterSelection : MonoBehaviour
         heavyPawnButton.onClick.AddListener(() => AddPawnSelection("Heavy"));
         confirmButton.onClick.AddListener(ConfirmSelection);
         resetButton.onClick.AddListener(() => ResetSelection());
+
+        // Display first player's turn
+        characterSelectionText.text = "Character Selection: Player 1";
 
         UpdateUI();
     }
@@ -67,12 +70,6 @@ public class CharacterSelection : MonoBehaviour
 
     void ConfirmSelection()
     {
-        if (currentSelectionCount != maxSelections)
-        {
-            // Optional: Display a message or feedback to the player
-            Debug.Log("You must select exactly 3 pawns before confirming.");
-            return;
-        }
         if (currentSelectionCount > 0)
         {
             if (isPlayerSelecting)
@@ -83,20 +80,6 @@ public class CharacterSelection : MonoBehaviour
                 // Make player persistent across scenes
                 DontDestroyOnLoad(playerSpawnPoint.gameObject);
 
-                // Switch to enemy selection
-                isPlayerSelecting = false;
-                ResetSelection(false); // Reset selection for enemy without resetting the UI
-                UpdateUI();
-            }
-            else
-            {
-                // Spawn pawns for the enemy
-                SpawnPawns(enemySpawnPoint, enemyPawns);
-
-                // Make player persistent across scenes
-                DontDestroyOnLoad(enemySpawnPoint.gameObject);
-
-                // Both selections done, proceed to next scene
                 LoadGameScene();
             }
         }
@@ -125,7 +108,7 @@ public class CharacterSelection : MonoBehaviour
             pawnList.Add(newPawn);
         }
     }
-
+    
     void ResetSelection(bool resetUI = true)
     {
         lightCount = 0;
@@ -144,14 +127,13 @@ public class CharacterSelection : MonoBehaviour
         lightCountText.text = lightCount.ToString();
         mediumCountText.text = mediumCount.ToString();
         heavyCountText.text = heavyCount.ToString();
+
+        confirmButton.interactable = (currentSelectionCount == maxSelections);
     }
 
     void LoadGameScene()
     {
-        // Load the next scene, passing the player and enemy pawns if needed.
-        Debug.Log("Loading next scene with Player and Enemy pawns.");
-
         // Use Unity's SceneManager to load the next scene
-        UnityEngine.SceneManagement.SceneManager.LoadScene("GameDemo");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("GameDemoPvE");
     }
 }

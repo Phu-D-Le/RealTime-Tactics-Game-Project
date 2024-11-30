@@ -22,6 +22,8 @@ MonoBehaviour:
   pawnTypeSpeed: 1
   pawnTypeMaxHP: 20
   pawnTypeCurrentHP: 20
-  pawnTypeMoveSound: {fileID: 0}
-  pawnTypeDeathSound: {fileID: 0}
-  pawnTypeDamageSound: {fileID: 0}
+
+  pawnTypeMoveSound: {fileID: 8300000, guid: 248fbcdc9e6689748be6f07889364363, type: 3}
+  pawnTypeDeathSound: {fileID: 8300000, guid: 130f470f278d6a447ad2b2b25a8962a4, type: 3}
+  pawnTypeDamageSound: {fileID: 8300000, guid: 40e087c0708cfdd489559acba1896bff, type: 3}
+
