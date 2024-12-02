@@ -20,6 +20,7 @@ public class Pawn : MonoBehaviour
     public bool hasMoved { get; private set; }
     public GameObject CurrentTile { get; set; }
     public Attack selectedAttack { get; set; }
+    public PawnAnimation pawnAnimation;
 
     public AudioClip moveSound;
     public AudioClip deathSound;
@@ -51,6 +52,7 @@ public class Pawn : MonoBehaviour
         InitializeFromPawnType(pawnType);
         healthHUD.SetHealthHUD(this);
         audioSource = GetComponent<AudioSource>();
+        pawnAnimation = GetComponent<PawnAnimation>();
     }
 
     
@@ -192,6 +194,7 @@ public class Pawn : MonoBehaviour
         if (this != null)
         {
             PlaySound(damageSound);
+            pawnAnimation.TriggerFlinch();
         }
         else
         {
@@ -201,6 +204,22 @@ public class Pawn : MonoBehaviour
     public void PlayAttackSound(AudioClip clip)
     {
         PlaySound(clip);
+        if (clip.name == "ShortSwing")
+        {
+            pawnAnimation.TriggerShortSwing();
+        }
+        else if (clip.name == "WideSwing")
+        {
+            pawnAnimation.TriggerWideSwing();
+        }
+        else if (clip.name == "RangedAttack")
+        {
+            pawnAnimation.TriggerRangeBow();
+        }
+        else
+        {
+            pawnAnimation.TriggerFlinch();
+        }
     }
     private void PlaySound(AudioClip clip)
     {
@@ -210,7 +229,6 @@ public class Pawn : MonoBehaviour
             audioSource.Play();
         }
     }
-
     public void Act()
     {
         hasActed = true;

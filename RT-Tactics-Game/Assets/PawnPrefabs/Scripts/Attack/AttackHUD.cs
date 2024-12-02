@@ -13,12 +13,14 @@ public class AttackHUD : MonoBehaviour
 {
     private List<Button> attackButtons;
     private SelectManager selectManager;
+    private ActionHUD actionHUD;
 
     void Awake()
     {
         // Dynamically get all buttons from the AttackHUD in scene. ZO
         attackButtons = new List<Button>(GetComponentsInChildren<Button>());
         selectManager = FindObjectOfType<SelectManager>();
+        actionHUD = FindObjectOfType<ActionHUD>();
     }
     public void SetUpAttacks(Pawn pawn)
     {
@@ -40,6 +42,7 @@ public class AttackHUD : MonoBehaviour
                 attackButtons[i].onClick.AddListener(() => 
                 {
                     HandleAttackSelection(pawn, currentAttack);
+                    actionHUD.CloseActionHUD();
                     CloseAttackHUD();
 
                 }); // Adds three methods on each button dynamically. currently it handles attack tile selection in SelectManager,
@@ -53,7 +56,7 @@ public class AttackHUD : MonoBehaviour
             }
         }
     }
-    private void CloseAttackHUD()
+    public void CloseAttackHUD()
     {
         gameObject.SetActive(false);
     }
