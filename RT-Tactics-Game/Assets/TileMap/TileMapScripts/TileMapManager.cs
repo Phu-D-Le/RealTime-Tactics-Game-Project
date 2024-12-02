@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TileMapManager : MonoBehaviour
 {
@@ -13,17 +14,25 @@ public class TileMapManager : MonoBehaviour
 
     public void GenerateTileMap()
     {
-        //gen tile map
-        GameObject tileMap = Instantiate(TileMaps[Random.Range(0, TileMaps.Length)]); //random map pool
-        //GameObject tileMap = Instantiate(TileMaps[4]); // Hardcode for testing, minus one for manual input -> work (1, 4, 8, 9), dont (2, 3, 5, 6, 7, 10)
-        Debug.Log("Tile Map: " + tileMap.name);
-        CenterTileMap(tileMap);
+        GameObject tileMap;
+        string currentScene = SceneManager.GetActiveScene().name;
 
-        hexGrid = GetComponent<HexGrid>();
-        hexGrid.StartHexGrid();
+        if (currentScene == "GameDemo"){
+            tileMap = Instantiate(TileMaps[Random.Range(0, TileMaps.Length)]); //random map pool
+        }
+        else{
+            tileMap = Instantiate(TileMaps[0]); //start from beginning 
+        }
+            Debug.Log("Tile Map: " + tileMap.name);
+            CenterTileMap(tileMap);
 
-        selectManager = GetComponent<SelectManager>();
-        selectManager.InitializeSelectManager(mainCamera, hexGrid);
+            hexGrid = GetComponent<HexGrid>();
+            hexGrid.StartHexGrid();
+
+            selectManager = GetComponent<SelectManager>();
+            selectManager.InitializeSelectManager(mainCamera, hexGrid);
+        
+        
     }
 
     void CenterTileMap(GameObject tileMap)

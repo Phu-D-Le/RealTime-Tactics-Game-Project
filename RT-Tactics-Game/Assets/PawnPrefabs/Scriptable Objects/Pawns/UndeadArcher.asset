@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82eab3730c925c543b403440be94f694, type: 3}
+  m_Name: UndeadArcher
+  m_EditorClassIdentifier: 
+  pawnTypeName: UndeadArcher
+  pawnTypeSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  pawnTypeAttacks:
+  - {fileID: 11400000, guid: 6e09a579f344f6b439b45ca190fd4226, type: 2}
+  pawnTypeActions:
+  - {fileID: 11400000, guid: ba4e161ecc03dff4794c7176ce6355b1, type: 2}
+  pawnTypeSpeed: 5
+  pawnTypeMaxHP: 5
+  pawnTypeCurrentHP: 5
+  pawnTypeMoveSound: {fileID: 0}
+  pawnTypeDeathSound: {fileID: 0}
+  pawnTypeDamageSound: {fileID: 0}
