@@ -18,10 +18,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6e09a579f344f6b439b45ca190fd4226, type: 2}
   pawnTypeActions:
   - {fileID: 11400000, guid: ba4e161ecc03dff4794c7176ce6355b1, type: 2}
-  - {fileID: 11400000, guid: 10673d79ec385da49a7d93b700f5f390, type: 2}
   pawnTypeSpeed: 3
   pawnTypeMaxHP: 15
   pawnTypeCurrentHP: 15
-  pawnTypeMoveSound: {fileID: 8300000, guid: 248fbcdc9e6689748be6f07889364363, type: 3}
-  pawnTypeDeathSound: {fileID: 8300000, guid: 130f470f278d6a447ad2b2b25a8962a4, type: 3}
-  pawnTypeDamageSound: {fileID: 8300000, guid: 40e087c0708cfdd489559acba1896bff, type: 3}
+  pawnTypeMoveSound: {fileID: 0}
+  pawnTypeDeathSound: {fileID: 0}
+  pawnTypeDamageSound: {fileID: 0}

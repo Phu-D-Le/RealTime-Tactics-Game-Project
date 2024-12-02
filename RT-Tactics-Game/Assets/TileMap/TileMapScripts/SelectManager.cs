@@ -74,9 +74,9 @@ public class SelectManager : MonoBehaviour
             }
             else
             {
-                battleSystem.UpdateHUD();
                 isSecondPlayerTurn = true;
                 DisableAllHighlights();
+                battleSystem.UpdateHUD();
             }
         }
     }
@@ -274,16 +274,28 @@ public class SelectManager : MonoBehaviour
         }
         if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
         {
+            Pawn targetPawn = FindPawnOnTile(clickedTile);
+
+            if(currentPawn.lured)
+            {
+                if(currentPawn.luredSource != targetPawn)
+                {
+                    Debug.Log($"{currentPawn.name} is lured towards {currentPawn.luredSource.name}");
+                    return;
+                }
+            }
+
             switch (selectedAction.actionName) //checks which special action is being used
             {
+                //Much of the targetting follows attack and move rules
                 case "WallOfFire":
                     if (IsTileInRange(hexComponent.HexCoords))
                     {
                         if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                         {
-                            actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, clickedTile.transform.position + new Vector3(0,1,0), selectedAction));
+                            actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, clickedTile.transform.position + new Vector3(0,2,0), selectedAction));
                             plannedTiles.Add(targetCoords);
-                            currentPawn.Attack();
+                            currentPawn.Act();
                             DisableAllHighlights();
                             
                             Debug.Log($"{currentPawn.pawnName} casts wall of fire");
@@ -300,15 +312,13 @@ public class SelectManager : MonoBehaviour
                     break;
                 case "Curse":
                     if (IsTileInRange(hexComponent.HexCoords))
-                    {
-                        Pawn targetPawn = FindPawnOnTile(clickedTile);
-
+                    {                        
                         if (targetPawn != null && !targetPawn.hasMoved)
                         {
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
-                                currentPawn.Attack();
+                                currentPawn.Act();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casted curse on {targetPawn.pawnName}.");
                             }
@@ -322,7 +332,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
-                                currentPawn.Attack();
+                                currentPawn.Act();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casted curse on {targetPawn.pawnName}.");
                             }
@@ -343,40 +353,10 @@ public class SelectManager : MonoBehaviour
                     }
                     break;
                 case "Necromancy": //probably not gonna be implemented by deadline, keeping it for now tho lol
-                    if (IsTileInRange(hexComponent.HexCoords))
-                    {
-                        Pawn targetPawn = FindPawnOnTile(clickedTile);
-
-                        if (targetPawn == null && !plannedTiles.Contains(hexComponent.HexCoords))
-                        {
-                            if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasMoved && !currentPawn.hasActed)
-                            {
-                                actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, null, selectedAction));
-                                currentPawn.Attack();
-                                DisableAllHighlights();
-                                Debug.Log($"{currentPawn.pawnName} casts necromancy.");
-                            }
-                            else
-                            {
-                                Debug.Log("No pawn selected to act or pawn has already attacked/acted/moved.");
-                            }
-                        }
-                        else
-                        {
-                            Debug.Log("Cannot cast necromancy with enemy pawn on this tile.");
-                        }
-
-                    }
-                    else
-                    {
-                        Debug.Log("Clicked tile is not within movement range.");
-                    }
                     break;
                 case "Lure":
                     if (IsTileInRange(hexComponent.HexCoords))
                     {
-                        Pawn targetPawn = FindPawnOnTile(clickedTile);
-
                         if (targetPawn != null && !targetPawn.hasMoved)
                         {
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
@@ -461,8 +441,6 @@ public class SelectManager : MonoBehaviour
     }
     private IEnumerator MoveAlongPath(Pawn pawn, List<GameObject> path) // Now the pawn can actually move. ZO
     {
-        pawn.pawnAnimation.StartWalking();
-        
         foreach (GameObject tile in path)
         {
             if (pawn != null)
@@ -483,7 +461,7 @@ public class SelectManager : MonoBehaviour
                 bool moveSoundPlayed = false;
 
                 // Speed of movement is here, can increase/decrease as necessary. ZO
-                Vector3 targetPosition = tile.transform.position + new Vector3(0, 1.0f, 0);
+                Vector3 targetPosition = tile.transform.position + new Vector3(0, 2.0f, 0);
                 while (Vector3.Distance(pawn.transform.position, targetPosition) > 0.1f)
                 {
                     if (!moveSoundPlayed)
@@ -503,7 +481,6 @@ public class SelectManager : MonoBehaviour
             }
         }
 
-        pawn.pawnAnimation.StopWalking();
         pawn.CurrentTile = path.Last(); // Pawn has moved. ZO
         pawn.Move();
         DisableAllHighlights();
@@ -721,7 +698,6 @@ public class SelectManager : MonoBehaviour
     }
     private IEnumerator ExecuteActionsSequentially() // Change to IEnumerator to handle coroutines sequentially. ZO
     {
-        battleSystem.ActionsPlaying();
         foreach (Action action in actionQueue)
         {
             if (action.actionType == ActionType.Move)
@@ -757,7 +733,7 @@ public class SelectManager : MonoBehaviour
                        
                         break;
                     case "Curse":
-                        action.targetPawn.specialDisable = true;
+                        action.targetPawn.Cursed(2);
                         action.pawn.Act();
                         break;
                     case "Necromancy": // will not be implemented
@@ -765,7 +741,7 @@ public class SelectManager : MonoBehaviour
                         action.pawn.Act();
                         break;
                     case "Lure":
-                        
+                        action.targetPawn.Lured(2, action.pawn);
                         action.pawn.Act();
                         break;
                     default:
@@ -775,6 +751,9 @@ public class SelectManager : MonoBehaviour
                 action.pawn.Act();
             }
         }
+
+        
+
         StartNewTurn();
     } 
 
@@ -809,6 +788,7 @@ public class SelectManager : MonoBehaviour
         // Clear the queue after executing all actions and reset. ZO
         
         GlobalVariables.turns++;
+        
         actionQueue.Clear();
         DisablePlannedTileHighlights();
         ready = true;

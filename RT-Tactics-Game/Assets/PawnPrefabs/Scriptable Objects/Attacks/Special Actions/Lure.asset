@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86837f6c374b40744875930567a02988, type: 3}
   m_Name: Lure
   m_EditorClassIdentifier: 
-  actionName: lure
+  actionName: Lure
   damage: 0
   actionSprite: {fileID: 21300000, guid: d88935b2af407c7479fbad119b6abb64, type: 3}
   range: 2
