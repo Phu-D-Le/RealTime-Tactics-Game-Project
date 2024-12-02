@@ -28,9 +28,11 @@ public class Pawn : MonoBehaviour
     public SpecialAction selectedAction { get; set; }
 
     public bool specialDisable = false;
+    public bool lured = false;
+    public Pawn luredSource = null;
 
-    public int curseStart;
-    public int lureStart;
+    public int curseEnd;
+    public int lureEnd;
 
     public int curseDuration;
     public int lureDuration;
@@ -56,25 +58,35 @@ public class Pawn : MonoBehaviour
     {
         specialDisable = true;
         this.curseDuration = duration;
+        curseEnd = GlobalVariables.turns + duration;
     }
 
-    public void UpdateCurseDuration()
+    public void Lured(int duration, Pawn target)
     {
-        curseDuration--;
-        if(curseDuration == 0)
-        {
-            specialDisable = false;
-        }
-    }
-    public void UpdateLureDuration()
-    {
-        curseDuration--;
-        if (curseDuration == 0)
-        {
-            specialDisable = false;
-        }
+        lured = true;
+        luredSource = target;
+        lureEnd = GlobalVariables.turns + duration;
+        this.lureDuration = duration;
     }
 
+    private void Update()
+    {
+        if(specialDisable)
+        {
+            if(curseEnd == GlobalVariables.turns)
+            {
+                specialDisable = false;
+            }
+        }
+        if(lured)
+        {
+            if (lureEnd == GlobalVariables.turns)
+            {
+                lured = false;
+                luredSource = null;
+            }
+        }
+    }
     public IEnumerator DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
 
     {
