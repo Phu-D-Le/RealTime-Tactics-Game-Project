@@ -202,14 +202,24 @@ public class SelectManager : MonoBehaviour
     private void TryAttackPawn(Hex hexComponent, GameObject clickedTile) // AttackHUD has done our BFS and highlighting so now
     // we add our attacks to a list and associate an attack to each pawn (could use another list but eh). ZO
     {
+        Pawn currentPawn = GetCurrentPawn();
         if (IsTileInRange(hexComponent.HexCoords))
         {
             Pawn targetPawn = FindPawnOnTile(clickedTile);
 
+            if (currentPawn.lured)
+            {
+                if (currentPawn.luredSource != targetPawn)
+                {
+                    Debug.Log($"{currentPawn.name} is lured towards {currentPawn.luredSource.name}");
+                    return;
+                }
+            }
+
             if (targetPawn != null && !targetPawn.hasMoved) // Pawn must be on tile for an attack to work. Perhaps set no friendly fire here? ZO
             { // Keep friendly fire but pawn cannot attack a tile where a pawn has moved from. ZO
 
-                Pawn currentPawn = GetCurrentPawn();
+               
                 if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                 {
                     if (selectedAttack != null) // Ensure the selected attack is assigned before queuing the attack. ZO
@@ -231,7 +241,6 @@ public class SelectManager : MonoBehaviour
             }
             else if(targetPawn != null && targetPawn.hasMoved && plannedTiles.Contains(hexComponent.HexCoords)) // Pawn can attack a tile where a pawn moves to. ZO
             {
-                Pawn currentPawn = GetCurrentPawn();
                 if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                 {
                     // Ensure the selected attack is assigned before queuing the attack. ZO
