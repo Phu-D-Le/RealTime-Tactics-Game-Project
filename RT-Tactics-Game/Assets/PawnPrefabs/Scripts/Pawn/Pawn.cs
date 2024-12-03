@@ -20,6 +20,8 @@ public class Pawn : MonoBehaviour
     public bool hasMoved { get; private set; }
     public GameObject CurrentTile { get; set; }
     public Attack selectedAttack { get; set; }
+    public bool isDead { get; private set; } = false;
+
     public PawnAnimation pawnAnimation;
 
     public AudioClip moveSound;
@@ -89,46 +91,62 @@ public class Pawn : MonoBehaviour
             }
         }
     }
-    public IEnumerator DealAttack(Attack attack, Pawn target) // Deal damage to another pawn. Called by SelectManager. ZO
-
+    public IEnumerator DealAttack(Attack attack, Pawn target)
     {
-        if (this != null)
+        if (this == null || isDead)
         {
-            Hex playerHex = this.CurrentTile.GetComponent<Hex>();
-            Hex enemyHex = target.CurrentTile.GetComponent<Hex>();
-            playerHex.EnableHighlight(Color.white);
-            enemyHex.EnableHighlight(Color.red);
-            // Play the attack sound and wait for it to finish
-            if (attack.attackSound != null && this != null)
-            {
-                PlayAttackSound(attack.attackSound);
-                yield return new WaitForSeconds(attack.attackSound.length); // Wait for the sound to finish
-            }
-            playerHex.DisableHighlight();
-            enemyHex.DisableHighlight();
-            target.TakeDamage(attack.damage);
-            hasAttacked = true;
-            Debug.Log($"{gameObject.tag} {pawnName} has attacked {target.gameObject.tag} {target.pawnName} with {attack.attackName}, dealing {attack.damage} damage.");
+            Debug.Log($"{pawnName} is dead and cannot attack.");
+            yield break;
         }
-        else
+
+        if (target == null || target.isDead)
         {
-            Debug.Log($"{this} is dead so they cannot attack");
+            Debug.Log($"{target.pawnName} is already dead and cannot be attacked.");
+            yield break;
         }
+
+        Hex playerHex = this.CurrentTile.GetComponent<Hex>();
+        Hex enemyHex = target.CurrentTile.GetComponent<Hex>();
+        playerHex.EnableHighlight(Color.white);
+        enemyHex.EnableHighlight(Color.red);
+
+        if (attack.attackSound != null)
+        {
+            PlayAttackSound(attack.attackSound);
+            yield return new WaitForSeconds(attack.attackSound.length);
+        }
+
+        playerHex.DisableHighlight();
+        enemyHex.DisableHighlight();
+
+        // Deal damage to the target
+        target.TakeDamage(attack.damage);
+        hasAttacked = true;
+
+        Debug.Log($"{pawnName} attacked {target.pawnName} with {attack.attackName}, dealing {attack.damage} damage.");
     }
+
     public void TakeDamage(int amount) // Current pawn will take certain damage and value of slider will renew
                                         // We could push in negative values to heal as well. ZO
     {
-        currentHP -= amount;
-        healthHUD.SetHP(currentHP);
-        if (currentHP <= 0)
+        if (this != null)
         {
-            Debug.Log($"{pawnName} has died.");
-            StartCoroutine(PlayDeathSound());
-            return;
-        } // Only reason PlayerHUD is not being notified immediately about death is because pawns should not
-        // be attacking themselves. Need to add selection logic to further death logic...maybe. ZO
-        PlayDamageSound();
-        Debug.Log($"{gameObject.tag} {pawnName} takes {amount} damage. Current HP: {currentHP}");
+            currentHP -= amount;
+            healthHUD.SetHP(currentHP);
+            if (currentHP <= 0)
+            {
+                Debug.Log($"{pawnName} has died.");
+                StartCoroutine(HandleDeath());
+                return;
+            } // Only reason PlayerHUD is not being notified immediately about death is because pawns should not
+            // be attacking themselves. Need to add selection logic to further death logic...maybe. ZO
+            PlayDamageSound();
+            Debug.Log($"{gameObject.tag} {pawnName} takes {amount} damage. Current HP: {currentHP}");
+        }
+        else
+        {
+            Debug.Log($"{this} is dead so they cannot be attacked");
+        }
     }
     public void InitializeFromPawnType(PawnType type)
     {
@@ -232,5 +250,25 @@ public class Pawn : MonoBehaviour
     public void Act()
     {
         hasActed = true;
+    }
+    private IEnumerator HandleDeath()
+    {
+        isDead = true;
+
+        if (deathSound != null)
+        {
+            Debug.Log("Playing death sound...");
+            audioSource.clip = deathSound;
+            audioSource.Play();
+            yield return new WaitForSeconds(deathSound.length);
+        }
+
+        Player player = GetComponentInParent<Player>();
+        if (player != null)
+        {
+            player.RemovePawn(this);
+        }
+
+        Debug.Log($"{pawnName} has been removed from the game.");
     }
 }
