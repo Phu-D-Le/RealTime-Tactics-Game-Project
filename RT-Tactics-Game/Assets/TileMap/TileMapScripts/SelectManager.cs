@@ -304,7 +304,7 @@ public class SelectManager : MonoBehaviour
                         {
                             actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, clickedTile.transform.position + new Vector3(0,2,0), selectedAction));
                             plannedTiles.Add(targetCoords);
-                            currentPawn.Act();
+                            currentPawn.Attack();
                             DisableAllHighlights();
                             
                             Debug.Log($"{currentPawn.pawnName} casts wall of fire");
@@ -327,7 +327,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
-                                currentPawn.Act();
+                                currentPawn.Attack();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casted curse on {targetPawn.pawnName}.");
                             }
@@ -341,7 +341,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
-                                currentPawn.Act();
+                                currentPawn.Attack();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casted curse on {targetPawn.pawnName}.");
                             }
@@ -371,7 +371,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
-                                currentPawn.Act();
+                                currentPawn.Attack();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casted lure on {targetPawn.pawnName}.");
                             }
@@ -385,7 +385,7 @@ public class SelectManager : MonoBehaviour
                             if (currentPawn != null && !currentPawn.hasAttacked && !currentPawn.hasActed)
                             {
                                 actionQueue.Add(new Action(ActionType.SpecialAction, currentPawn, targetPawn, selectedAction));
-                                currentPawn.Act();
+                                currentPawn.Attack();
                                 DisableAllHighlights();
                                 Debug.Log($"{currentPawn.pawnName} casted lure on {targetPawn.pawnName}.");
                             }
@@ -452,6 +452,8 @@ public class SelectManager : MonoBehaviour
     {
         foreach (GameObject tile in path)
         {
+            pawn.pawnAnimation.StartWalking();
+
             if (pawn != null)
             {
                 // Calculate how pawn will rotate. y is zero so it wont face down/up.  ZO
@@ -470,7 +472,7 @@ public class SelectManager : MonoBehaviour
                 bool moveSoundPlayed = false;
 
                 // Speed of movement is here, can increase/decrease as necessary. ZO
-                Vector3 targetPosition = tile.transform.position + new Vector3(0, 2.0f, 0);
+                Vector3 targetPosition = tile.transform.position + new Vector3(0, 1.0f, 0);
                 while (Vector3.Distance(pawn.transform.position, targetPosition) > 0.1f)
                 {
                     if (!moveSoundPlayed)
@@ -489,7 +491,7 @@ public class SelectManager : MonoBehaviour
                 Debug.Log($"{pawn} is dead so they cannot move");
             }
         }
-
+        pawn.pawnAnimation.StopWalking();
         pawn.CurrentTile = path.Last(); // Pawn has moved. ZO
         pawn.Move();
         DisableAllHighlights();
@@ -707,9 +709,15 @@ public class SelectManager : MonoBehaviour
     }
     private IEnumerator ExecuteActionsSequentially() // Change to IEnumerator to handle coroutines sequentially. ZO
     {
+        battleSystem.ActionsPlaying();
         foreach (Action action in actionQueue)
         {
-            if (action.actionType == ActionType.Move)
+            if (action.pawn == null || action.pawn.isDead)
+            {
+                Debug.LogWarning("Action aborted because the pawn is null.");
+                continue; // Skip this action if the pawn is null. ZO
+            }
+            if (action.actionType == ActionType.Move && action.pawn != null)
             {
                 // Start the move coroutine and wait until it finishes. ZO
                 yield return StartCoroutine(MovePawnToTile(action.pawn, hexGrid.GetTileAt(action.targetTile).gameObject));
@@ -721,7 +729,7 @@ public class SelectManager : MonoBehaviour
             }
             else if (action.actionType == ActionType.Attack)
             {
-                if (action.selectedAttack != null)
+                if (action.selectedAttack != null || !action.pawn.isDead || !action.targetPawn.isDead)
                 {
                     yield return StartCoroutine(action.pawn.DealAttack(action.selectedAttack, action.targetPawn));
                     //action.pawn.DealAttack(action.selectedAttack, action.targetPawn);
@@ -734,12 +742,16 @@ public class SelectManager : MonoBehaviour
             }
             else if (action.actionType == ActionType.SpecialAction)
             {
+                if (action.pawn.isDead)
+                {
+                    Debug.LogWarning($"Special action skipped because {action.pawn.pawnName} is dead.");
+                    break;
+                }
                 switch(action.selectedSpecialAction.actionName) // selects special action by name
                 {
                     case "WallOfFire":  
                         Instantiate(fire, action.targetPos, Quaternion.identity);
                         action.pawn.Act();
-                       
                         break;
                     case "Curse":
                         action.targetPawn.Cursed(2);
@@ -760,9 +772,6 @@ public class SelectManager : MonoBehaviour
                 action.pawn.Act();
             }
         }
-
-        
-
         StartNewTurn();
     } 
 
