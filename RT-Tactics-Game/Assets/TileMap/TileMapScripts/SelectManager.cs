@@ -752,18 +752,26 @@ public class SelectManager : MonoBehaviour
                     case "WallOfFire":  
                         Instantiate(fire, action.targetPos, Quaternion.identity);
                         action.pawn.Act();
+                        action.pawn.PlayAttackSound(action.selectedSpecialAction.actionSound);
+                        yield return new WaitForSeconds(action.selectedSpecialAction.actionSound.length);
                         break;
                     case "Curse":
                         action.targetPawn.Cursed(2);
                         action.pawn.Act();
+                        action.pawn.PlayAttackSound(action.selectedSpecialAction.actionSound);
+                        yield return new WaitForSeconds(action.selectedSpecialAction.actionSound.length);
                         break;
                     case "Necromancy": // will not be implemented
                         Debug.Log($"{action.pawn.name} casts necromancy");
                         action.pawn.Act();
+                        action.pawn.PlayAttackSound(action.selectedSpecialAction.actionSound);
+                        yield return new WaitForSeconds(action.selectedSpecialAction.actionSound.length);
                         break;
                     case "Lure":
                         action.targetPawn.Lured(2, action.pawn);
                         action.pawn.Act();
+                        action.pawn.PlayAttackSound(action.selectedSpecialAction.actionSound);
+                        yield return new WaitForSeconds(2);
                         break;
                     default:
                         Debug.Log("Not a valid action");

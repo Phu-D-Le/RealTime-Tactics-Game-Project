@@ -234,6 +234,22 @@ public class Pawn : MonoBehaviour
         {
             pawnAnimation.TriggerRangeBow();
         }
+        else if (clip.name == "WallOfFire")
+        {
+            pawnAnimation.TriggerWideSwing();
+        }
+        else if (clip.name == "Curse")
+        {
+            pawnAnimation.TriggerShortSwing();
+        }
+        else if (clip.name == "Necromancy")
+        {
+            pawnAnimation.TriggerFlinch();
+        }
+        else if (clip.name == "Lure")
+        {
+            pawnAnimation.TriggerFlinch();
+        }
         else
         {
             pawnAnimation.TriggerFlinch();
