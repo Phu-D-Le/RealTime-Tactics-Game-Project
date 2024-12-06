@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionName: WallOfFire
   damage: 1
-  actionSprite: {fileID: 21300000, guid: 4bfc8a9c83687ba44b598ed3af6049ce, type: 3}
+  actionSprite: {fileID: 21300000, guid: 9725fb87facc42a4984598500f76e0fb, type: 3}
   range: 2
+  actionSound: {fileID: 0}
