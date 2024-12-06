@@ -4,7 +4,10 @@ using System.Collections;
 using System.Linq;
 using Unity.VisualScripting;
 using System;
+#if UNITY_EDITOR
 using static UnityEditor.PlayerSettings;
+#endif
+//using static UnityEditor.PlayerSettings;
 using static UnityEngine.Rendering.DebugUI.Table;
 
 // Very beefy and very likely to be ineffecient class. Handles clicking the map and all behaviours associated with activating

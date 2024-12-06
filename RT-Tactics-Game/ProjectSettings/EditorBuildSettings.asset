@@ -17,10 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PawnSelection.unity
     guid: ae85db12806cee446823fb46d1fb28f6
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/GameScene.unity
     guid: e7fdd800955e9de42a2ecbbdc656e8b0
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Menu.unity
     guid: d65a897035b987644a12cd48b6fbcada
   - enabled: 1
