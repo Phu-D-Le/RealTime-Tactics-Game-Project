@@ -12044,9 +12044,9 @@ MonoBehaviour:
   lightCountText: {fileID: 742998810}
   mediumCountText: {fileID: 791411945}
   heavyCountText: {fileID: 243867397}
-  lightPawnPrefab: {fileID: 8589399486805019673, guid: 40bbfee25c1efe64ca8d78d0298fb3a8, type: 3}
-  mediumPawnPrefab: {fileID: 1653988848515996168, guid: ba231d059afcfa64288e0c8d968edbf6, type: 3}
-  heavyPawnPrefab: {fileID: 3327415281349361592, guid: 0bfd56962175e734da25b65157d86222, type: 3}
+  lightPawnPrefab: {fileID: 6504531193163566717, guid: 5b4fbf9a9df696f4fae5c40973801f2f, type: 3}
+  mediumPawnPrefab: {fileID: 4751024335898381005, guid: 1f9f0c2a7ba41bc469c1c4498744fd28, type: 3}
+  heavyPawnPrefab: {fileID: 6737010547764457718, guid: cfa08049e65c02642b7675e7c7ddea35, type: 3}
   playerSpawnPoint: {fileID: 1355157903}
   enemySpawnPoint: {fileID: 1668035518}
   characterSelectionText: {fileID: 1831566689}
