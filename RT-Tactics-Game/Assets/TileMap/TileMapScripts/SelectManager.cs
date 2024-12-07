@@ -475,7 +475,7 @@ public class SelectManager : MonoBehaviour
                 bool moveSoundPlayed = false;
 
                 // Speed of movement is here, can increase/decrease as necessary. ZO
-                Vector3 targetPosition = tile.transform.position + new Vector3(0, 1.0f, 0);
+                Vector3 targetPosition = tile.transform.position + new Vector3(0, 1.5f, 0);
                 while (Vector3.Distance(pawn.transform.position, targetPosition) > 0.1f)
                 {
                     if (!moveSoundPlayed)
