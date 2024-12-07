@@ -16,3 +16,4 @@ MonoBehaviour:
   damage: 0
   actionSprite: {fileID: 21300000, guid: eadcbc87c8ef09a41ae6012707b3d60c, type: 3}
   range: 2
+  actionSound: {fileID: 8300000, guid: 5f0857f21507c1d42bdb0a811bee7c2a, type: 3}
