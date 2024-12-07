@@ -15,9 +15,13 @@ public class CharacterSelectionPvP : MonoBehaviour
     public TMP_Text mediumCountText;
     public TMP_Text heavyCountText;
 
-    public GameObject lightPawnPrefab;
-    public GameObject mediumPawnPrefab;
-    public GameObject heavyPawnPrefab;
+    public GameObject player1LightPawnPrefab;
+    public GameObject player1MediumPawnPrefab;
+    public GameObject player1HeavyPawnPrefab;
+
+    public GameObject player2LightPawnPrefab;
+    public GameObject player2MediumPawnPrefab;
+    public GameObject player2HeavyPawnPrefab;
 
     public Transform playerSpawnPoint;
     public Transform enemySpawnPoint;
@@ -106,24 +110,28 @@ public class CharacterSelectionPvP : MonoBehaviour
 
     void SpawnPawns(Transform spawnPoint, List<GameObject> pawnList)
     {
+        GameObject lightPrefab = isPlayerSelecting ? player1LightPawnPrefab : player2LightPawnPrefab;
+        GameObject mediumPrefab = isPlayerSelecting ? player1MediumPawnPrefab : player2MediumPawnPrefab;
+        GameObject heavyPrefab = isPlayerSelecting ? player1HeavyPawnPrefab : player2HeavyPawnPrefab;
+
         // Spawn Light Pawns
         for (int i = 0; i < lightCount; i++)
         {
-            GameObject newPawn = Instantiate(lightPawnPrefab, spawnPoint.position, spawnPoint.rotation, spawnPoint);
+            GameObject newPawn = Instantiate(lightPrefab, spawnPoint.position, spawnPoint.rotation, spawnPoint);
             pawnList.Add(newPawn);
         }
 
         // Spawn Medium Pawns
         for (int i = 0; i < mediumCount; i++)
         {
-            GameObject newPawn = Instantiate(mediumPawnPrefab, spawnPoint.position, spawnPoint.rotation, spawnPoint);
+            GameObject newPawn = Instantiate(mediumPrefab, spawnPoint.position, spawnPoint.rotation, spawnPoint);
             pawnList.Add(newPawn);
         }
 
         // Spawn Heavy Pawns
         for (int i = 0; i < heavyCount; i++)
         {
-            GameObject newPawn = Instantiate(heavyPawnPrefab, spawnPoint.position, spawnPoint.rotation, spawnPoint);
+            GameObject newPawn = Instantiate(heavyPrefab, spawnPoint.position, spawnPoint.rotation, spawnPoint);
             pawnList.Add(newPawn);
         }
     }
