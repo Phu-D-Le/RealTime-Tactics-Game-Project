@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Medium
   m_EditorClassIdentifier: 
   pawnTypeName: Medium
-  pawnTypeSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  pawnTypeSprite: {fileID: 21300000, guid: 0b2309d15784ef241b3d5536de63fb77, type: 3}
   pawnTypeAttacks:
   - {fileID: 11400000, guid: 6e09a579f344f6b439b45ca190fd4226, type: 2}
   pawnTypeActions:
   - {fileID: 11400000, guid: ba4e161ecc03dff4794c7176ce6355b1, type: 2}
   pawnTypeSpeed: 3
-  pawnTypeMaxHP: 15
-  pawnTypeCurrentHP: 15
-  pawnTypeMoveSound: {fileID: 8300000, guid: 248fbcdc9e6689748be6f07889364363, type: 3}
+  pawnTypeMaxHP: 5
+  pawnTypeCurrentHP: 5
+  pawnTypeMoveSound: {fileID: 8300000, guid: b3cb6fafebc2e72459e52c8a87384dbb, type: 3}
   pawnTypeDeathSound: {fileID: 8300000, guid: 130f470f278d6a447ad2b2b25a8962a4, type: 3}
   pawnTypeDamageSound: {fileID: 8300000, guid: 40e087c0708cfdd489559acba1896bff, type: 3}

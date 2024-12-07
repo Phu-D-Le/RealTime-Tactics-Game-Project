@@ -496,12 +496,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pawnAnimation: {fileID: 0}
-  moveSound: {fileID: 8300000, guid: 248fbcdc9e6689748be6f07889364363, type: 3}
+  moveSound: {fileID: 8300000, guid: b3cb6fafebc2e72459e52c8a87384dbb, type: 3}
   deathSound: {fileID: 8300000, guid: 130f470f278d6a447ad2b2b25a8962a4, type: 3}
   damageSound: {fileID: 8300000, guid: 40e087c0708cfdd489559acba1896bff, type: 3}
   specialDisable: 0
-  startDuration: 0
-  duration: 0
+  lured: 0
+  luredSource: {fileID: 0}
+  curseEnd: 0
+  lureEnd: 0
+  curseDuration: 0
+  lureDuration: 0
   team: 0
   pawnType: {fileID: 11400000, guid: 6a0a9df540193994996549c2ec997ff8, type: 2}
   healthHUD: {fileID: 0}
