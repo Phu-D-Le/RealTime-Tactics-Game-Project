@@ -459,6 +459,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8adc90a8f28af914f80dd82ecf6aa8c6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 620877072495611133}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8adc90a8f28af914f80dd82ecf6aa8c6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4077846569716114984}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8adc90a8f28af914f80dd82ecf6aa8c6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 33199327209242683}
   m_SourcePrefab: {fileID: 100100000, guid: 8adc90a8f28af914f80dd82ecf6aa8c6, type: 3}
 --- !u!4 &2694993422493197570 stripped
 Transform:
@@ -639,3 +645,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pawnAnimator: {fileID: 9093640364676962098}
+--- !u!65 &4077846569716114984
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3327415281349361592}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &33199327209242683
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3327415281349361592}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

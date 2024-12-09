@@ -5,11 +5,18 @@ using UnityEngine;
 
 public class WallOfFire : MonoBehaviour
 {
+    //******************************************************************************************
+    //
+    // A lot of methods in this class needs to be called every frame, really needs a different approach
+    //
+    //******************************************************************************************
+
     private int damage = 1;
     public List<Pawn> hitPawns = new List<Pawn>();
     
     //private GlobalVariables variables;
     int duration = 3;
+    int turn;
     public int startTurn;
     
     public int playerOrEnemy; // 1 is player, 0 is enemy
@@ -18,10 +25,11 @@ public class WallOfFire : MonoBehaviour
     {
         playerOrEnemy = team;
         startTurn = GlobalVariables.turns;
-        //turn = 0;
+        turn = GlobalVariables.turns;
     }
 
-    private void OnTriggerEnter(Collider other)
+    
+    private void OnTriggerStay(Collider other)
     {
         //Debug.Log("lol");
         Pawn currentPawn = other.gameObject.GetComponentInParent<Pawn>();
@@ -41,10 +49,11 @@ public class WallOfFire : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        //if(turn >= duration)
-        //{
-
-        //}
+        if(turn < GlobalVariables.turns)
+        {
+            turn = GlobalVariables.turns;
+            EmptyStack();
+        }
     }
     public void EmptyStack()
     {

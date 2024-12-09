@@ -451,6 +451,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 639b19bf511078d4286fd4d7e1cfb05a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8071479917456389182}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 639b19bf511078d4286fd4d7e1cfb05a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -1175686623041380484}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 639b19bf511078d4286fd4d7e1cfb05a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9219893733820815865}
   m_SourcePrefab: {fileID: 100100000, guid: 639b19bf511078d4286fd4d7e1cfb05a, type: 3}
 --- !u!1 &4751024335898381005 stripped
 GameObject:
@@ -626,6 +632,54 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pawnAnimator: {fileID: 5619633426338870793}
+--- !u!65 &-1175686623041380484
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4751024335898381005}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &9219893733820815865
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4751024335898381005}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!4 &5378661189490692215 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 639b19bf511078d4286fd4d7e1cfb05a, type: 3}
